@@ -1,18 +1,19 @@
-<script>
-	import Navbar from '../components/Navbar.svelte';
+<script lang="ts">
 	import ThemeContext from '../contexts/ThemeContext.svelte';
+
+	import Navbar from '../components/Navbar.svelte';
 </script>
 
 <svelte:head>
 	<title>Ron Houben's Portfolio</title>
 </svelte:head>
 
-<ThemeContext>
-	<Navbar />
-	<main>
+<main>
+	<ThemeContext>
+		<Navbar />
 		<slot />
-	</main>
-</ThemeContext>
+	</ThemeContext>
+</main>
 
 <style>
 	:global(html, body, #svelte) {
@@ -21,10 +22,11 @@
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
 		margin: 0;
+		padding: 0;
 
 		background-color: var(--theme-colors-background);
+		color: var(--theme-colors-text);
 	}
-
 	:global(*, *:before, *:after) {
 		-webkit-box-sizing: inherit;
 		-moz-box-sizing: inherit;
