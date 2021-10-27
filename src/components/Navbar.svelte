@@ -23,6 +23,8 @@
 	}
 
 	#logo {
+		font-family: var(--theme-fonts-selected);
+		font-weight: bold;
 		text-transform: uppercase;
 	}
 </style>
