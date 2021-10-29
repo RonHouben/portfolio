@@ -47,7 +47,7 @@ const baseTheme: BaseTheme = {
 			md: '5rem',
 			lg: '10rem'
 		}
-	}
+	},
 };
 
 export const themes: Theme[] = [

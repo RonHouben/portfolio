@@ -15,8 +15,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		height: 5vh;
-		width: 100%;
 		padding-top: var(--theme-spacing-padding-sm);
 		padding-bottom: var(--theme-spacing-padding-sm);
 		background-color: var(--theme-colors-background);
