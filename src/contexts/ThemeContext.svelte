@@ -85,11 +85,3 @@
 {#if isLoaded}
 	<slot />
 {/if}
-
-<style>
-	/* @font-face {
-		font-family: 'Orbitron';
-		font-style: normal;
-		src: url("/fonts/Orbitron/Orbitron-Regular.ttf") format("truetype");
-	} */
-</style>

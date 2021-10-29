@@ -1364,6 +1364,17 @@ svelte@^3.42.6:
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.44.0.tgz#e6176cb3ad93846ddb4140e93f43098136b23f3b"
   integrity sha512-zWACSJBSncGiDvFfYOMFGNV5zDLOlyhftmO5yOZ0lEtQMptpElaRtl39MWz1+lYCpwUq4F3Q2lTzI9TrTL+eMA==
 
+"svelthree-three@git+https://github.com/vatro/svelthree-three.git#119":
+  version "0.119.1"
+  resolved "git+https://github.com/vatro/svelthree-three.git#3a0c78631b9382179828c1ace0edb83df541a6a1"
+
+svelthree@^0.119.0-5:
+  version "0.119.0-5"
+  resolved "https://registry.yarnpkg.com/svelthree/-/svelthree-0.119.0-5.tgz#b3da132426151ae3c6745562bad08f984779320b"
+  integrity sha512-5niteQrl5l7evhSSkfcf/I8FSccZD39kLnEZBKmnSJYwUon87fDnO8+maOzxcFBaWEOM1RdRcGy9J0LdXbLfrQ==
+  dependencies:
+    svelthree-three "git+https://github.com/vatro/svelthree-three.git#119"
+
 table@^6.0.9:
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/table/-/table-6.7.2.tgz#a8d39b9f5966693ca8b0feba270a78722cbaf3b0"

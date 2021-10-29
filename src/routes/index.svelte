@@ -1,12 +1,13 @@
+<script lang="ts">
+	import SpinningCube from '../components/SpinningCube.svelte';
+
+</script>
 <section>
-	<h1>&lt Hello-World /&gt</h1>
+	<!-- <h1>&lt Hello-World /&gt</h1> -->
+	<SpinningCube />
 </section>
 
 <style>
-	h1 {
-		font-family: var(--theme-fonts-selected);
-	}
-
 	section {
 		display: flex;
 		height: 100%;
