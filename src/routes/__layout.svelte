@@ -17,7 +17,8 @@
 
 <style>
 	:global(html, body, #svelte) {
-		min-height: 100vh;
+		width: 100%;
+		height: 100%;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
@@ -34,8 +35,18 @@
 	}
 
 	main {
-		height: 95vh;
-		padding-right: var(--theme-spacing-padding-md);
-		padding-left: var(--theme-spacing-padding-md);
+		height: 100vh;
+
+		/* For mobile */
+		padding-right: var(--theme-spacing-padding-sm);
+		padding-left: var(--theme-spacing-padding-sm);
+	}
+
+	/* For desktop */
+	@media only screen and (min-width: 768px) {
+		main {
+			padding-right: var(--theme-spacing-padding-md);
+			padding-left: var(--theme-spacing-padding-md);
+		}
 	}
 </style>
