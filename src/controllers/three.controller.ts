@@ -1,6 +1,23 @@
-import type { AnimationProps, PositionProps } from 'src/components/ThreeJS/types'
 import type { Object3D } from 'three'
+export interface PositionOptions {
+	y?: number
+	x?: number
+	z?: number
+}
 
+export interface AnimationOptions {
+	rotateY?: number
+	rotateX?: number
+	rotateZ?: number
+	translateX?: Translate
+	translateY?: Translate
+	translateZ?: Translate
+}
+
+interface Translate {
+	distance: number
+	limit?: number
+}
 export class ThreeController {
 	private obj: Object3D
 
@@ -8,13 +25,13 @@ export class ThreeController {
 		this.obj = obj
 	}
 
-	public position(options: PositionProps): void {
+	public position(options: PositionOptions): void {
 		this.obj.position.x = options.x || this.obj.position.x
 		this.obj.position.y = options.y || this.obj.position.y
 		this.obj.position.z = options.z || this.obj.position.z
 	}
 
-	public animate(options: AnimationProps): void {
+	public animate(options: AnimationOptions): void {
 		requestAnimationFrame(() => this.animate(options))
 
 		this.obj.rotateX(options.rotateX || 0)
