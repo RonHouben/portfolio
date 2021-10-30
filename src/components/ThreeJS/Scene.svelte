@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import type { Color, Texture } from 'three';
-	import {
-		Scene,
-		WebGLRenderer,
-	} from 'three'
+	import type { Color, Texture } from 'three'
+	import { Scene, WebGLRenderer } from 'three'
 	import { perspectiveCamera } from '../../stores/threejs/perspective.camera.store'
 	import { scene } from '../../stores/threejs/scene.store'
 
@@ -26,20 +23,24 @@
 	$: renderer.setSize(width, height)
 
 	onMount(() => {
-		// get DOM elements
 		const sceneElement = document.getElementById(sceneId)
-		const parentElement = sceneElement.parentElement
 
-		// add renderer to the DOM
-		sceneElement.appendChild(renderer.domElement)
+		if (!sceneElement) {
+			console.error(`Couldn't find element with id ${sceneId}`)
+		} else {
+			// add renderer to the DOM
+			sceneElement.appendChild(renderer.domElement)
 
-		// set height && width based on the parentsElement
-		// if the width || height is not given as a prop to the Scene component
-		if (!height) {
-			height = parentElement.offsetHeight
-		}
-		if (!width) {
-			width = parentElement.offsetWidth
+			// set height && width based on the parentsElement
+			// if the width || height is not given as a prop to the Scene component
+			const parentElement = sceneElement.parentElement as HTMLElement
+
+			if (!height) {
+				height = parentElement.offsetHeight
+			}
+			if (!width) {
+				width = parentElement.offsetWidth
+			}
 		}
 	})
 
@@ -61,9 +62,13 @@
 </script>
 
 <div id={sceneId}>
- <slot name="camera">
-	 <!-- TODO: Create errorMessage component -->
-	 <p>Make sure to add a Camera component as a child! Did you forget to add the property `slot="camera"` to the Camera component?</p>
- </slot>
- <slot name="mesh" />
+	<slot name="light" />
+	<slot name="camera">
+		<!-- TODO: Create errorMessage component -->
+		<p>
+			Make sure to add a Camera component as a child! Did you forget to add the property
+			`slot="camera"` to the Camera component?
+		</p>
+	</slot>
+	<slot name="mesh" />
 </div>

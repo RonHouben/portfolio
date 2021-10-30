@@ -5,16 +5,18 @@
 	import PerspectiveCamera from '../components/ThreeJS/PerspectiveCamera.svelte'
 	import Scene from '../components/ThreeJS/Scene.svelte'
 	import { BoxGeometry } from 'three'
-	import { MeshBasicMaterial } from 'three'
+	import { MeshStandardMaterial } from 'three'
+import AmbientLight from '../components/ThreeJS/AmbientLight.svelte';
 
 	const { theme } = useTheme()
 
 	const geometry = new BoxGeometry()
-	const material = new MeshBasicMaterial({ color: 0x00ff00 })
+	const material = new MeshStandardMaterial({ color: 0x00ff00 })
 </script>
 
 <section>
 	<Scene sceneId="test" background={new Color($theme.colors.background)}>
+		<AmbientLight slot="light" color='green' />
 		<PerspectiveCamera
 			slot="camera"
 			fov={70}
@@ -40,7 +42,6 @@
 					distance: 0.01,
 					limit: 2.5
 				}
-
 			}}
 		/>
 	</Scene>
