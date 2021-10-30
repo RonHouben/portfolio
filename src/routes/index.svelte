@@ -30,11 +30,15 @@
 			{material}
 			position={{ x: 0 }}
 			animate={{
-				rotateY: 0.01,
-				rotateX: 0.01,
+				// rotateY: 0.01,
+				// rotateX: 0.01,
 				translateX: {
 					distance: 0.01,
 					limit: 1
+				},
+				translateZ: {
+					distance: 0.01,
+					limit: 2.5
 				}
 
 			}}

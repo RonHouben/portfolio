@@ -24,8 +24,22 @@ export class ThreeController {
 		const reachedTranslateXLimit =
 			options.translateX?.limit && this.obj.position.x >= options.translateX?.limit
 
+		const reachedTranslateYLimit =
+			options.translateY?.limit && this.obj.position.y >= options.translateY?.limit
+
+		const reachedTranslateZLimit =
+			options.translateZ?.limit && this.obj.position.z >= options.translateZ?.limit
+
 		if (!reachedTranslateXLimit) {
 			this.obj.translateX(options.translateX?.distance || 0)
+		}
+		
+		if (!reachedTranslateYLimit) {
+			this.obj.translateY(options.translateY?.distance || 0)
+		}
+
+		if (!reachedTranslateZLimit) {
+			this.obj.translateZ(options.translateZ?.distance || 0)
 		}
 	}
 }

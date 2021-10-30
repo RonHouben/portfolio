@@ -8,8 +8,12 @@ export interface AnimationProps {
 	rotateY?: number
 	rotateX?: number
 	rotateZ?: number
-	translateX?: {
-		distance: number
-		limit?: number
-	}
+	translateX?: Translate
+	translateY?: Translate
+	translateZ?: Translate
+}
+
+interface Translate {
+	distance: number
+	limit?: number
 }
