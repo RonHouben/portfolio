@@ -1,5 +1,5 @@
 <script lang="ts">
-import { AnimationOptions, PositionOptions, ThreeController } from '../../controllers/three.controller';
+import { AnimationOptions, PositionOptions, RotateOptions, ThreeController } from '../../controllers/three.controller';
 	import { PerspectiveCamera } from 'three'
 	import { perspectiveCamera as camera } from '../../stores/threejs/perspective.camera.store'
 import { scene } from '../../stores/threejs/scene.store';
@@ -11,6 +11,7 @@ import { scene } from '../../stores/threejs/scene.store';
 	export let far: number
 	export let position: PositionOptions
 	export let animate: AnimationOptions = {}
+	export let rotate: RotateOptions = {}
 
 	// set camera store state
 	camera.set(new PerspectiveCamera(fov, aspect, near, far))
@@ -21,6 +22,7 @@ import { scene } from '../../stores/threejs/scene.store';
 
 	// set camera position
 	cameraController.position(position)
+	cameraController.rotate(rotate)
 
 	// animation loop
 	cameraController.animate(animate)
