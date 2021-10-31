@@ -2,8 +2,8 @@
 import type { ColorRepresentation,Object3D } from "three";
 import { DirectionalLightHelper } from "three";
 import { DirectionalLight } from "three";
-import { PositionOptions,ThreeController } from "../../controllers/three.controller";
-import { scene } from "../../stores/threejs/scene.store";
+import { PositionOptions,ThreeController } from "../../../controllers/three.controller";
+import { scene } from "../../../stores/threejs/scene.store";
 
 	export let name: string = 'directional-light'
 	export let color: ColorRepresentation

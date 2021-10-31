@@ -2,11 +2,11 @@
 	import { MathUtils } from 'three'
 	import { BoxGeometry, Color, MeshStandardMaterial, PlaneBufferGeometry } from 'three'
 	import { useTheme } from '../actions/useTheme'
-	import AmbientLight from '../components/ThreeJS/AmbientLight.svelte'
-	import DirectionalLight from '../components/ThreeJS/DirectionalLight.svelte'
-	import Mesh from '../components/ThreeJS/Mesh.svelte'
-	import PerspectiveCamera from '../components/ThreeJS/PerspectiveCamera.svelte'
-	import Scene from '../components/ThreeJS/Scene.svelte'
+	import AmbientLight from '../components/threejs/lights/AmbientLight.svelte'
+	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
+	import Mesh from '../components/threejs/objects/Mesh.svelte'
+	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
+	import Scene from '../components/threejs/scenes/Scene.svelte'
 
 	const { theme } = useTheme()
 

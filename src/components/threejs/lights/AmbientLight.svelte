@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scene } from '../../stores/threejs/scene.store';
+	import { scene } from '../../../stores/threejs/scene.store';
 	import type { ColorRepresentation } from 'three';
 	import { AmbientLight } from 'three';
 

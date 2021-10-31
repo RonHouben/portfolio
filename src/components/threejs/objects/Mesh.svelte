@@ -6,8 +6,8 @@
 	PositionOptions,
 	RotateOptions,
 	ThreeController
-	} from '../../controllers/three.controller';
-	import { scene } from '../../stores/threejs/scene.store';
+	} from '../../../controllers/three.controller';
+	import { scene } from '../../../stores/threejs/scene.store';
 
 	// TODO: Add other Geometry types and move them to a separate file
 	type Geometry = BoxGeometry | PlaneBufferGeometry

@@ -1,8 +1,8 @@
 <script lang="ts">
-import { AnimationOptions, PositionOptions, RotateOptions, ThreeController } from '../../controllers/three.controller';
+import { AnimationOptions, PositionOptions, RotateOptions, ThreeController } from '../../../controllers/three.controller';
 	import { PerspectiveCamera } from 'three'
-	import { perspectiveCamera as camera } from '../../stores/threejs/perspective.camera.store'
-import { scene } from '../../stores/threejs/scene.store';
+	import { perspectiveCamera as camera } from '../../../stores/threejs/perspective.camera.store'
+import { scene } from '../../../stores/threejs/scene.store';
 
 	export const slot: string = 'camera'
 	export let fov: number
