@@ -13,7 +13,7 @@
 	const boxGeometry = new BoxBufferGeometry(1, 1, 1)
 	const boxMaterial = new MeshStandardMaterial({ roughness: 0.5, metalness: 0.5, color: 0xff3e00 })
 
-	const floorGeometry = new PlaneBufferGeometry(4, 4, 1)
+	const floorGeometry = new PlaneBufferGeometry(8, 8, 1)
 	const floorMaterial = new MeshStandardMaterial({
 		roughness: 0.5,
 		metalness: 0.5,
@@ -27,22 +27,25 @@
 		sceneId="test"
 		background={new Color($theme.colors.background)}
 		showStats
-		showAxesHelper={false}
-		showGridHelper={false}
+		showAxesHelper
+		showGridHelper
 	>
 		<!-- Lights -->
 		<svelte:fragment slot="lights">
 			<AmbientLight intensity={0.01} />
 			<DirectionalLight
 				targetName="box"
-				intensity={1.5}
+				intensity={1}
 				position={{
-					x: 2,
+					x: 2.5,
 					z: 0,
-					y: 2
+					y: 5
+				}}
+				rotate={{
+					z: -0.25
 				}}
 				castShadow
-				showHelper={false}
+				showHelper
 			/>
 		</svelte:fragment>
 		<!-- Cameras -->
