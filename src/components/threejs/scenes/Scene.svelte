@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import type { Color, Texture } from 'three'
-	import { AxesHelper, GridHelper, PCFSoftShadowMap, Scene, WebGLRenderer } from 'three'
+	import { PCFSoftShadowMap, Scene, WebGLRenderer } from 'three'
 	import Stats from 'three/examples/jsm/libs/stats.module'
 	import { perspectiveCamera } from '../../../stores/threejs/perspective.camera.store'
 	import { scene } from '../../../stores/threejs/scene.store'
@@ -11,8 +11,6 @@
 	export let width: number = 0
 	export let background: Color | Texture
 	export let showStats: boolean = false
-	export let showAxesHelper: boolean = false
-	export let showGridHelper: boolean = false
 
 	// set the scene store value to a new scene
 	scene.set(new Scene())
@@ -21,17 +19,6 @@
 
 	// set the scenes properties
 	$: $scene.background = background
-
-	// set helpers
-	if (showAxesHelper) {
-		const axesHelper = new AxesHelper(10)
-		$scene.add(axesHelper)
-	}
-
-	if (showGridHelper) {
-		const gridHelper = new GridHelper()
-		$scene.add(gridHelper)
-	}
 
 	// create a new renderen
 	const renderer = new WebGLRenderer({

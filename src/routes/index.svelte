@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { BoxBufferGeometry,Color,DoubleSide,MathUtils,MeshStandardMaterial,PlaneBufferGeometry } from 'three';
+	import DebugPanel from '../components/threejs/DebugPanel.svelte';
+import { BoxBufferGeometry,Color,DoubleSide,MathUtils,MeshStandardMaterial,PlaneBufferGeometry } from 'three';
 	import { useTheme } from '../actions/useTheme';
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte';
 	import OrbitControls from '../components/threejs/controls/OrbitControls.svelte';
@@ -23,12 +24,15 @@
 </script>
 
 <section>
+	<DebugPanel options={{
+		showAxesHelper: false,
+		showGridHelper: true
+	}} />
+
 	<Scene
 		sceneId="test"
 		background={new Color($theme.colors.background)}
 		showStats
-		showAxesHelper
-		showGridHelper
 	>
 		<!-- Lights -->
 		<svelte:fragment slot="lights">
