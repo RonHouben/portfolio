@@ -1,10 +1,12 @@
 import type { Object3D } from 'three'
-export interface PositionOptions {
-	y?: number
+
+export type PositionOptions = Vector
+export type RotateOptions = Vector
+interface Vector {
 	x?: number
+	y?: number
 	z?: number
 }
-
 export interface AnimationOptions {
 	rotateY?: number
 	rotateX?: number
@@ -21,8 +23,9 @@ interface Translate {
 export class ThreeController {
 	private obj: Object3D
 
-	constructor(obj: Object3D) {
+	constructor(obj: Object3D, name?: string) {
 		this.obj = obj
+		this.obj.name = name || ''
 	}
 
 	public position(options: PositionOptions): void {
@@ -31,12 +34,18 @@ export class ThreeController {
 		this.obj.position.z = options.z || this.obj.position.z
 	}
 
+	public rotate(options: RotateOptions): void {
+		this.obj.rotation.x = options.x || this.obj.rotation.x
+		this.obj.rotation.y = options.y || this.obj.rotation.y
+		this.obj.rotation.z = options.z || this.obj.rotation.z
+	}
+
 	public animate(options: AnimationOptions): void {
 		requestAnimationFrame(() => this.animate(options))
 
 		this.obj.rotateX(options.rotateX || 0)
 		this.obj.rotateY(options.rotateY || 0)
-		this.obj.rotateZ(options.rotateY || 0)
+		this.obj.rotateZ(options.rotateZ || 0)
 
 		const reachedTranslateXLimit =
 			options.translateX?.limit && this.obj.position.x >= options.translateX?.limit
