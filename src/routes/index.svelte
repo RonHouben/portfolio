@@ -49,17 +49,12 @@
 		<svelte:fragment slot="cameras">
 			<PerspectiveCamera
 				name="perspective"
-				fov={70}
-				aspect={window.innerWidth / window.innerHeight}
-				far={0.1}
-				near={1000}
 				position={{ z: 5, y: 1 }}
-				rotate={{ y: 0 }}
 			/>
 		</svelte:fragment>
 		<!-- Controls -->
 		<svelte:fragment slot="controls">
-			<OrbitControls cameraName="perspective" />
+			<OrbitControls cameraName="perspective" autoRotate />
 		</svelte:fragment>
 		<!-- Meshes -->
 		<svelte:fragment slot="meshes">

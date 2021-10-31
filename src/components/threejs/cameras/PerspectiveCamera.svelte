@@ -5,10 +5,10 @@
 	import { scene } from '../../../stores/threejs/scene.store';
 
 	export let name: string
-	export let fov: number
-	export let aspect: number
-	export let near: number
-	export let far: number
+	export let fov: number | undefined = undefined
+	export let aspect: number | undefined = undefined
+	export let near: number | undefined = undefined
+	export let far: number | undefined = undefined
 	export let position: PositionOptions
 	export let animate: AnimationOptions = {}
 	export let rotate: RotateOptions = {}

@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import type { Color, Texture } from 'three'
-	import { Scene, WebGLRenderer } from 'three'
+	import { AxesHelper, GridHelper, PCFSoftShadowMap, Scene, WebGLRenderer } from 'three'
+	import Stats from 'three/examples/jsm/libs/stats.module'
 	import { perspectiveCamera } from '../../../stores/threejs/perspective.camera.store'
 	import { scene } from '../../../stores/threejs/scene.store'
-	import Stats from 'three/examples/jsm/libs/stats.module'
-	import { AxesHelper } from 'three'
-	import { GridHelper } from 'three'
 
 	export let sceneId: string
 	export let height: number = 0
@@ -36,11 +34,15 @@
 	}
 
 	// create a new renderen
-	const renderer = new WebGLRenderer()
+	const renderer = new WebGLRenderer({
+		antialias: true,
+		alpha: true
+	})
 
 	// resize the renderer if the width || height change
 	$: renderer.setSize(width, height)
 	renderer.shadowMap.enabled = true
+	renderer.shadowMap.type = PCFSoftShadowMap
 
 	onMount(() => {
 		const sceneElement = document.getElementById(sceneId)
@@ -92,7 +94,8 @@
 	<slot name="cameras">
 		<!-- TODO: Create errorMessage component -->
 		<p>
-			Make sure to add a Camera component as a child! Did you forget to add the camera(s) in a `svelte:fragment` with `slot="cameras"` component?
+			Make sure to add a Camera component as a child! Did you forget to add the camera(s) in a
+			`svelte:fragment` with `slot="cameras"` component?
 		</p>
 	</slot>
 	<slot name="controls" />
