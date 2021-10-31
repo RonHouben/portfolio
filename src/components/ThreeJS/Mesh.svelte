@@ -1,26 +1,38 @@
 <script lang="ts">
-	import { scene } from '../../stores/threejs/scene.store'
-	import type { BoxGeometry, MeshBasicMaterial } from 'three'
-	import { Mesh } from 'three'
-	import { AnimationOptions, PositionOptions, ThreeController } from '../../controllers/three.controller'
-import type { MeshStandardMaterial } from 'three';
+	import type { BoxGeometry,MeshBasicMaterial,MeshStandardMaterial,PlaneBufferGeometry } from 'three';
+	import { Mesh } from 'three';
+	import {
+	AnimationOptions,
+	PositionOptions,
+	RotateOptions,
+	ThreeController
+	} from '../../controllers/three.controller';
+	import { scene } from '../../stores/threejs/scene.store';
 
 	// TODO: Add other Geometry types and move them to a separate file
-	type Geometry = BoxGeometry
+	type Geometry = BoxGeometry | PlaneBufferGeometry
 	type MeshMaterial = MeshBasicMaterial | MeshStandardMaterial
 
+	export let name: string
 	export let geometry: Geometry
 	export let material: MeshMaterial
 	export let position: PositionOptions
+	export let rotate: RotateOptions = {}
 	export let animate: AnimationOptions = {}
 
 	const mesh = new Mesh(geometry, material)
-	const meshController = new ThreeController(mesh)
+
+	// TODO: move to ThreeController
+	mesh.castShadow = true
+	mesh.receiveShadow = true
+
+	const meshController = new ThreeController(mesh, name)
 
 	$scene.add(mesh)
 
 	// set mesh position
 	meshController.position(position)
+	meshController.rotate(rotate)
 
 	// animation loopt
 	meshController.animate(animate)
