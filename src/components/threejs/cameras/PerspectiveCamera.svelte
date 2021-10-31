@@ -1,10 +1,10 @@
 <script lang="ts">
-import { AnimationOptions, PositionOptions, RotateOptions, ThreeController } from '../../../controllers/three.controller';
+	import { AnimationOptions, PositionOptions, RotateOptions, ThreeController } from '../../../controllers/three.controller';
 	import { PerspectiveCamera } from 'three'
 	import { perspectiveCamera as camera } from '../../../stores/threejs/perspective.camera.store'
-import { scene } from '../../../stores/threejs/scene.store';
+	import { scene } from '../../../stores/threejs/scene.store';
 
-	export const slot: string = 'camera'
+	export let name: string
 	export let fov: number
 	export let aspect: number
 	export let near: number
@@ -16,7 +16,7 @@ import { scene } from '../../../stores/threejs/scene.store';
 	// set camera store state
 	camera.set(new PerspectiveCamera(fov, aspect, near, far))
 
-	const cameraController = new ThreeController($camera)
+	const cameraController = new ThreeController($camera, name)
 
 	$scene.add($camera)
 

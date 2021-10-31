@@ -26,7 +26,7 @@
 
 	// set helpers
 	if (showAxesHelper) {
-		const axesHelper = new AxesHelper(5)
+		const axesHelper = new AxesHelper(10)
 		$scene.add(axesHelper)
 	}
 
@@ -89,12 +89,12 @@
 
 <div id={sceneId}>
 	<slot name="lights" />
-	<slot name="camera">
+	<slot name="cameras">
 		<!-- TODO: Create errorMessage component -->
 		<p>
-			Make sure to add a Camera component as a child! Did you forget to add the property
-			`slot="camera"` to the Camera component?
+			Make sure to add a Camera component as a child! Did you forget to add the camera(s) in a `svelte:fragment` with `slot="cameras"` component?
 		</p>
 	</slot>
+	<slot name="controls" />
 	<slot name="meshes" />
 </div>

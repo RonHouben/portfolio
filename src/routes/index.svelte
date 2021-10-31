@@ -1,20 +1,25 @@
 <script lang="ts">
-	import { MathUtils } from 'three'
-	import { BoxGeometry, Color, MeshStandardMaterial, PlaneBufferGeometry } from 'three'
-	import { useTheme } from '../actions/useTheme'
-	import AmbientLight from '../components/threejs/lights/AmbientLight.svelte'
-	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
-	import Mesh from '../components/threejs/objects/Mesh.svelte'
-	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
-	import Scene from '../components/threejs/scenes/Scene.svelte'
+	import { BoxBufferGeometry,Color,DoubleSide,MathUtils,MeshStandardMaterial,PlaneBufferGeometry } from 'three';
+	import { useTheme } from '../actions/useTheme';
+	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte';
+	import OrbitControls from '../components/threejs/controls/OrbitControls.svelte';
+	import AmbientLight from '../components/threejs/lights/AmbientLight.svelte';
+	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte';
+	import Mesh from '../components/threejs/objects/Mesh.svelte';
+	import Scene from '../components/threejs/scenes/Scene.svelte';
 
 	const { theme } = useTheme()
 
-	const boxGeometry = new BoxGeometry(1, 1, 1)
-	const boxMaterial = new MeshStandardMaterial({ color: undefined, wireframe: false })
+	const boxGeometry = new BoxBufferGeometry(1, 1, 1)
+	const boxMaterial = new MeshStandardMaterial({ roughness: 0.5, metalness: 0.5, color: 0xff3e00 })
 
 	const floorGeometry = new PlaneBufferGeometry(4, 4, 1)
-	const floorMaterial = new MeshStandardMaterial({ color: 'yellow' })
+	const floorMaterial = new MeshStandardMaterial({
+		roughness: 0.5,
+		metalness: 0.5,
+		side: DoubleSide,
+		color: 0xf7fafc
+	})
 </script>
 
 <section>
@@ -22,41 +27,48 @@
 		sceneId="test"
 		background={new Color($theme.colors.background)}
 		showStats
-		showAxesHelper
-		showGridHelper
+		showAxesHelper={false}
+		showGridHelper={false}
 	>
 		<!-- Lights -->
 		<svelte:fragment slot="lights">
-			<AmbientLight color="yellow" intensity={0.01} />
+			<AmbientLight intensity={0.01} />
 			<DirectionalLight
-				color="purple"
 				targetName="box"
 				intensity={1.5}
 				position={{
-					x: 1,
+					x: 2,
 					z: 0,
-					y: 0
+					y: 2
 				}}
-				showHelper
+				castShadow
+				showHelper={false}
 			/>
 		</svelte:fragment>
-		<!-- Camera -->
-		<PerspectiveCamera
-			slot="camera"
-			fov={70}
-			aspect={window.innerWidth / window.innerHeight}
-			far={0.1}
-			near={1000}
-			position={{ z: 5, y: 1 }}
-			rotate={{ y: 0 }}
-		/>
+		<!-- Cameras -->
+		<svelte:fragment slot="cameras">
+			<PerspectiveCamera
+				name="perspective"
+				fov={70}
+				aspect={window.innerWidth / window.innerHeight}
+				far={0.1}
+				near={1000}
+				position={{ z: 5, y: 1 }}
+				rotate={{ y: 0 }}
+			/>
+		</svelte:fragment>
+		<!-- Controls -->
+		<svelte:fragment slot="controls">
+			<OrbitControls cameraName="perspective" />
+		</svelte:fragment>
 		<!-- Meshes -->
 		<svelte:fragment slot="meshes">
 			<Mesh
 				name="box"
 				geometry={boxGeometry}
 				material={boxMaterial}
-				position={{ x: 0, y: 0.5, z: 0 }}
+				position={{ x: 0, y: 1, z: 0 }}
+				shadow={{ receiveShadow: true, castShadow: true }}
 				rotate={{ y: 1 }}
 				animate={{
 					rotateY: 0.01
@@ -74,6 +86,7 @@
 				name="floor"
 				geometry={floorGeometry}
 				material={floorMaterial}
+				shadow={{ receiveShadow: true }}
 				position={{ y: 0 }}
 				rotate={{ x: MathUtils.degToRad(-90) }}
 			/>

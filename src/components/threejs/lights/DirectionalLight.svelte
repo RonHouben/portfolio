@@ -1,19 +1,19 @@
 <script lang="ts">
-import type { ColorRepresentation,Object3D } from "three";
+import type { ColorRepresentation } from "three";
 import { DirectionalLightHelper } from "three";
 import { DirectionalLight } from "three";
 import { PositionOptions,ThreeController } from "../../../controllers/three.controller";
 import { scene } from "../../../stores/threejs/scene.store";
 
 	export let name: string = 'directional-light'
-	export let color: ColorRepresentation
+	export let color: ColorRepresentation | undefined = undefined
 	export let intensity: number
 	export let position: PositionOptions
+	export let castShadow: boolean
 	export let targetName: string = ''
 	export let showHelper: boolean = false
 
 	const light = new DirectionalLight(color, intensity)
-	light.castShadow = true
 
 	const target = $scene.getObjectByName(targetName)
 
@@ -28,7 +28,9 @@ import { scene } from "../../../stores/threejs/scene.store";
 
 	$scene.add(light)
 
+	// TODO: make a separate LightController
 	const lightController = new ThreeController(light, name)
 
 	lightController.position(position)
+	lightController.setShadows({ castShadow })
 </script>

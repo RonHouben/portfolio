@@ -16,6 +16,11 @@ export interface AnimationOptions {
 	translateZ?: Translate
 }
 
+export interface ShadowOptions {
+	castShadow?: boolean
+	receiveShadow?: boolean
+}
+
 interface Translate {
 	distance: number
 	limit?: number
@@ -38,6 +43,11 @@ export class ThreeController {
 		this.obj.rotation.x = options.x || this.obj.rotation.x
 		this.obj.rotation.y = options.y || this.obj.rotation.y
 		this.obj.rotation.z = options.z || this.obj.rotation.z
+	}
+
+	public setShadows(options: ShadowOptions): void {
+		this.obj.castShadow = options.castShadow || this.obj.castShadow
+		this.obj.receiveShadow = options.receiveShadow || this.obj.receiveShadow
 	}
 
 	public animate(options: AnimationOptions): void {
