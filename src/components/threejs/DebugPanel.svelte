@@ -13,7 +13,7 @@
 		showAxesHelper?: boolean
 		showGridHelper?: boolean
 		showFPS?: boolean
-		directionalLights: LightDebugState[]
+		directionalLights?: LightDebugState[]
 	}
 
 	interface LightDebugState {
@@ -24,7 +24,6 @@
 	interface DirectionalLightHelperState {
 		[name: string]: DirectionalLightHelper
 	}
-
 
 	const axesHelper = new AxesHelper(10)
 	const gridHelper = new GridHelper()
@@ -39,6 +38,7 @@
 			// showAxesHelper
 			if (options.showAxesHelper) {
 				scene.add(axesHelper)
+				console.info('AxesHelper line colors:', { x: 'red', y: 'green', z: 'blue' })
 			} else {
 				scene.remove(axesHelper)
 			}
@@ -71,17 +71,19 @@
 			}, 0)
 
 			// directionLights
-			for (const { name, showHelper } of options.directionalLights) {
-				const light = scene.getObjectByName(name) as DirectionalLight | undefined
+			if (options.directionalLights) {
+				for (const { name, showHelper } of options.directionalLights) {
+					const light = scene.getObjectByName(name) as DirectionalLight | undefined
 
-				if (!directionalLightHelpersState[name] && light && showHelper) {
-					directionalLightHelpersState[name] = new DirectionalLightHelper(light)
+					if (!directionalLightHelpersState[name] && light && showHelper) {
+						directionalLightHelpersState[name] = new DirectionalLightHelper(light, 2)
 
-					scene.add(directionalLightHelpersState[name])
-				} else if (directionalLightHelpersState[name] && !showHelper) {
-					scene.remove(directionalLightHelpersState[name])
+						scene.add(directionalLightHelpersState[name])
+					} else if (directionalLightHelpersState[name] && !showHelper) {
+						scene.remove(directionalLightHelpersState[name])
 
-					delete directionalLightHelpersState[name]
+						delete directionalLightHelpersState[name]
+					}
 				}
 			}
 		}
@@ -90,37 +92,49 @@
 
 <div id="debug-panel">
 	<p><strong>DEBUG PANEL</strong></p>
-	<div id="items">
+	<form>
 		{#each Object.entries(options) as [key, val]}
-			{#if typeof val === 'boolean'}
-				<label>{key}: <input type="checkbox" bind:checked={options[key]} /></label>
-			{/if}
+			<!-- directionalLights -->
 			{#if key === 'directionalLights'}
 				{#each val as directionLight}
-					<label
-						>{directionLight.name}:
-						<input type="checkbox" bind:checked={directionLight.showHelper} /></label
-					>
+					<label for={directionLight.name}>{directionLight.name}</label>
+					<input
+						id={directionLight.name}
+						type="checkbox"
+						bind:checked={directionLight.showHelper}
+					/>
 				{/each}
 			{/if}
+
+			<!-- other -->
+			{#if typeof val === 'boolean'}
+				<label for={key}>{key}</label>
+				<input id={key} type="checkbox" bind:checked={options[key]} />
+			{/if}
 		{/each}
-	</div>
+	</form>
 </div>
 
 <style>
 	#debug-panel {
+		display: flex;
+		flex-direction: column;
 		position: absolute;
 		top: 50%;
 		right: 0;
 		z-index: 9999;
 
+		width: 20%;
+
 		background: orange;
 		padding: var(--theme-spacing-padding-sm);
 	}
 
-	#items {
+	form {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
 	}
 
 	label {

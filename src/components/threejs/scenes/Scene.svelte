@@ -9,8 +9,9 @@
 	// set the scene store value to a new scene
 	scene.set(new Scene())
 
+	// TODO: Crate scene controller
 	// set the scenes properties
-	$scene.background = background
+	$: $scene.background = background
 	$scene.name = name
 </script>
 

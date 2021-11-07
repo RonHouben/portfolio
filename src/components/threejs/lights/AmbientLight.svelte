@@ -8,5 +8,7 @@
 
 	const light = new AmbientLight(color, intensity)
 
+	light.castShadow = false;
+
 	$scene.add(light)
 </script>

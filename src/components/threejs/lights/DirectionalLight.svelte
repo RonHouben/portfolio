@@ -1,31 +1,38 @@
 <script lang="ts">
-import type { ColorRepresentation } from "three";
-import { DirectionalLight } from "three";
-import { PositionOptions,RotateOptions,ThreeController } from "../../../controllers/three.controller";
-import { scene } from "../../../stores/threejs/scene.store";
+	import type { PositionOptions } from '../../../controllers/threejs/base.controller'
+	import type { LightShadowOptions } from '../../../controllers/threejs/lights/light.controller'
+	import { scene } from '../../../stores/threejs/scene.store'
+	import {
+		DirectionalLightController,
+		DirectionalLightControllerOptions,
+DirectionalLightHelperOptions
+	} from '../../../controllers/threejs/lights/directional.light.controller'
 
-	export let name: string
-	export let color: ColorRepresentation | undefined = undefined
-	export let intensity: number
+	export let options: Omit<DirectionalLightControllerOptions, 'scene'>
+	export let helperOptions: DirectionalLightHelperOptions = {}
 	export let position: PositionOptions
-	export let rotate: RotateOptions = {}
-	export let castShadow: boolean
+	export let shadow: LightShadowOptions
 	export let targetName: string = ''
 
-	const light = new DirectionalLight(color, intensity)
+	const lightController = new DirectionalLightController({
+		name: options.name,
+		scene: $scene
+	})
 
-	const target = $scene.getObjectByName(targetName)
+	const light = lightController.three
 
-	if (target) {
-		light.target = target
-	}
+	light.shadow.camera.visible = true
+	const d = 10
 
-	$scene.add(light)
-
-	// TODO: make a separate LightController
-	const lightController = new ThreeController(light, name)
+	light.shadow.camera.left = -d
+	light.shadow.camera.right = d
+	light.shadow.camera.top = d
+	light.shadow.camera.bottom = -d
+	light.shadow.camera.far = 1000
 
 	lightController.position(position)
-	lightController.rotate(rotate)
-	lightController.setShadows({ castShadow })
+	lightController.shadow(shadow)
+	lightController.setHelpers(helperOptions)
+
+	lightController.animate({ targetName })
 </script>

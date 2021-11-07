@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+import type { TextureEncoding } from 'three';
 	import type { WebGLShadowMap } from 'three'
 	import { WebGLRenderer } from 'three'
-	import { perspectiveCamera } from '../../../stores/threejs/perspective.camera.store'
+	import { camera } from '../../../stores/threejs/perspective.camera.store'
 	import { renderer } from '../../../stores/threejs/renderer.store'
 	import { scene } from '../../../stores/threejs/scene.store'
 
@@ -12,17 +13,29 @@
 	export let antialias: boolean | undefined = undefined
 	export let alpha: boolean | undefined = undefined
 	export let shadowMap: Partial<WebGLShadowMap> = {}
+	export let outputEncoding: TextureEncoding
 
-	renderer.set(
-		new WebGLRenderer({
+	const webGLRenderer = new WebGLRenderer({
 			antialias,
 			alpha
 		})
-	)
+	
+	renderer.set(webGLRenderer)
 
+	// TODO: create Renderer controller
+	$: $renderer.setSize(width, height)
+	// $: $renderer.shadowMap = { ...$renderer.shadowMap, ...shadowMap } as WebGLShadowMap
 
-	$: $renderer.setSize(width, height, true)
-	$: $renderer.shadowMap = { ...$renderer.shadowMap, ...shadowMap } as WebGLShadowMap
+	$renderer.setPixelRatio( window.devicePixelRatio )
+	$renderer.outputEncoding = outputEncoding
+
+	if (shadowMap.enabled) {
+		$renderer.shadowMap.enabled = shadowMap.enabled
+	}
+	
+	if (shadowMap.type) {
+		$renderer.shadowMap.type = shadowMap.type
+	}
 
 	animate()
 
@@ -31,7 +44,7 @@
 		requestAnimationFrame(animate)
 
 		if ($renderer && $scene) {
-			$renderer.render($scene, $perspectiveCamera)
+			$renderer.render($scene, $camera)
 		}
 	}
 

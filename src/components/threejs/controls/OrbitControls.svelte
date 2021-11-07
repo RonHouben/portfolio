@@ -1,33 +1,30 @@
 <script lang="ts">
 	import { scene } from '../../../stores/threejs/scene.store'
-	import { OrbitControls } from '../../../lib/threejs/OrbitControls'
-	import type { Camera } from 'three'
-	import { onMount } from 'svelte'
-	import { renderer } from '../../../stores/threejs/renderer.store';
+	import { renderer } from '../../../stores/threejs/renderer.store'
+	import {
+		OrbitControlsAnimationOptions,
+		OrbitControlsController,
+		OrbitControlsDampingOptions,
+	} from '../../../controllers/threejs/controls/orbit.controls.controller'
+	import { camera } from '../../../stores/threejs/perspective.camera.store'
+	import { onMount } from 'svelte';
 
 	export let cameraName: string
-	export let autoRotate: boolean = false
+	export let targetName: string = ''
+	export let animate: Omit<OrbitControlsAnimationOptions, 'target'> = {}
+	export let dampingOptions: OrbitControlsDampingOptions = {}
 
-	const camera = $scene.getObjectByName(cameraName) as Camera
+	// TODO: make a cameras store with an array of multiple camera's
+	const controller = new OrbitControlsController({
+		camera: $camera,
+		domElement: $renderer.domElement
+	})
 
-	const animationLoop = (controls: OrbitControls) => {
-		requestAnimationFrame(() => animationLoop(controls))
-
-		controls.update()
-	}
-
+	controller.dampingOptions(dampingOptions)
 
 	onMount(() => {
-		if (!camera) {
-			console.error(`Couldn't find camera with name "${cameraName}"`)
-		} else {
-			const controls = new OrbitControls(camera, $renderer.domElement)
+		const target = $scene.getObjectByName(targetName)
 
-			controls.autoRotate = autoRotate
-
-			controls.update()
-
-			animationLoop(controls)
-		}
+		controller.animate({ ...animate, target: target?.position || undefined })
 	})
 </script>
