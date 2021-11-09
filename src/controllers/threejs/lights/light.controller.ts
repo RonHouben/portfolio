@@ -1,14 +1,13 @@
 import type {ColorRepresentation} from 'three'
 import type { Light } from 'three'
-import type { BaseControllerOptions, ShadowOptions, AnimateOptions } from '../base.controller'
+import type { BaseControllerOptions, ShadowOptions, AnimateFunction } from '../base.controller'
 import { BaseController } from '../base.controller'
 
 export interface LightControllerOptions extends BaseControllerOptions {
 	color?: ColorRepresentation
 	intensity?: number
 }
-export type LightAnimateOptions = AnimateOptions
-
+export type LightAnimateFunction<T extends Light> = AnimateFunction<T>
 export interface LightHelperOptions {
 	light?: {
 		enabled: boolean

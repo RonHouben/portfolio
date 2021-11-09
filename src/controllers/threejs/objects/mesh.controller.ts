@@ -8,7 +8,7 @@ import type {
 	PlaneGeometry,
 } from 'three'
 import { Mesh } from 'three'
-import type { BaseControllerOptions} from '../base.controller'
+import type { AnimateFunction, BaseControllerOptions} from '../base.controller'
 import { BaseController } from '../base.controller'
 
 interface MeshControllerOptions extends BaseControllerOptions {
@@ -16,6 +16,7 @@ interface MeshControllerOptions extends BaseControllerOptions {
 	material: MeshMaterial
 }
 
+export type MeshAnimateFunction = AnimateFunction<Mesh>
 export type Geometry = BoxGeometry | PlaneBufferGeometry | PlaneGeometry | CylinderGeometry
 export type MeshMaterial = MeshBasicMaterial | MeshStandardMaterial | MeshPhongMaterial
 

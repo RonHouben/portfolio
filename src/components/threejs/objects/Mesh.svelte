@@ -2,11 +2,10 @@
 	import {
 		Geometry,
 		MeshController,
-		MeshMaterial
+		MeshMaterial,
+		MeshAnimateFunction
 	} from '../../../controllers/threejs/objects/mesh.controller'
-	import { onMount } from 'svelte'
 	import type {
-		AnimateOptions,
 		PositionOptions,
 		RotateOptions,
 		ShadowOptions
@@ -19,7 +18,7 @@
 	export let shadow: ShadowOptions
 	export let position: PositionOptions
 	export let rotate: RotateOptions = {}
-	export let animate: AnimateOptions = {}
+	export let animate: MeshAnimateFunction = () => {}
 
 		const meshController = new MeshController({ geometry, material, name, scene: $scene })
 

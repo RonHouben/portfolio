@@ -17,6 +17,7 @@
 	import { MeshPhongMaterial } from 'three'
 	import { MultiplyOperation } from 'three'
 	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
+	import anime from 'animejs'
 
 	const { theme } = useTheme()
 </script>
@@ -107,7 +108,7 @@
 							mapSize: {
 								width: 512,
 								height: 512
-							},
+							}
 						}}
 						helperOptions={{
 							light: {
@@ -136,18 +137,33 @@
 						geometry={new BoxGeometry(10, 10, 10)}
 						position={{
 							x: 0,
-							y: 10,
+							y: 5,
 							z: 0
 						}}
 						shadow={{
 							castShadow: true,
 							receiveShadow: true
 						}}
-						animate={{
-								// translateZ: {
-								// distance: -0.2,
-								// limit: -500
-								// }
+						animate={(obj) => {
+							const timeline = anime.timeline({
+								easing: 'easeInOutElastic(1, .6)',
+								duration: 2000,
+								loop: true
+							})
+
+							timeline
+								.add({
+									targets: obj.position,
+									y: 25
+								})
+								.add({
+									targets: obj.position,
+									x: 50
+								})
+								.add({
+									targets: obj.position,
+									y: 5
+								})
 						}}
 					/>
 					<Mesh

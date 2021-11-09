@@ -1,6 +1,6 @@
 import { CameraHelper, SpotLight, SpotLightHelper } from 'three'
-import type { ColorRepresentation, Object3D } from "three";
-import type { LightAnimateOptions, LightControllerOptions, LightHelperOptions, LightShadowOptions } from "./light.controller";
+import type { ColorRepresentation } from "three";
+import type { LightAnimateFunction, LightControllerOptions, LightHelperOptions, LightShadowOptions } from "./light.controller";
 import { LightController } from './light.controller'
 
 export interface SpotLightControllerOptions extends LightControllerOptions {
@@ -10,10 +10,7 @@ export interface SpotLightControllerOptions extends LightControllerOptions {
 	decay?: number
 }
 
-export interface SpotLightAnimateOptions extends LightAnimateOptions {
-	target?: Object3D
-}
-
+export type SpotLightAnimateFunction = LightAnimateFunction<SpotLight>
 export type SpotLightShadowOptions = LightShadowOptions
 
 export interface SpotLightHelperOptions extends LightHelperOptions {
@@ -37,10 +34,6 @@ export class SpotLightController extends LightController<SpotLight> {
 		this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow
 		this.three.shadow.mapSize.width = options.mapSize?.width || this.three.shadow.mapSize.width
 		this.three.shadow.mapSize.height = options.mapSize?.height || this.three.shadow.mapSize.height
-	}
-
-	public override animate({ target }: SpotLightAnimateOptions): void {
-		this.three.target = target || this.three.target
 	}
 
 	public setHelpers({ light, shadowCamera }: SpotLightHelperOptions): void {

@@ -6,6 +6,7 @@
 	export let color: ColorRepresentation | undefined = undefined
 	export let intensity: number | undefined = undefined
 
+	// TODO: create separate controller
 	const light = new AmbientLight(color, intensity)
 
 	light.castShadow = false;
