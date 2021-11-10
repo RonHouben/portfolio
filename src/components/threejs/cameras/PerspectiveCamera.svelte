@@ -3,9 +3,9 @@
 		PositionOptions,
 		RotateOptions,
 	} from '../../../controllers/threejs/base.controller'
-	import { camera } from '../../../stores/threejs/perspective.camera.store'
+	import { camera } from '../../../stores/threejs/cameras/perspective.camera.store'
 	import { scene } from '../../../stores/threejs/scene.store'
-import { PerspectiveCameraAnimateFunction, PerspectiveCameraController } from '../../../controllers/threejs/cameras/perspective.camera';
+	import { PerspectiveCameraAnimateFunction, PerspectiveCameraController } from '../../../controllers/threejs/cameras/perspective.camera';
 
 	export let name: string
 	export let fov: number | undefined = undefined

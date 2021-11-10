@@ -1,5 +1,4 @@
 <script lang="ts">
-	import DebugPanel from '../components/threejs/DebugPanel.svelte'
 	import { Color } from 'three'
 	import { useTheme } from '../actions/useTheme'
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
@@ -16,10 +15,55 @@
 	import { sRGBEncoding } from 'three'
 	import { MeshPhongMaterial } from 'three'
 	import { MultiplyOperation } from 'three'
-	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
 	import anime from 'animejs'
+	import { SphereGeometry } from 'three'
+
+	interface Slide {
+		name: string
+		position: {
+			x: number
+			y: number
+			z: number
+		}
+	}
 
 	const { theme } = useTheme()
+
+	interface Positional {
+		position: {
+			x: number
+			y: number
+			z: number
+		}
+	}
+
+	function positionInCircle<T extends Positional>(radius: number, center: number, height: number, items: T[]): T[] {
+		return items.reduce((result, item, index, array) => {
+			const angle = index * Math.PI * 2 / array.length
+
+			return [
+				...result,
+				{
+					...item,
+					position: {
+						...item.position,
+						x: center + Math.cos(angle) * radius,
+						y: height,
+						z: center + Math.sin(angle) * radius,
+					}
+				} as T
+			]
+		}, [] as T[])
+	}
+
+	const slides: Slide[] = positionInCircle<Slide>(
+		50,
+		0,
+		25,
+		new Array(20)
+			.fill(undefined)
+			.map((x, i) => ({ name: `slide-${i}`, position: { x: 0, y: 0, z: 0 } }))
+	)
 </script>
 
 <section id="threejs">
@@ -33,22 +77,23 @@
 		antialias={true}
 		alpha={true}
 	>
-		<DebugPanel
-			slot="debug-panel"
-			options={{
-				showAxesHelper: false,
-				showGridHelper: false,
-				showFPS: false
-			}}
-		/>
 		<svelte:fragment slot="scenes">
 			<Scene name="scene-one" background={new Color($theme.colors.background)}>
+				<svelte:fragment slot="helpers">
+					<!-- <AxesHelper size={100} /> -->
+				</svelte:fragment>
 				<!-- Cameras -->
+				<!-- TODO: implement support for multiple camera's & viewports -->
+
+						<!-- position={{ x: 10, y: 60, z: 180 }} -->
 				<svelte:fragment slot="cameras">
 					<PerspectiveCamera
 						name="perspective"
-						position={{ x: 10, y: 60, z: 180 }}
-						fov={35}
+						position={{ x: 0, y: 235, z: 0 }}
+						rotate={{
+							// x: 5
+						}}
+						fov={55}
 						aspect={window.innerWidth / window.innerHeight}
 						near={1}
 						far={1000}
@@ -59,7 +104,6 @@
 				<svelte:fragment slot="controls">
 					<OrbitControls
 						cameraName="perspective"
-						targetName="box"
 						animate={{ autoRotate: false, autoRotateSpeed: 2.5 }}
 						dampingOptions={{ enableDamping: true }}
 					/>
@@ -73,13 +117,13 @@
 						options={{
 							name: 'spotlight',
 							angle: Math.PI / 4,
-							color: 0xffffff,
+							color: new Color($theme.colors.background),
 							decay: 1,
 							distance: 2000,
 							intensity: 2,
 							penumbra: 0.1
 						}}
-						lookAt="box"
+						targetName="box"
 						position={{ x: 15, y: 50, z: 35 }}
 						shadow={{
 							castShadow: true,
@@ -93,34 +137,23 @@
 							shadowCamera: { enabled: false }
 						}}
 					/>
-					<DirectionalLight
-						options={{
-							name: 'directional-light',
-							intensity: 0.5
-						}}
-						position={{
-							x: 0,
-							z: 0,
-							y: 40
-						}}
-						shadow={{
-							castShadow: true,
-							mapSize: {
-								width: 512,
-								height: 512
-							}
-						}}
-						helperOptions={{
-							light: {
-								enabled: true,
-								color: 'green'
-							}
-						}}
-					/>
 				</svelte:fragment>
 
 				<!-- Meshes -->
 				<svelte:fragment slot="meshes">
+					{#each slides as slide}
+						<Mesh
+							name={`${slide.name}`}
+							material={new MeshPhongMaterial({ color: 'green' })}
+							geometry={new SphereGeometry(5)}
+							position={slide.position}
+							shadow={{
+								castShadow: true,
+								receiveShadow: true
+							}}
+						/>
+					{/each}
+
 					<Mesh
 						name="box"
 						material={new MeshPhongMaterial({
@@ -158,7 +191,11 @@
 								})
 								.add({
 									targets: obj.position,
-									x: 50
+									x: 30
+								})
+								.add({
+									targets: obj.position,
+									x: 0
 								})
 								.add({
 									targets: obj.position,
@@ -168,7 +205,7 @@
 					/>
 					<Mesh
 						name="plane"
-						material={new MeshPhongMaterial({ color: 0x808080, dithering: true, side: DoubleSide })}
+						material={new MeshPhongMaterial({ color: $theme.colors.background, dithering: true, side: DoubleSide })}
 						geometry={new PlaneGeometry(2000, 2000)}
 						shadow={{
 							receiveShadow: true

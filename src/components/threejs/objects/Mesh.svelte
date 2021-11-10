@@ -15,17 +15,18 @@
 	export let name: string
 	export let geometry: Geometry
 	export let material: MeshMaterial
-	export let shadow: ShadowOptions
+	export let shadow: ShadowOptions = {}
 	export let position: PositionOptions
 	export let rotate: RotateOptions = {}
 	export let animate: MeshAnimateFunction = () => {}
 
 		const meshController = new MeshController({ geometry, material, name, scene: $scene })
 
-		meshController.position(position)
-		meshController.rotate(rotate)
-		meshController.shadow(shadow)
-
-		meshController.animate(animate)
+		$: meshController.position(position)
+		$: meshController.rotate(rotate)
+		$: meshController.shadow(shadow)
+		$: meshController.setMaterial(material)
+		
+		$: meshController.animate(animate)
 
 </script>

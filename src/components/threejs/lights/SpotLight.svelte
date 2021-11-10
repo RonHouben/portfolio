@@ -8,11 +8,12 @@
 		SpotLightShadowOptions,
 		SpotLightAnimateFunction
 	} from '../../../controllers/threejs/lights/spot.light.controller'
+	import { onMount } from 'svelte'
 
 	export let options: Omit<SpotLightControllerOptions, 'scene'>
 	export let shadow: SpotLightShadowOptions
 	export let position: PositionOptions
-	export let lookAt: string = ''
+	export let targetName: string = ''
 	export let animate: SpotLightAnimateFunction = () => {}
 	export let helperOptions: Omit<SpotLightHelperOptions, 'scene'> = {
 		light: { enabled: false },
@@ -29,14 +30,11 @@
 	lightController.setHelpers(helperOptions)
 	lightController.animate(animate)
 
-	// onMount(() => {
-	// TODO: find a way to implement target
-	// const target = $scene.getObjectByName(lookAt)
+	$: if (options.color) {
+		lightController.setColor(options.color)
+	}
 
-	// if (target) {
-	// lightController.animate({ ...animate, target: target })
-	// } else {
-	// lightController.animate(animate)
-	// }
-	// })
+	onMount(() => {
+		lightController.setTarget(targetName)
+	})
 </script>

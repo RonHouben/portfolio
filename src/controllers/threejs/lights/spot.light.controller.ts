@@ -50,4 +50,11 @@ export class SpotLightController extends LightController<SpotLight> {
 		}
 	}
 
+	public setTarget(targetName: string): void {
+		const target = this.scene.getObjectByName(targetName)
+
+		if (target) {
+			this.three.target = target
+		}
+	}
 }

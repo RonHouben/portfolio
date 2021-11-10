@@ -16,6 +16,7 @@
 </script>
 
 	<slot name="lights" />
+	<slot name="helpers" />
 	<slot name="cameras">
 		<!-- TODO: Create errorMessage component -->
 		<p>

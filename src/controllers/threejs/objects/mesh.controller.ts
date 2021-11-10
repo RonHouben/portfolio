@@ -1,11 +1,13 @@
 import type {
 	BoxGeometry,
+	CircleGeometry,
 	CylinderGeometry,
 	MeshBasicMaterial,
 	MeshPhongMaterial,
 	MeshStandardMaterial,
 	PlaneBufferGeometry,
 	PlaneGeometry,
+	SphereGeometry,
 } from 'three'
 import { Mesh } from 'three'
 import type { AnimateFunction, BaseControllerOptions} from '../base.controller'
@@ -17,7 +19,7 @@ interface MeshControllerOptions extends BaseControllerOptions {
 }
 
 export type MeshAnimateFunction = AnimateFunction<Mesh>
-export type Geometry = BoxGeometry | PlaneBufferGeometry | PlaneGeometry | CylinderGeometry
+export type Geometry = BoxGeometry | PlaneBufferGeometry | PlaneGeometry | CylinderGeometry | CircleGeometry | SphereGeometry
 export type MeshMaterial = MeshBasicMaterial | MeshStandardMaterial | MeshPhongMaterial
 
 export class MeshController extends BaseController<Mesh> {
@@ -28,5 +30,9 @@ export class MeshController extends BaseController<Mesh> {
 		this.three.name = name
 
 		this.scene.add(this.three)
+	}
+
+	public setMaterial(material: MeshMaterial): void {
+		this.three.material = material
 	}
 }

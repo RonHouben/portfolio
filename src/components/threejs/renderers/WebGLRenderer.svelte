@@ -3,7 +3,7 @@
 import type { TextureEncoding } from 'three';
 	import type { WebGLShadowMap } from 'three'
 	import { WebGLRenderer } from 'three'
-	import { camera } from '../../../stores/threejs/perspective.camera.store'
+	import { camera } from '../../../stores/threejs/cameras/perspective.camera.store'
 	import { renderer } from '../../../stores/threejs/renderer.store'
 	import { scene } from '../../../stores/threejs/scene.store'
 

@@ -1,10 +1,10 @@
-import type {ColorRepresentation} from 'three'
+import type {Color, ColorRepresentation} from 'three'
 import type { Light } from 'three'
 import type { BaseControllerOptions, ShadowOptions, AnimateFunction } from '../base.controller'
 import { BaseController } from '../base.controller'
 
 export interface LightControllerOptions extends BaseControllerOptions {
-	color?: ColorRepresentation
+	color?: Color
 	intensity?: number
 }
 export type LightAnimateFunction<T extends Light> = AnimateFunction<T>
@@ -23,5 +23,8 @@ export interface LightShadowOptions extends ShadowOptions {
 }
 
 export abstract class LightController<T extends Light> extends BaseController<T> {
+	public setColor(color: Color): void {
+		this.three.color = color
+	}
 	public abstract setHelpers(options: LightHelperOptions): void
 }
