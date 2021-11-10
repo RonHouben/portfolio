@@ -113,6 +113,8 @@
 				<svelte:fragment slot="lights">
 					<AmbientLight color={0xffffff} intensity={0.5} />
 					<!-- <HemisphereLight intensity={4} skyColor={0xffffbb} groundColor={0x080820} /> -->
+
+						<!-- position={{ x: 15, y: 50, z: 35 }} -->
 					<SpotLight
 						options={{
 							name: 'spotlight',
@@ -120,11 +122,11 @@
 							color: new Color($theme.colors.background),
 							decay: 1,
 							distance: 2000,
-							intensity: 2,
+							intensity: 1,
 							penumbra: 0.1
 						}}
 						targetName="box"
-						position={{ x: 15, y: 50, z: 35 }}
+						position={{ x: 0, y: 80, z: 0 }}
 						shadow={{
 							castShadow: true,
 							mapSize: {
@@ -179,7 +181,7 @@
 						}}
 						animate={(obj) => {
 							const timeline = anime.timeline({
-								easing: 'easeInOutElastic(1, .6)',
+								easing: 'easeOutElastic(1.5, .4)',
 								duration: 2000,
 								loop: true
 							})
@@ -192,6 +194,10 @@
 								.add({
 									targets: obj.position,
 									x: 30
+								})
+								.add({
+									targets: obj.position,
+									x: -30
 								})
 								.add({
 									targets: obj.position,
