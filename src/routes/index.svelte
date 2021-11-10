@@ -111,7 +111,7 @@
 
 				<!-- Lights -->
 				<svelte:fragment slot="lights">
-					<AmbientLight color={0xffffff} intensity={0.5} />
+					<AmbientLight color={$theme.colors.background} intensity={0.75} />
 					<!-- <HemisphereLight intensity={4} skyColor={0xffffbb} groundColor={0x080820} /> -->
 
 						<!-- position={{ x: 15, y: 50, z: 35 }} -->
@@ -146,7 +146,7 @@
 					{#each slides as slide}
 						<Mesh
 							name={`${slide.name}`}
-							material={new MeshPhongMaterial({ color: 'green' })}
+							material={new MeshPhongMaterial({ color: 0x4080ff })}
 							geometry={new SphereGeometry(5)}
 							position={slide.position}
 							shadow={{
@@ -159,7 +159,7 @@
 					<Mesh
 						name="box"
 						material={new MeshPhongMaterial({
-							color: 0x4080ff,
+							color: 0x9931ff,
 							dithering: true,
 							shininess: 90,
 							emissive: 0x0,
