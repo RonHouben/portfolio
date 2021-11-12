@@ -13,7 +13,7 @@
 	} from '../../../controllers/threejs/base.controller'
 	import { scene } from '../../../stores/threejs/scene.store'
 	import { raycaster } from '../../../stores/threejs/raycaster.store'
-import type { Mesh } from 'three';
+	import type { Mesh } from 'three'
 
 	export let name: string
 	export let geometry: Geometry
@@ -33,13 +33,9 @@ import type { Mesh } from 'three';
 	$: meshController.animate(animate)
 
 	// raycaster onClick function
-	// function test() {
 	$: intersected = $raycaster.intersects.find(({ object }) => object.name === name)
-
-	$: console.log(intersected?.object.name)
 
 	$: if (intersected) {
 		onMousemove(intersected.object as unknown as Mesh)
 	}
-	// }
 </script>

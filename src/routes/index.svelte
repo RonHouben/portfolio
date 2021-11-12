@@ -16,11 +16,8 @@
 	import anime from 'animejs'
 	import { SphereGeometry } from 'three'
 	import Raycaster from '../components/threejs/Raycaster.svelte'
-	import CameraHelper from '../components/threejs/helpers/CameraHelper.svelte'
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
-	import GridHelper from '../components/threejs/helpers/GridHelper.svelte'
-	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte';
 
 	interface Slide {
 		name: string
