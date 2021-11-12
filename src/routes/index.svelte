@@ -29,7 +29,6 @@
 	}
 
 	const { theme } = useTheme()
-
 	interface Positional {
 		position: {
 			x: number
@@ -74,14 +73,16 @@
 
 <section id="threejs">
 	<WebGlRenderer
-		parentId="threejs"
+		options={{
+			alpha: true,
+			antialias: true
+		}}
+		domElementId="threejs"
 		outputEncoding={sRGBEncoding}
 		shadowMap={{
 			enabled: true,
 			type: PCFSoftShadowMap
 		}}
-		antialias={true}
-		alpha={true}
 	>
 		<svelte:fragment slot="scenes">
 			<Scene name="scene-one" background={new Color($theme.colors.background)}>

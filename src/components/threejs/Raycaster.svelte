@@ -3,13 +3,15 @@
 	import { raycaster } from '../../stores/threejs/raycaster.store'
 	import { camera } from '../../stores/threejs/cameras/perspective.camera.store'
 	import { scene } from '../../stores/threejs/scene.store'
-	import { renderer } from '../../stores/threejs/renderer.store';
+	import { renderer } from '../../stores/threejs/renderer.store'
 
-	raycaster.set(
-		new RaycasterController({
-			renderer: $renderer,
-			scene: $scene,
-			camera: $camera
-		})
-	)
+	$: if ($renderer) {
+		raycaster.set(
+			new RaycasterController({
+				renderer: $renderer,
+				scene: $scene,
+				camera: $camera
+			})
+		)
+	}
 </script>

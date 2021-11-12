@@ -27,17 +27,23 @@
 
 	const meshController = new MeshController({ geometry, material, name, scene: $scene })
 
+	// TODO make functions private and call them in constructor
 	$: meshController.position(position)
 	$: meshController.rotate(rotate)
 	$: meshController.shadow(shadow)
 	$: meshController.setMaterial(material)
 	$: meshController.animate(animate)
 
-	// raycaster onClick function
-	$: intersected = $raycaster.intersects.find(({ object }) => object.name === name) as unknown as Mesh | undefined
+	$: if ($raycaster) {
+		const intersected = $raycaster.intersects.find(
+			({ object }) => object.name === name
+		) 
 
-	$: if (intersected) {
-		onMousemove(intersected.object)
-		onClick(intersected.object)
+		if (intersected) {
+			const mesh = intersected.object as unknown as Mesh
+
+			onMousemove(mesh)
+			onClick(mesh)
+		}
 	}
 </script>
