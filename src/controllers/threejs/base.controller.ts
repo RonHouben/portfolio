@@ -15,6 +15,7 @@ interface Vector {
 }
 
 export type AnimateFunction<T> = (obj: T) => void
+export type OnMousemoveFunction<T> = (obj: T) => void
 export interface ShadowOptions {
 	castShadow?: boolean
 	receiveShadow?: boolean

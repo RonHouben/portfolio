@@ -25,4 +25,5 @@
 		</p>
 	</slot>
 	<slot name="controls" />
+	<slot name="raycaster" />
 	<slot name="meshes" />

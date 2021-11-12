@@ -3,7 +3,8 @@
 		Geometry,
 		MeshController,
 		MeshMaterial,
-		MeshAnimateFunction
+		MeshAnimateFunction,
+		MeshOnMousemoveFunction
 	} from '../../../controllers/threejs/objects/mesh.controller'
 	import type {
 		PositionOptions,
@@ -11,6 +12,8 @@
 		ShadowOptions
 	} from '../../../controllers/threejs/base.controller'
 	import { scene } from '../../../stores/threejs/scene.store'
+	import { raycaster } from '../../../stores/threejs/raycaster.store'
+import type { Mesh } from 'three';
 
 	export let name: string
 	export let geometry: Geometry
@@ -19,14 +22,24 @@
 	export let position: PositionOptions
 	export let rotate: RotateOptions = {}
 	export let animate: MeshAnimateFunction = () => {}
+	export let onMousemove: MeshOnMousemoveFunction = () => {}
 
-		const meshController = new MeshController({ geometry, material, name, scene: $scene })
+	const meshController = new MeshController({ geometry, material, name, scene: $scene })
 
-		$: meshController.position(position)
-		$: meshController.rotate(rotate)
-		$: meshController.shadow(shadow)
-		$: meshController.setMaterial(material)
-		
-		$: meshController.animate(animate)
+	$: meshController.position(position)
+	$: meshController.rotate(rotate)
+	$: meshController.shadow(shadow)
+	$: meshController.setMaterial(material)
+	$: meshController.animate(animate)
 
+	// raycaster onClick function
+	// function test() {
+	$: intersected = $raycaster.intersects.find(({ object }) => object.name === name)
+
+	$: console.log(intersected?.object.name)
+
+	$: if (intersected) {
+		onMousemove(intersected.object as unknown as Mesh)
+	}
+	// }
 </script>
