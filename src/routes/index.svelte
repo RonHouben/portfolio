@@ -97,11 +97,7 @@
 					<PerspectiveCamera
 						name="perspective"
 						position={{ x: 0, y: 235, z: 0 }}
-						rotate={{
-							// x: 5
-						}}
 						fov={55}
-						aspect={window.innerWidth / window.innerHeight}
 						near={1}
 						far={1000}
 					/>

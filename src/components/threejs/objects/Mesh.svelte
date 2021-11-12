@@ -23,6 +23,7 @@
 	export let rotate: RotateOptions = {}
 	export let animate: MeshAnimateFunction = () => {}
 	export let onMousemove: MeshOnMousemoveFunction = () => {}
+	export let onClick: MeshOnMousemoveFunction = () => {}
 
 	const meshController = new MeshController({ geometry, material, name, scene: $scene })
 
@@ -33,9 +34,10 @@
 	$: meshController.animate(animate)
 
 	// raycaster onClick function
-	$: intersected = $raycaster.intersects.find(({ object }) => object.name === name)
+	$: intersected = $raycaster.intersects.find(({ object }) => object.name === name) as unknown as Mesh | undefined
 
 	$: if (intersected) {
-		onMousemove(intersected.object as unknown as Mesh)
+		onMousemove(intersected.object)
+		onClick(intersected.object)
 	}
 </script>

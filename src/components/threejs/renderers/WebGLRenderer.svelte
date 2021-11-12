@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-import type { TextureEncoding } from 'three';
+	import type { TextureEncoding } from 'three'
 	import type { WebGLShadowMap } from 'three'
 	import { WebGLRenderer } from 'three'
 	import { camera } from '../../../stores/threejs/cameras/perspective.camera.store'
@@ -8,45 +8,43 @@ import type { TextureEncoding } from 'three';
 	import { scene } from '../../../stores/threejs/scene.store'
 
 	export let parentId: string
-	export let height: number = 0
-	export let width: number = 0
+	export let width: number = window.innerWidth
+	export let height: number = window.innerHeight
 	export let antialias: boolean | undefined = undefined
 	export let alpha: boolean | undefined = undefined
 	export let shadowMap: Partial<WebGLShadowMap> = {}
 	export let outputEncoding: TextureEncoding
 
+	// TODO: create Renderer controller
 	const webGLRenderer = new WebGLRenderer({
-			antialias,
-			alpha
-		})
-	
+		antialias,
+		alpha
+	})
+
 	renderer.set(webGLRenderer)
 
-	// TODO: create Renderer controller
-	$: $renderer.setSize(width, height)
-	// $: $renderer.shadowMap = { ...$renderer.shadowMap, ...shadowMap } as WebGLShadowMap
-
-	$renderer.setPixelRatio( window.devicePixelRatio )
+	$renderer.setPixelRatio(window.devicePixelRatio)
 	$renderer.outputEncoding = outputEncoding
 
 	if (shadowMap.enabled) {
 		$renderer.shadowMap.enabled = shadowMap.enabled
 	}
-	
+
 	if (shadowMap.type) {
 		$renderer.shadowMap.type = shadowMap.type
 	}
 
-	animate()
+	render()
 
-	// animation loop function
-	function animate() {
-		requestAnimationFrame(animate)
+	function render() {
+		requestAnimationFrame(render)
 
 		if ($renderer && $scene) {
 			$renderer.render($scene, $camera)
 		}
 	}
+
+	addEventListener('resize', onWindowResize, false)
 
 	onMount(() => {
 		const parentElement = document.getElementById(parentId)
@@ -57,16 +55,29 @@ import type { TextureEncoding } from 'three';
 			// add renderer to the DOM
 			parentElement.appendChild($renderer.domElement)
 
-			// set height && width based on the parentsElement
-			// if the width || height is not given as a prop to the Scene component
-			if (!height) {
-				height = parentElement.offsetHeight
-			}
-			if (!width) {
-				width = parentElement.offsetWidth
-			}
+			width = parentElement.offsetWidth
+			height = parentElement.offsetHeight
+
+			$renderer.setSize(width, height)
 		}
 	})
+
+
+	function onWindowResize() {
+		const parentElement = document.getElementById(parentId)
+
+		if (!parentElement) {
+			console.error(`Couldn't find element with id ${parentElement}`)
+		} else {
+			const width: number = parentElement.offsetWidth
+			const height: number = parentElement.offsetHeight
+
+			$renderer.setSize(width, height)
+
+			$camera.aspect = width / height
+    	$camera.updateProjectionMatrix();
+		}
+	}
 </script>
 
 <slot name="debug-panel" />
