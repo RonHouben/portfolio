@@ -1,5 +1,11 @@
 import { renderer } from '../../../stores/threejs/renderer.store'
-import type { PerspectiveCamera, Scene, TextureEncoding, WebGLRendererParameters, WebGLShadowMap } from 'three'
+import type {
+	PerspectiveCamera,
+	Scene,
+	TextureEncoding,
+	WebGLRendererParameters,
+	WebGLShadowMap
+} from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
 
 export interface RendererControllerOptions {
@@ -82,6 +88,9 @@ export class RendererController {
 	private attachToDOM(domElementId?: string): void {
 		if (this.width && this.height) {
 			this.three.setSize(this.width, this.height)
+			this.camera.aspect = this.width / this.height
+			this.camera.updateProjectionMatrix()
+
 			return
 		}
 
@@ -97,6 +106,10 @@ export class RendererController {
 				this.height = parentElement.offsetHeight
 
 				this.three.setSize(this.width, this.height)
+				this.camera.aspect = this.width / this.height
+				this.camera.updateProjectionMatrix()
+
+				return
 			}
 		}
 	}
@@ -120,7 +133,7 @@ export class RendererController {
 				this.height = parentElement.offsetHeight
 
 				this.three.setSize(this.width, this.height)
-				this.camera.aspect  = this.width / this.height
+				this.camera.aspect = this.width / this.height
 				this.camera.updateProjectionMatrix()
 			}
 		}

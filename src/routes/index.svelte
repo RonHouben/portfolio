@@ -107,9 +107,10 @@
 				<!-- Controls -->
 				<svelte:fragment slot="controls">
 					<OrbitControls
-						cameraName="perspective"
-						animate={{ autoRotate: false, autoRotateSpeed: 2.5 }}
-						dampingOptions={{ enableDamping: true }}
+						options={{
+							enableDamping: true,
+							maxPolarAngle: 1.5
+						}}
 					/>
 				</svelte:fragment>
 
