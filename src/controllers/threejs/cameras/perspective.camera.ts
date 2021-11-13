@@ -1,6 +1,6 @@
-import { PerspectiveCamera } from "three";
+import { PerspectiveCamera } from 'three'
 import type { CameraAnimateFunction, CameraControllerOptions } from './camera.controller'
-import { CameraController } from "./camera.controller";
+import { CameraController } from './camera.controller'
 
 interface PerspectiveCameraControllerOptions extends CameraControllerOptions {
 	fov?: number
@@ -14,8 +14,8 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
 	constructor({ name, scene, fov, aspect, near, far }: PerspectiveCameraControllerOptions) {
 		super({ name, scene })
 
- 		this.three = new PerspectiveCamera(fov, aspect, near, far)
-		
+		this.three = new PerspectiveCamera(fov, aspect, near, far)
+
 		this.scene.add(this.three)
 	}
 }

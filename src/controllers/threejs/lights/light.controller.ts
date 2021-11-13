@@ -1,4 +1,4 @@
-import type {Color, ColorRepresentation} from 'three'
+import type { Color, ColorRepresentation } from 'three'
 import type { Light } from 'three'
 import type { BaseControllerOptions, ShadowOptions, AnimateFunction } from '../base.controller'
 import { BaseController } from '../base.controller'

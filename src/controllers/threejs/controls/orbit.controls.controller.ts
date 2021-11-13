@@ -59,7 +59,7 @@ export class OrbitControlsController {
 		this.three.minPolarAngle = options.minPolarAngle || this.three.minPolarAngle
 		this.three.minZoom = options.minZoom || this.three.minZoom
 		this.three.mouseButtons = options.mouseButtons || this.three.mouseButtons
-		this.three.panSpeed = options.panSpeed || this .three.panSpeed
+		this.three.panSpeed = options.panSpeed || this.three.panSpeed
 		this.three.rotateSpeed = options.rotateSpeed || this.three.rotateSpeed
 		this.three.screenSpacePanning = options.screenSpacePanning || this.three.screenSpacePanning
 		this.three.touches = options.touches || this.three.touches

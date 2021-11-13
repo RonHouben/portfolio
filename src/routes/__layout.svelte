@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ThemeContext from '../contexts/ThemeContext.svelte';
+	import ThemeContext from '../contexts/ThemeContext.svelte'
 
-	import Navbar from '../components/Navbar.svelte';
+	import Navbar from '../components/Navbar.svelte'
 </script>
 
 <svelte:head>

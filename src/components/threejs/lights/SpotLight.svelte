@@ -13,8 +13,8 @@
 	export let options: Omit<SpotLightControllerOptions, 'scene'>
 	export let shadow: SpotLightShadowOptions
 	export let position: PositionOptions
-	export let targetName: string = ''
-	export let animate: SpotLightAnimateFunction = () => {}
+	export let targetName = ''
+	export let animate: SpotLightAnimateFunction | undefined = undefined
 	export let helperOptions: Omit<SpotLightHelperOptions, 'scene'> = {
 		light: { enabled: false },
 		shadowCamera: { enabled: false }
@@ -28,7 +28,10 @@
 	lightController.shadow(shadow)
 	lightController.position(position)
 	lightController.setHelpers(helperOptions)
-	lightController.animate(animate)
+
+	if (animate) {
+		lightController.animate(animate)
+	}
 
 	$: if (options.color) {
 		lightController.setColor(options.color)

@@ -7,10 +7,14 @@ import type {
 	MeshStandardMaterial,
 	PlaneBufferGeometry,
 	PlaneGeometry,
-	SphereGeometry,
+	SphereGeometry
 } from 'three'
 import { Mesh } from 'three'
-import type { AnimateFunction, BaseControllerOptions, OnMousemoveFunction } from '../base.controller'
+import type {
+	AnimateFunction,
+	BaseControllerOptions,
+	OnMousemoveFunction
+} from '../base.controller'
 import { BaseController } from '../base.controller'
 
 interface MeshControllerOptions extends BaseControllerOptions {
@@ -21,7 +25,13 @@ interface MeshControllerOptions extends BaseControllerOptions {
 export type MeshAnimateFunction = AnimateFunction<Mesh>
 export type MeshOnMousemoveFunction = OnMousemoveFunction<Mesh>
 
-export type Geometry = BoxGeometry | PlaneBufferGeometry | PlaneGeometry | CylinderGeometry | CircleGeometry | SphereGeometry
+export type Geometry =
+	| BoxGeometry
+	| PlaneBufferGeometry
+	| PlaneGeometry
+	| CylinderGeometry
+	| CircleGeometry
+	| SphereGeometry
 export type MeshMaterial = MeshBasicMaterial | MeshStandardMaterial | MeshPhongMaterial
 
 export class MeshController extends BaseController<Mesh> {

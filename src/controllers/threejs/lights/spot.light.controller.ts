@@ -1,6 +1,11 @@
 import { CameraHelper, SpotLight, SpotLightHelper } from 'three'
-import type { ColorRepresentation } from "three";
-import type { LightAnimateFunction, LightControllerOptions, LightHelperOptions, LightShadowOptions } from "./light.controller";
+import type { ColorRepresentation } from 'three'
+import type {
+	LightAnimateFunction,
+	LightControllerOptions,
+	LightHelperOptions,
+	LightShadowOptions
+} from './light.controller'
 import { LightController } from './light.controller'
 
 export interface SpotLightControllerOptions extends LightControllerOptions {
@@ -21,7 +26,16 @@ export interface SpotLightHelperOptions extends LightHelperOptions {
 }
 
 export class SpotLightController extends LightController<SpotLight> {
-	constructor({ name, color, intensity, scene, angle, decay, distance, penumbra }: SpotLightControllerOptions) {
+	constructor({
+		name,
+		color,
+		intensity,
+		scene,
+		angle,
+		decay,
+		distance,
+		penumbra
+	}: SpotLightControllerOptions) {
 		super({ name, scene })
 
 		this.three = new SpotLight(color, intensity, distance, angle, penumbra, decay)

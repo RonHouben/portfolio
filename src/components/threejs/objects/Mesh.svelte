@@ -21,9 +21,9 @@
 	export let shadow: ShadowOptions = {}
 	export let position: PositionOptions
 	export let rotate: RotateOptions = {}
-	export let animate: MeshAnimateFunction = () => {}
-	export let onMousemove: MeshOnMousemoveFunction = () => {}
-	export let onClick: MeshOnMousemoveFunction = () => {}
+	export let animate: MeshAnimateFunction | undefined = undefined
+	export let onMousemove: MeshOnMousemoveFunction | undefined = undefined
+	export let onClick: MeshOnMousemoveFunction | undefined = undefined
 
 	const meshController = new MeshController({ geometry, material, name, scene: $scene })
 
@@ -32,18 +32,24 @@
 	$: meshController.rotate(rotate)
 	$: meshController.shadow(shadow)
 	$: meshController.setMaterial(material)
-	$: meshController.animate(animate)
+
+	if (animate) {
+		meshController.animate(animate)
+	}
 
 	$: if ($raycaster) {
-		const intersected = $raycaster.intersects.find(
-			({ object }) => object.name === name
-		) 
+		const intersected = $raycaster.intersects.find(({ object }) => object.name === name)
 
 		if (intersected) {
 			const mesh = intersected.object as unknown as Mesh
 
-			onMousemove(mesh)
-			onClick(mesh)
+			if (onMousemove) {
+				onMousemove(mesh)
+			}
+
+			if (onClick) {
+				onClick(mesh)
+			}
 		}
 	}
 </script>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { scene } from '../../../stores/threejs/scene.store';
-	import type { ColorRepresentation } from 'three';
-	import { HemisphereLight } from 'three';
+	import { scene } from '../../../stores/threejs/scene.store'
+	import type { ColorRepresentation } from 'three'
+	import { HemisphereLight } from 'three'
 
 	export let skyColor: ColorRepresentation | undefined = undefined
 	export let groundColor: ColorRepresentation | undefined = undefined

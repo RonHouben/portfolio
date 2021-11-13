@@ -67,7 +67,7 @@
 		25,
 		new Array(20)
 			.fill(undefined)
-			.map((x, i) => ({ name: `slide-${i}`, position: { x: 0, y: 0, z: 0 } }))
+			.map((_x, i) => ({ name: `slide-${i}`, position: { x: 0, y: 0, z: 0 } }))
 	)
 </script>
 
@@ -111,7 +111,7 @@
 							enableDamping: true,
 							maxPolarAngle: 1.5,
 							minDistance: 50,
-							maxDistance: 500,
+							maxDistance: 500
 						}}
 					/>
 				</svelte:fragment>

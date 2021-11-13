@@ -31,10 +31,10 @@ export class RaycasterController {
 	private handleMouseMove(event: MouseEvent): void {
 		// calculate mouse position in normalized device coordinates
 		// (-1 to +1) for both components
-		const rect = this.renderer.domElement.getBoundingClientRect();
+		const rect = this.renderer.domElement.getBoundingClientRect()
 
-		this.mouse.x = ( ( event.clientX - rect.left ) / ( rect.right - rect.left ) ) * 2 - 1;
-		this.mouse.y = - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1;
+		this.mouse.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1
+		this.mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1
 	}
 
 	private render(): void {

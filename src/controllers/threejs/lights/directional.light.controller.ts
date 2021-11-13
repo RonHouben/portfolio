@@ -1,7 +1,11 @@
-import type { ColorRepresentation } from "three"
-import { DirectionalLight, DirectionalLightHelper } from "three"
-import type { LightAnimateOptions, LightControllerOptions, LightHelperOptions  } from './light.controller'
-import { LightController, } from "./light.controller"
+import type { ColorRepresentation } from 'three'
+import { DirectionalLight, DirectionalLightHelper } from 'three'
+import type {
+	LightAnimateOptions,
+	LightControllerOptions,
+	LightHelperOptions
+} from './light.controller'
+import { LightController } from './light.controller'
 
 export type DirectionalLightControllerOptions = LightControllerOptions
 

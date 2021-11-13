@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ThemeContext } from 'src/contexts/types';
-	import { getContext } from 'svelte';
+	import type { ThemeContext } from 'src/contexts/types'
+	import { getContext } from 'svelte'
 
-	const { theme, toggle } = getContext<ThemeContext>('theme');
+	const { theme, toggle } = getContext<ThemeContext>('theme')
 </script>
 
 <nav>

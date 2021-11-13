@@ -1,6 +1,6 @@
 import type { RendererControllerOptions } from './renderer.controller'
-import { RendererType } from "./renderer.controller";
-import { RendererController } from "./renderer.controller";
+import { RendererType } from './renderer.controller'
+import { RendererController } from './renderer.controller'
 
 export type WebGLRendererControllerOptions = RendererControllerOptions
 

@@ -1,5 +1,5 @@
-import type { Camera, Scene} from "three"
-import { CameraHelper } from "three"
+import type { Camera, Scene } from 'three'
+import { CameraHelper } from 'three'
 
 interface CameraHelperControllerOptions {
 	camera: Camera
@@ -19,6 +19,4 @@ export class CameraHelperController {
 
 		this.scene.add(this.three)
 	}
-
-
 }

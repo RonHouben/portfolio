@@ -1,4 +1,4 @@
-import { GridHelper, Scene } from "three";
+import { GridHelper, Scene } from 'three'
 
 export interface GridHelperControllerOptions {
 	scene: Scene
@@ -10,7 +10,7 @@ export class GridHelperController {
 	private three: GridHelper
 	private scene: GridHelperControllerOptions['scene']
 
-	constructor({ scene, size, divisions}: GridHelperControllerOptions) {
+	constructor({ scene, size, divisions }: GridHelperControllerOptions) {
 		this.three = new GridHelper(size, divisions)
 		this.scene = scene
 

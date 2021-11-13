@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { scene } from "../../../stores/threejs/scene.store";
-	import { AxesHelper } from "three";
+	import { scene } from '../../../stores/threejs/scene.store'
+	import { AxesHelper } from 'three'
 
 	export let size: number | undefined = undefined
 

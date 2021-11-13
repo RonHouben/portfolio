@@ -1,27 +1,27 @@
 export interface Theme {
-	name: string;
+	name: string
 	colors: {
-		text: string;
-		background: string;
-	};
-	fonts: Font[];
+		text: string
+		background: string
+	}
+	fonts: Font[]
 	spacing?: {
 		padding: {
-			[key: string]: string;
-		};
+			[key: string]: string
+		}
 		margin: {
-			[key: string]: string;
-		};
-	};
+			[key: string]: string
+		}
+	}
 }
 
 interface Font {
-	defaultFont: boolean;
-	family: string;
-	src: string;
+	defaultFont: boolean
+	family: string
+	src: string
 }
 
-type BaseTheme = Theme;
+type BaseTheme = Theme
 
 const baseTheme: BaseTheme = {
 	name: 'base-theme',
@@ -47,8 +47,8 @@ const baseTheme: BaseTheme = {
 			md: '5rem',
 			lg: '10rem'
 		}
-	},
-};
+	}
+}
 
 export const themes: Theme[] = [
 	{
@@ -75,4 +75,4 @@ export const themes: Theme[] = [
 			background: 'purple'
 		}
 	}
-];
+]

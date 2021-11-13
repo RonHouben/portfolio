@@ -5,14 +5,14 @@
 	import {
 		DirectionalLightController,
 		DirectionalLightControllerOptions,
-DirectionalLightHelperOptions
+		DirectionalLightHelperOptions
 	} from '../../../controllers/threejs/lights/directional.light.controller'
 
 	export let options: Omit<DirectionalLightControllerOptions, 'scene'>
 	export let helperOptions: DirectionalLightHelperOptions = {}
 	export let position: PositionOptions
 	export let shadow: LightShadowOptions
-	export let targetName: string = ''
+	export let targetName = ''
 
 	const lightController = new DirectionalLightController({
 		name: options.name,
