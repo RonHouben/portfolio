@@ -1,53 +1,35 @@
-import { OrbitControls } from '$lib/threejs/OrbitControls'
-import type { Camera, MOUSE, Scene, TOUCH } from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import type { Scene } from 'three'
 
 export interface OrbitControlsControllerOptions {
 	scene: Scene
-	camera: Camera
+	camera: OrbitControls['object']
 	targetName?: string
-	autoRotate?: boolean
-	autoRorateSpeed?: number
-	dampingFactor?: number
+	autoRotate?: OrbitControls['autoRotate']
+	autoRorateSpeed?: OrbitControls['autoRotateSpeed']
+	dampingFactor?: OrbitControls['dampingFactor']
 	domElement: HTMLElement
-	enabled?: boolean
-	enableDamping?: boolean
-	enablePan?: boolean
-	enableRotate?: boolean
-	enableZoom?: boolean
-	keyPanSpeed?: number
-	keys?: Keys
-	maxAzimuthAngle?: number
-	maxDistance?: number
-	maxPolarAngle?: number
-	maxZoom?: number
-	minAzimuthAngle?: number
-	minDistance?: number
-	minPolarAngle?: number
-	minZoom?: number
-	mouseButtons?: MouseButtons
-	panSpeed?: number
-	rotateSpeed?: number
-	screenSpacePanning?: boolean
-	touches?: Touches
-	zoomSpeed?: number
-}
-
-interface Keys {
-	LEFT: string | 'ArrowLeft'
-	UP: string | 'ArrowUp'
-	RIGHT: string | 'ArrowRight'
-	BOTTOM: string | 'ArrowDown'
-}
-
-interface MouseButtons {
-	LEFT: MOUSE,
-	MIDDLE: MOUSE,
-	RIGHT: MOUSE
-}
-
-interface Touches {
-	ONE: TOUCH,
-	TWO: TOUCH
+	enabled?: OrbitControls['enabled']
+	enableDamping?: OrbitControls['enableDamping']
+	enablePan?: OrbitControls['enablePan']
+	enableRotate?: OrbitControls['enableRotate']
+	enableZoom?: OrbitControls['enableZoom']
+	keyPanSpeed?: OrbitControls['keyPanSpeed']
+	keys?: OrbitControls['keys']
+	maxAzimuthAngle?: OrbitControls['maxAzimuthAngle']
+	maxDistance?: OrbitControls['maxDistance']
+	maxPolarAngle?: OrbitControls['maxPolarAngle']
+	maxZoom?: OrbitControls['maxZoom']
+	minAzimuthAngle?: OrbitControls['minAzimuthAngle']
+	minDistance?: OrbitControls['minDistance']
+	minPolarAngle?: OrbitControls['minPolarAngle']
+	minZoom?: OrbitControls['minZoom']
+	mouseButtons?: OrbitControls['mouseButtons']
+	panSpeed?: OrbitControls['panSpeed']
+	rotateSpeed?: OrbitControls['rotateSpeed']
+	screenSpacePanning?: OrbitControls['screenSpacePanning']
+	touches?: OrbitControls['touches']
+	zoomSpeed?: OrbitControls['zoomSpeed']
 }
 
 export class OrbitControlsController {
@@ -102,7 +84,7 @@ export class OrbitControlsController {
 				throw new Error(`Couldn't find target with name "${targetName}"`)
 			}
 
-			this.three.target = target.position
+			this.three.target = target.position as unknown as OrbitControls['target']
 		}
 	}
 }

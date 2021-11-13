@@ -109,7 +109,9 @@
 					<OrbitControls
 						options={{
 							enableDamping: true,
-							maxPolarAngle: 1.5
+							maxPolarAngle: 1.5,
+							minDistance: 50,
+							maxDistance: 500,
 						}}
 					/>
 				</svelte:fragment>
