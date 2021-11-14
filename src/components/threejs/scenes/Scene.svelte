@@ -1,18 +1,14 @@
 <script lang="ts">
-	import type { Color, Texture } from 'three'
-	import { Scene } from 'three'
-	import { scene } from '../../../stores/threejs/scene.store'
+	import { SceneController, SceneControllerOptions } from '../../../controllers/threejs/objects/scene.controller';
 
-	export let name = ''
-	export let background: Color | Texture
+	type SceneOptions = Omit<SceneControllerOptions, 'scene'>
 
-	// set the scene store value to a new scene
-	scene.set(new Scene())
+	export let options: SceneOptions
 
-	// TODO: Crate scene controller
-	// set the scenes properties
-	$: $scene.background = background
-	$scene.name = name
+	const sceneController = new SceneController(options)
+
+	$: sceneController.update(options)
+
 </script>
 
 <slot name="lights" />

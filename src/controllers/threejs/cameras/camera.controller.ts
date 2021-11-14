@@ -5,4 +5,4 @@ import { BaseController } from '../base.controller'
 export type CameraControllerOptions = BaseControllerOptions
 export type CameraAnimateFunction<T extends Camera> = AnimateFunction<T>
 
-export class CameraController<T extends Camera> extends BaseController<T> {}
+export abstract class CameraController<T extends Camera> extends BaseController<T> {}

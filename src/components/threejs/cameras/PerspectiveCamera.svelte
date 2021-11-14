@@ -1,38 +1,22 @@
 <script lang="ts">
-	import type { PositionOptions, RotateOptions } from '../../../controllers/threejs/base.controller'
-	import { camera } from '../../../stores/threejs/cameras/perspective.camera.store'
-	import { scene } from '../../../stores/threejs/scene.store'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import {
 		PerspectiveCameraAnimateFunction,
-		PerspectiveCameraController
+		PerspectiveCameraController,
+		PerspectiveCameraControllerOptions
 	} from '../../../controllers/threejs/cameras/perspective.camera'
 
-	export let name: string
-	export let fov: number | undefined = undefined
-	export let aspect: number | undefined = undefined
-	export let near: number | undefined = undefined
-	export let far: number | undefined = undefined
-	export let position: PositionOptions
+	type PerspectiveCameraOptions = Omit<PerspectiveCameraControllerOptions, 'scene'>
+
+	export let options: PerspectiveCameraOptions
 	export let animate: PerspectiveCameraAnimateFunction | undefined = undefined
-	export let rotate: RotateOptions = {}
 
 	const cameraController = new PerspectiveCameraController({
-		name,
-		scene: $scene,
-		fov,
-		aspect,
-		near,
-		far
+		...options,
+		scene: $sceneStore
 	})
 
-	// set camera position
-	cameraController.position(position)
-	cameraController.rotate(rotate)
-
 	if (animate) {
-		cameraController.animate(animate)
+		animate(cameraController.three)
 	}
-
-	// set camera store state
-	camera.set(cameraController.three)
 </script>

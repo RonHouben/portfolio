@@ -9,10 +9,13 @@ import type {
 import { LightController } from './light.controller'
 
 export interface SpotLightControllerOptions extends LightControllerOptions {
+	targetName?: string
 	distance?: number
 	angle?: number
 	penumbra?: number
 	decay?: number
+	shadow?: SpotLightShadowOptions
+	helpers?: SpotLightHelperOptions
 }
 
 export type SpotLightAnimateFunction = LightAnimateFunction<SpotLight>
@@ -26,49 +29,56 @@ export interface SpotLightHelperOptions extends LightHelperOptions {
 }
 
 export class SpotLightController extends LightController<SpotLight> {
-	constructor({
-		name,
-		color,
-		intensity,
-		scene,
-		angle,
-		decay,
-		distance,
-		penumbra
-	}: SpotLightControllerOptions) {
+	constructor(options: SpotLightControllerOptions) {
+		const { name, scene, color, intensity, distance, angle, penumbra, decay } = options
 		super({ name, scene })
 
 		this.three = new SpotLight(color, intensity, distance, angle, penumbra, decay)
 
+		this.update(options)
+
 		scene.add(this.three)
 	}
 
-	public override shadow(options: SpotLightShadowOptions): void {
-		this.three.castShadow = options.castShadow || this.three.castShadow
-		this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow
-		this.three.shadow.mapSize.width = options.mapSize?.width || this.three.shadow.mapSize.width
-		this.three.shadow.mapSize.height = options.mapSize?.height || this.three.shadow.mapSize.height
+	public override update(options: SpotLightControllerOptions): void {
+		this.setColor(options.color)
+		this.setHelpers(options.helpers)
+		this.setPosition(options.position)
+		this.setRotation(options.rotation)
+		this.setShadow(options.shadow)
+		this.setTarget(options.targetName)
 	}
 
-	public setHelpers({ light, shadowCamera }: SpotLightHelperOptions): void {
-		if (light?.enabled) {
-			const lightHelper = new SpotLightHelper(this.three, light.color)
+	protected override setShadow(options: SpotLightControllerOptions['shadow']): void {
+		if (options) {
+			this.three.castShadow = options.castShadow || this.three.castShadow
+			this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow
+			this.three.shadow.mapSize.width = options.mapSize?.width || this.three.shadow.mapSize.width
+			this.three.shadow.mapSize.height = options.mapSize?.height || this.three.shadow.mapSize.height
+		}
+	}
+
+	private setHelpers(options: SpotLightControllerOptions['helpers']): void {
+		if (options && options.light?.enabled) {
+			const lightHelper = new SpotLightHelper(this.three, options.light.color)
 
 			this.scene.add(lightHelper)
 		}
 
-		if (shadowCamera?.enabled) {
+		if (options && options.shadowCamera?.enabled) {
 			const shadowCameraHelper = new CameraHelper(this.three.shadow.camera)
 
 			this.scene.add(shadowCameraHelper)
 		}
 	}
 
-	public setTarget(targetName: string): void {
-		const target = this.scene.getObjectByName(targetName)
+	private setTarget(targetName: SpotLightControllerOptions['targetName']): void {
+		if (targetName) {
+			const target = this.scene.getObjectByName(targetName)
 
-		if (target) {
-			this.three.target = target
+			if (target) {
+				this.three.target = target
+			}
 		}
 	}
 }

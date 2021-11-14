@@ -12,6 +12,7 @@ export interface LightHelperOptions {
 	light?: {
 		enabled: boolean
 		color?: ColorRepresentation
+		size?: number
 	}
 }
 
@@ -23,8 +24,11 @@ export interface LightShadowOptions extends ShadowOptions {
 }
 
 export abstract class LightController<T extends Light> extends BaseController<T> {
-	public setColor(color: Color): void {
-		this.three.color = color
+	protected setColor(color: LightControllerOptions['color']): void {
+		this.three.color = color || this.three.color
 	}
-	public abstract setHelpers(options: LightHelperOptions): void
+
+	protected setIntensity(intensity: LightControllerOptions['intensity']): void {
+		this.three.intensity = intensity || this.three.intensity
+	}
 }

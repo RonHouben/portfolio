@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { scene } from '../../../stores/threejs/scene.store'
-	import type { ColorRepresentation } from 'three'
-	import { AmbientLight } from 'three'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
+	import {
+		AmbientLightController,
+		AmbientLightControllerOptions
+	} from '../../../controllers/threejs/lights/ambient.light.controller'
 
-	export let color: ColorRepresentation | undefined = undefined
-	export let intensity: number | undefined = undefined
+	type AmbientLightOptions = Omit<AmbientLightControllerOptions, 'scene'>
 
-	// TODO: create separate controller
-	const light = new AmbientLight(color, intensity)
+	export let options: AmbientLightOptions
 
-	light.castShadow = false
-
-	$scene.add(light)
+	new AmbientLightController({ ...options, scene: $sceneStore })
 </script>

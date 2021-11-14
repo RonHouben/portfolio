@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { renderer } from '../../../stores/threejs/renderer.store'
+	import { rendererStore } from '../../../stores/threejs/renderer.store'
 	import {
 		OrbitControlsController,
 		OrbitControlsControllerOptions
 	} from '../../../controllers/threejs/controls/orbit.controls.controller'
-	import { camera } from '../../../stores/threejs/cameras/perspective.camera.store'
-	import { scene } from '../../../stores/threejs/scene.store'
+	import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
 
 	export let options: OrbitControlsOptions
 
@@ -14,12 +14,12 @@
 		'domElement'
 	>
 
-	$: if ($renderer && $scene && $camera) {
+	$: if ($rendererStore && $sceneStore && $cameraStore) {
 		new OrbitControlsController({
 			...options,
-			camera: $camera,
-			scene: $scene,
-			domElement: $renderer.domElement
+			camera: $cameraStore,
+			scene: $sceneStore,
+			domElement: $rendererStore.domElement
 		})
 	}
 </script>

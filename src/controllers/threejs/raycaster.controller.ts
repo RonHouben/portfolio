@@ -1,6 +1,6 @@
 import type { Intersection, Object3D, Scene, Camera, Renderer } from 'three'
 import { Raycaster, Vector2 } from 'three'
-import { raycaster as raycasterStore } from '../../stores/threejs/raycaster.store'
+import { raycasterStore } from '../../stores/threejs/raycaster.store'
 
 interface RaycasterControllerOptions {
 	renderer: Renderer
@@ -26,6 +26,8 @@ export class RaycasterController {
 		addEventListener('mousemove', (e) => this.handleMouseMove(e), false)
 
 		this.render()
+
+		raycasterStore.set(this)
 	}
 
 	private handleMouseMove(event: MouseEvent): void {

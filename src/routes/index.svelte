@@ -75,17 +75,22 @@
 	<WebGlRenderer
 		options={{
 			alpha: true,
-			antialias: true
-		}}
-		domElementId="threejs"
-		outputEncoding={sRGBEncoding}
-		shadowMap={{
-			enabled: true,
-			type: PCFSoftShadowMap
+			antialias: true,
+			domElementId: 'threejs',
+			outputEncoding: sRGBEncoding,
+			shadowMap: {
+				enabled: true,
+				type: PCFSoftShadowMap
+			}
 		}}
 	>
 		<svelte:fragment slot="scenes">
-			<Scene name="scene-one" background={new Color($theme.colors.background)}>
+			<Scene
+				options={{
+					name: 'scene-one',
+					background: new Color($theme.colors.background)
+				}}
+			>
 				<svelte:fragment slot="helpers">
 					<!-- <AxesHelper size={200} /> -->
 					<!-- <CameraHelper /> -->
@@ -96,11 +101,17 @@
 
 				<svelte:fragment slot="cameras">
 					<PerspectiveCamera
-						name="perspective"
-						position={{ x: 0, y: 235, z: 0 }}
-						fov={55}
-						near={1}
-						far={1000}
+						options={{
+							name: 'perspective',
+							position: {
+								x: 0,
+								y: 235,
+								z: 0
+							},
+							fov: 55,
+							near: 1,
+							far: 1000
+						}}
 					/>
 				</svelte:fragment>
 
@@ -121,32 +132,39 @@
 
 				<!-- Lights -->
 				<svelte:fragment slot="lights">
-					<AmbientLight color={$theme.colors.background} intensity={0.75} />
+					<AmbientLight
+						options={{
+							name: 'ambient-light',
+							color: new Color($theme.colors.background),
+							intensity: 0.75,
+							position: {}
+						}}
+					/>
 					<!-- <HemisphereLight intensity={4} skyColor={0xffffbb} groundColor={0x080820} /> -->
 
 					<!-- position={{ x: 15, y: 50, z: 35 }} -->
 					<SpotLight
 						options={{
 							name: 'spotlight',
+							targetName: 'box',
 							angle: Math.PI / 4,
 							color: new Color($theme.colors.background),
 							decay: 1,
 							distance: 2000,
 							intensity: 1,
-							penumbra: 0.1
-						}}
-						targetName="box"
-						position={{ x: 0, y: 80, z: 0 }}
-						shadow={{
-							castShadow: true,
-							mapSize: {
-								height: 512,
-								width: 512
+							penumbra: 0.1,
+							position: {
+								x: 0,
+								y: 80,
+								z: 0
+							},
+							shadow: {
+								castShadow: true,
+								mapSize: {
+									height: 512,
+									width: 512
+								}
 							}
-						}}
-						helperOptions={{
-							light: { enabled: false },
-							shadowCamera: { enabled: false }
 						}}
 					/>
 				</svelte:fragment>
@@ -155,13 +173,15 @@
 				<svelte:fragment slot="meshes">
 					{#each slides as slide}
 						<Mesh
-							name={`${slide.name}`}
-							material={new MeshPhongMaterial({ color: 0x4080ff })}
-							geometry={new SphereGeometry(5)}
-							position={slide.position}
-							shadow={{
-								castShadow: true,
-								receiveShadow: true
+							options={{
+								name: slide.name,
+								material: new MeshPhongMaterial({ color: 0x4080ff }),
+								geometry: new SphereGeometry(5),
+								position: slide.position,
+								shadow: {
+									castShadow: true,
+									receiveShadow: true
+								}
 							}}
 							onMousemove={(obj) => {
 								obj.material.color.set(0x9931ff)
@@ -170,27 +190,29 @@
 					{/each}
 
 					<Mesh
-						name="box"
-						material={new MeshPhongMaterial({
-							color: 0x9931ff,
-							dithering: true,
-							shininess: 90,
-							emissive: 0x0,
-							specular: 0x111111,
-							fog: true,
-							reflectivity: 0.9,
-							refractionRatio: 0.98,
-							combine: MultiplyOperation
-						})}
-						geometry={new BoxGeometry(10, 10, 10)}
-						position={{
-							x: 0,
-							y: 5,
-							z: 0
-						}}
-						shadow={{
-							castShadow: true,
-							receiveShadow: true
+						options={{
+							name: 'box',
+							material: new MeshPhongMaterial({
+								color: 0x9931ff,
+								dithering: true,
+								shininess: 90,
+								emissive: 0x0,
+								specular: 0x111111,
+								fog: true,
+								reflectivity: 0.9,
+								refractionRatio: 0.98,
+								combine: MultiplyOperation
+							}),
+							geometry: new BoxGeometry(10, 10, 10),
+							position: {
+								x: 0,
+								y: 5,
+								z: 0
+							},
+							shadow: {
+								castShadow: true,
+								receiveShadow: true
+							}
 						}}
 						animate={(obj) => {
 							const timeline = anime.timeline({
@@ -223,23 +245,25 @@
 						}}
 					/>
 					<Mesh
-						name="plane"
-						material={new MeshPhongMaterial({
-							color: $theme.colors.background,
-							dithering: true,
-							side: DoubleSide
-						})}
-						geometry={new PlaneGeometry(2000, 2000)}
-						shadow={{
-							receiveShadow: true
-						}}
-						rotate={{
-							x: -Math.PI * 0.5
-						}}
-						position={{
-							x: 0,
-							y: -1,
-							z: 0
+						options={{
+							name: 'plane',
+							material: new MeshPhongMaterial({
+								color: $theme.colors.background,
+								dithering: true,
+								side: DoubleSide
+							}),
+							geometry: new PlaneGeometry(2000, 2000),
+							position: {
+								x: 0,
+								y: -1,
+								z: 0
+							},
+							rotation: {
+								x: -Math.PI * 0.5
+							},
+							shadow: {
+								receiveShadow: true
+							}
 						}}
 					/>
 				</svelte:fragment>

@@ -1,43 +1,22 @@
 <script lang="ts">
-	import { scene } from '../../../stores/threejs/scene.store'
-	import type { PositionOptions } from '../../../controllers/threejs/base.controller'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import {
 		SpotLightController,
-		SpotLightHelperOptions,
 		SpotLightControllerOptions,
-		SpotLightShadowOptions,
 		SpotLightAnimateFunction
 	} from '../../../controllers/threejs/lights/spot.light.controller'
-	import { onMount } from 'svelte'
 
-	export let options: Omit<SpotLightControllerOptions, 'scene'>
-	export let shadow: SpotLightShadowOptions
-	export let position: PositionOptions
-	export let targetName = ''
+	type SpotLightOptions = Omit<SpotLightControllerOptions, 'scene'>
+
+	export let options: SpotLightOptions
 	export let animate: SpotLightAnimateFunction | undefined = undefined
-	export let helperOptions: Omit<SpotLightHelperOptions, 'scene'> = {
-		light: { enabled: false },
-		shadowCamera: { enabled: false }
-	}
 
 	const lightController = new SpotLightController({
 		...options,
-		scene: $scene
+		scene: $sceneStore
 	})
-
-	lightController.shadow(shadow)
-	lightController.position(position)
-	lightController.setHelpers(helperOptions)
 
 	if (animate) {
-		lightController.animate(animate)
+		animate(lightController.three)
 	}
-
-	$: if (options.color) {
-		lightController.setColor(options.color)
-	}
-
-	onMount(() => {
-		lightController.setTarget(targetName)
-	})
 </script>

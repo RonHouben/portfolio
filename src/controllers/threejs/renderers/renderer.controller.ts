@@ -1,4 +1,4 @@
-import { renderer } from '../../../stores/threejs/renderer.store'
+import { rendererStore } from '../../../stores/threejs/renderer.store'
 import type {
 	PerspectiveCamera,
 	Scene,
@@ -8,10 +8,9 @@ import type {
 } from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
 
-export interface RendererControllerOptions {
+export interface RendererControllerOptions extends WebGLRendererParameters {
 	scene: Scene
 	camera: PerspectiveCamera
-	options?: WebGLRendererParameters
 	domElementId?: string
 	width?: number
 	height?: number
@@ -21,6 +20,7 @@ export interface RendererControllerOptions {
 }
 
 type RendererShadowMapOptions = Pick<WebGLShadowMap, 'enabled'> & Pick<WebGLShadowMap, 'type'>
+
 export enum RendererType {
 	webGL,
 	webGL1
@@ -33,20 +33,8 @@ export class RendererController {
 	private height: RendererControllerOptions['height']
 	public three: WebGLRenderer | WebGL1Renderer
 
-	constructor(
-		{
-			scene,
-			camera,
-			options,
-			pixelRatio,
-			outputEncoding,
-			shadowMap,
-			domElementId,
-			width,
-			height
-		}: RendererControllerOptions,
-		rendererType: RendererType
-	) {
+	constructor(options: RendererControllerOptions, rendererType: RendererType) {
+		const { scene, camera, width, height, domElementId } = options
 		this.scene = scene
 		this.camera = camera
 		this.width = width || 0
@@ -63,17 +51,7 @@ export class RendererController {
 				throw new Error(`Unknown rendererType of ${rendererType}`)
 		}
 
-		if (shadowMap) {
-			this.shadowMap(shadowMap)
-		}
-
-		if (pixelRatio) {
-			this.setPixelRatio(pixelRatio)
-		}
-
-		if (outputEncoding) {
-			this.setOutputEncoding(outputEncoding)
-		}
+		this.update(options)
 
 		this.attachToDOM(domElementId)
 
@@ -81,8 +59,7 @@ export class RendererController {
 
 		addEventListener('resize', () => this.onWindowResize(domElementId), false)
 
-		// save renderer to Svelte store
-		renderer.set(this.three)
+		rendererStore.set(this.three)
 	}
 
 	private attachToDOM(domElementId?: string): void {
@@ -114,6 +91,14 @@ export class RendererController {
 		}
 	}
 
+	public update(options: RendererControllerOptions): void {
+		this.shadowMap(options.shadowMap)
+		this.setPixelRatio(options.pixelRatio)
+		this.setOutputEncoding(options.outputEncoding)
+
+		rendererStore.update(() => this.three)
+	}
+
 	private render(): void {
 		requestAnimationFrame(this.render.bind(this))
 
@@ -139,16 +124,16 @@ export class RendererController {
 		}
 	}
 
-	private shadowMap({ enabled, type }: RendererShadowMapOptions): void {
-		this.three.shadowMap.enabled = enabled
-		this.three.shadowMap.type = type
+	private shadowMap(options: RendererControllerOptions['shadowMap']): void {
+		this.three.shadowMap.enabled = options?.enabled || this.three.shadowMap.enabled
+		this.three.shadowMap.type = options?.type || this.three.shadowMap.type
 	}
 
-	private setPixelRatio(ratio: number): void {
-		this.three.setPixelRatio(ratio)
+	private setPixelRatio(ratio: RendererControllerOptions['pixelRatio']): void {
+		this.three.pixelRatio =  ratio || this.three.pixelRatio
 	}
 
-	private setOutputEncoding(encoding: TextureEncoding): void {
-		this.three.outputEncoding = encoding
+	private setOutputEncoding(encoding: RendererControllerOptions['outputEncoding']): void {
+		this.three.outputEncoding = encoding || this.three.outputEncoding
 	}
 }

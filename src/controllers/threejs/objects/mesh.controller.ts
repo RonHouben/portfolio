@@ -1,5 +1,6 @@
 import type {
 	BoxGeometry,
+	BufferGeometry,
 	CircleGeometry,
 	CylinderGeometry,
 	MeshBasicMaterial,
@@ -17,34 +18,45 @@ import type {
 } from '../base.controller'
 import { BaseController } from '../base.controller'
 
-interface MeshControllerOptions extends BaseControllerOptions {
-	geometry: Geometry
+export interface MeshControllerOptions extends BaseControllerOptions {
+	geometry: MeshGeometry
 	material: MeshMaterial
 }
 
-export type MeshAnimateFunction = AnimateFunction<Mesh>
-export type MeshOnMousemoveFunction = OnMousemoveFunction<Mesh>
+export type MeshAnimateFunction = AnimateFunction<Mesh<MeshGeometry, MeshMaterial>>
+export type MeshOnMousemoveFunction = OnMousemoveFunction<Mesh<MeshGeometry, MeshMaterial>>
 
-export type Geometry =
+export type MeshGeometry =
 	| BoxGeometry
 	| PlaneBufferGeometry
 	| PlaneGeometry
 	| CylinderGeometry
 	| CircleGeometry
 	| SphereGeometry
-export type MeshMaterial = MeshBasicMaterial | MeshStandardMaterial | MeshPhongMaterial
+	| BufferGeometry
 
-export class MeshController extends BaseController<Mesh> {
-	constructor({ name, geometry, material, scene }: MeshControllerOptions) {
-		super({ name, scene })
+export type MeshMaterial = MeshPhongMaterial | MeshBasicMaterial | MeshStandardMaterial
 
-		this.three = new Mesh(geometry, material)
-		this.three.name = name
+export class MeshController extends BaseController<Mesh<MeshGeometry, MeshMaterial>> {
+	constructor(options: MeshControllerOptions) {
+		super({ name: options.name, scene: options.scene })
+
+		this.three = new Mesh(options.geometry, options.material)
+		this.three.name = options.name
+
+		this.update(options)
 
 		this.scene.add(this.three)
 	}
 
-	public setMaterial(material: MeshMaterial): void {
+	public override update(options: MeshControllerOptions): void {
+		this.setPosition(options.position)
+		this.setRotation(options.rotation)
+		this.setShadow(options.shadow)
+		this.setMaterial(options.material)
+	}
+
+	private setMaterial(material: MeshMaterial): void {
 		this.three.material = material
 	}
 }

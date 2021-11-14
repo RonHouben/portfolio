@@ -6,9 +6,9 @@
 
 	let isLoaded = false
 
-	const initialTheme = themes.find(({ name }) => name === 'dark')
+	const initialTheme = themes[0]
 
-	const getCurrentTheme = (name: Theme['name']): Theme =>
+	const getCurrentTheme = (name: Theme['name']): Theme | undefined =>
 		themes.find((theme) => theme.name === name)
 
 	const themeStore = writable(getCurrentTheme(initialTheme.name))
@@ -22,22 +22,30 @@
 			if (isIndexOutOfBounds) {
 				const firstTheme = getCurrentTheme(themes[0].name)
 
-				themeStore.update((theme) => ({ ...theme, ...firstTheme }))
-				setCSSTheme(firstTheme)
+				if (firstTheme) {
+					themeStore.update((theme) => ({ ...theme, ...firstTheme }))
+					setCSSTheme(firstTheme)
+				}
 			} else {
 				const nextIndex = currentThemeIndex + 1
 				const nextTheme = getCurrentTheme(themes[nextIndex].name)
 
-				themeStore.update((theme) => ({ ...theme, ...nextTheme }))
-				setCSSTheme(nextTheme)
+				if (nextTheme) {
+					themeStore.update((theme) => ({ ...theme, ...nextTheme }))
+					setCSSTheme(nextTheme)
+				}
 			}
 		}
 	})
 
 	onMount(async () => {
-		// set CSS vars on mount
-		await setCSSTheme(getCurrentTheme($themeStore.name))
-		isLoaded = true
+		const currentTheme = getCurrentTheme($themeStore.name)
+
+		if (currentTheme) {
+			// set CSS vars on mount
+			await setCSSTheme(currentTheme)
+			isLoaded = true
+		}
 	})
 
 	const setCSSTheme = async (theme: Theme): Promise<void> => {
@@ -55,17 +63,19 @@
 					const fonts = val as Theme['fonts']
 
 					// only load the default selected font for performance reasons
-					const { family, src } = fonts.find(({ defaultFont }) => defaultFont === true)
+					const font = fonts.find(({ defaultFont }) => defaultFont === true)
 
-					const newFont = new FontFace(family, `url(${src})`)
+					if (font) {
+						const newFont = new FontFace(font.family, `url(${font.src})`)
 
-					await newFont.load()
+						await newFont.load()
 
-					// @ts-expect-error - this is an "experimental" feature that still has to be added to TS
-					document.fonts.add(newFont)
+						// @ts-expect-error - this is an "experimental" feature that still has to be added to TS
+						document.fonts.add(newFont)
 
-					// set as default font
-					document.documentElement.style.setProperty(`${cssVariable}-fonts-selected`, family)
+						// set as default font
+						document.documentElement.style.setProperty(`${cssVariable}-fonts-selected`, font.family)
+					}
 				}
 
 				if (typeof val === 'string') {

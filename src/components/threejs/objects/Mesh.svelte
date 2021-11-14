@@ -1,47 +1,37 @@
 <script lang="ts">
 	import {
-		Geometry,
+		MeshGeometry,
 		MeshController,
 		MeshMaterial,
 		MeshAnimateFunction,
-		MeshOnMousemoveFunction
+		MeshOnMousemoveFunction,
+		MeshControllerOptions
 	} from '../../../controllers/threejs/objects/mesh.controller'
-	import type {
-		PositionOptions,
-		RotateOptions,
-		ShadowOptions
-	} from '../../../controllers/threejs/base.controller'
-	import { scene } from '../../../stores/threejs/scene.store'
-	import { raycaster } from '../../../stores/threejs/raycaster.store'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
+	import { raycasterStore } from '../../../stores/threejs/raycaster.store'
 	import type { Mesh } from 'three'
 
-	export let name: string
-	export let geometry: Geometry
-	export let material: MeshMaterial
-	export let shadow: ShadowOptions = {}
-	export let position: PositionOptions
-	export let rotate: RotateOptions = {}
+	type MeshOptions = Omit<MeshControllerOptions, 'scene'>
+
+	export let options: MeshOptions
 	export let animate: MeshAnimateFunction | undefined = undefined
 	export let onMousemove: MeshOnMousemoveFunction | undefined = undefined
 	export let onClick: MeshOnMousemoveFunction | undefined = undefined
 
-	const meshController = new MeshController({ geometry, material, name, scene: $scene })
-
-	// TODO make functions private and call them in constructor
-	$: meshController.position(position)
-	$: meshController.rotate(rotate)
-	$: meshController.shadow(shadow)
-	$: meshController.setMaterial(material)
+	const meshController = new MeshController({
+		...options,
+		scene: $sceneStore
+	})
 
 	if (animate) {
-		meshController.animate(animate)
+		animate(meshController.three)
 	}
 
-	$: if ($raycaster) {
-		const intersected = $raycaster.intersects.find(({ object }) => object.name === name)
+	$: if ($raycasterStore) {
+		const intersected = $raycasterStore.intersects.find(({ object }) => object.name === options.name)
 
 		if (intersected) {
-			const mesh = intersected.object as unknown as Mesh
+			const mesh = intersected.object as unknown as Mesh<MeshGeometry, MeshMaterial>
 
 			if (onMousemove) {
 				onMousemove(mesh)
