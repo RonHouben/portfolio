@@ -11,9 +11,7 @@
 	import { raycasterStore } from '../../../stores/threejs/raycaster.store'
 	import type { Mesh } from 'three'
 
-	type MeshOptions = Omit<MeshControllerOptions, 'scene'>
-
-	export let options: MeshOptions
+	export let options: Omit<MeshControllerOptions, 'scene'>
 	export let animate: MeshAnimateFunction | undefined = undefined
 	export let onMousemove: MeshOnMousemoveFunction | undefined = undefined
 	export let onClick: MeshOnMousemoveFunction | undefined = undefined

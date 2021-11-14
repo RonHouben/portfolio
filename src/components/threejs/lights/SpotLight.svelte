@@ -6,9 +6,7 @@
 		SpotLightAnimateFunction
 	} from '../../../controllers/threejs/lights/spot.light.controller'
 
-	type SpotLightOptions = Omit<SpotLightControllerOptions, 'scene'>
-
-	export let options: SpotLightOptions
+	export let options: Omit<SpotLightControllerOptions, 'scene'>
 	export let animate: SpotLightAnimateFunction | undefined = undefined
 
 	const lightController = new SpotLightController({

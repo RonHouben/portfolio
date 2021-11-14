@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { SceneController, SceneControllerOptions } from '../../../controllers/threejs/objects/scene.controller';
 
-	type SceneOptions = Omit<SceneControllerOptions, 'scene'>
-
-	export let options: SceneOptions
+	export let options: Omit<SceneControllerOptions, 'scene'>
 
 	const sceneController = new SceneController(options)
 

@@ -5,9 +5,7 @@
 	import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
 	import { sceneStore } from '../../../stores/threejs/scene.store'
 
-	type WebGLRendererOptions = Omit<Omit<WebGLRendererControllerOptions, 'scene'>, 'camera'>
-
-	export let options: WebGLRendererOptions
+	export let options: Omit<Omit<WebGLRendererControllerOptions, 'scene'>, 'camera'>
 
 	onMount(() => {
 		new WebGLRendererController({ ...options, scene: $sceneStore, camera: $cameraStore })

@@ -5,9 +5,7 @@
 		AmbientLightControllerOptions
 	} from '../../../controllers/threejs/lights/ambient.light.controller'
 
-	type AmbientLightOptions = Omit<AmbientLightControllerOptions, 'scene'>
-
-	export let options: AmbientLightOptions
+	export let options: Omit<AmbientLightControllerOptions, 'scene'>
 
 	const ambientLightController = new AmbientLightController({ ...options, scene: $sceneStore })
 

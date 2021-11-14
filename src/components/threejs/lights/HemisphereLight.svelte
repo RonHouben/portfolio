@@ -3,8 +3,7 @@
 	import type { HemisphereLightControllerOptions } from '../../../controllers/threejs/lights/hemisphere.light.controller'
 	import { HemisphereLightController } from 'src/controllers/threejs/lights/hemisphere.light.controller';
 
-	type HemisphereLightOptions = Omit<HemisphereLightControllerOptions, 'scene'>
-	export let options: HemisphereLightOptions
+	export let options: Omit<HemisphereLightControllerOptions, 'scene'>
 
 	const lightController = new HemisphereLightController({ ...options, scene: $sceneStore })
 
