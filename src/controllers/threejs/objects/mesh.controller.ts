@@ -49,7 +49,7 @@ export class MeshController extends BaseController<Mesh<MeshGeometry, MeshMateri
 		this.scene.add(this.three)
 	}
 
-	public override update(options: MeshControllerOptions): void {
+	public override update(options: Omit<MeshControllerOptions, 'scene'>): void {
 		this.setPosition(options.position)
 		this.setRotation(options.rotation)
 		this.setShadow(options.shadow)

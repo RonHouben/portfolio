@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { sceneStore } from '../../../stores/threejs/scene.store'
-	import { AxesHelper } from 'three'
+	import { AxesHelperController, AxesHelperControllerOptions } from 'src/controllers/threejs/helpers/axes.helper.controller';
 
-	export let size: number | undefined = undefined
+	export let options: AxesHelperControllerOptions
 
-	// TODO: create controller
-	const helper = new AxesHelper(size)
-
-	$sceneStore.add(helper)
+	new AxesHelperController({
+		...options,
+		scene: $sceneStore,
+	})
 
 	console.log({ x: 'red', y: 'green', z: 'blue' })
 </script>

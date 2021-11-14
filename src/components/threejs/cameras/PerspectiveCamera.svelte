@@ -19,4 +19,6 @@
 	if (animate) {
 		animate(cameraController.three)
 	}
+
+	$: cameraController.update(options)
 </script>

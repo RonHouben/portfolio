@@ -19,4 +19,6 @@
 	if (animate) {
 		animate(lightController.three)
 	}
+
+	$: lightController.update(options)
 </script>

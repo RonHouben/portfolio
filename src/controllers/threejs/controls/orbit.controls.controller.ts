@@ -40,6 +40,12 @@ export class OrbitControlsController {
 		this.scene = options.scene
 		this.three = new OrbitControls(options.camera, options.domElement)
 
+		this.update(options)
+
+		this.renderLoop()
+	}
+
+	public update(options: Omit<Omit<Omit<OrbitControlsControllerOptions, 'scene'>, 'camera'>, 'domElement'>): void {
 		this.three.autoRotate = options.autoRotate || this.three.autoRotate
 		this.three.autoRotateSpeed = options.autoRorateSpeed || this.three.autoRotateSpeed
 		this.three.dampingFactor = options.dampingFactor || this.three.dampingFactor
@@ -66,8 +72,6 @@ export class OrbitControlsController {
 		this.three.zoomSpeed = options.zoomSpeed || this.three.zoomSpeed
 
 		this.setTarget(options.targetName)
-
-		this.renderLoop()
 	}
 
 	private renderLoop(): void {

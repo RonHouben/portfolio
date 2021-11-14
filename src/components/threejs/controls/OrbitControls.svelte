@@ -14,12 +14,14 @@
 		'domElement'
 	>
 
-	$: if ($rendererStore && $sceneStore && $cameraStore) {
-		new OrbitControlsController({
+	$: if ($rendererStore && $sceneStore && $cameraStore && options) {
+		const orbitControlsController = new OrbitControlsController({
 			...options,
 			camera: $cameraStore,
 			scene: $sceneStore,
 			domElement: $rendererStore.domElement
 		})
+
+		orbitControlsController.update(options)
 	}
 </script>

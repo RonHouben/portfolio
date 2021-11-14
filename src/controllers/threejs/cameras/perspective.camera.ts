@@ -25,7 +25,7 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
 		cameraStore.set(this.three)
 	}
 
-	public override update({ position, rotation, shadow }: PerspectiveCameraControllerOptions): void {
+	public override update({ position, rotation, shadow }: Omit<PerspectiveCameraControllerOptions, 'scene'>): void {
 		this.setPosition(position)
 		this.setRotation(rotation)
 		this.setShadow(shadow)

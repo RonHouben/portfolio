@@ -1,21 +1,17 @@
 import type { Camera, Scene } from 'three'
 import { CameraHelper } from 'three'
+import { BaseHelperController } from './base.helper.controller'
 
 interface CameraHelperControllerOptions {
 	camera: Camera
 	scene: Scene
 }
 
-export class CameraHelperController {
-	private scene: CameraHelperControllerOptions['scene']
-	private camera: CameraHelperControllerOptions['camera']
-	public three: CameraHelper
-
+export class CameraHelperController extends BaseHelperController<CameraHelper> {
 	constructor({ camera, scene }: CameraHelperControllerOptions) {
-		this.camera = camera
-		this.scene = scene
+		super({ scene })
 
-		this.three = new CameraHelper(this.camera)
+		this.three = new CameraHelper(camera)
 
 		this.scene.add(this.three)
 	}

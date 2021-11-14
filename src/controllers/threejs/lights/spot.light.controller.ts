@@ -40,7 +40,7 @@ export class SpotLightController extends LightController<SpotLight> {
 		scene.add(this.three)
 	}
 
-	public override update(options: SpotLightControllerOptions): void {
+	public override update(options: Omit<SpotLightControllerOptions, 'scene'>): void {
 		this.setColor(options.color)
 		this.setHelpers(options.helpers)
 		this.setPosition(options.position)

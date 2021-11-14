@@ -28,6 +28,7 @@
 	}
 
 	$: if ($raycasterStore) {
+		// TODO: make method in controller
 		const intersected = $raycasterStore.intersects.find(({ object }) => object.name === options.name)
 
 		if (intersected) {
@@ -42,4 +43,6 @@
 			}
 		}
 	}
+
+	$: meshController.update(options)
 </script>

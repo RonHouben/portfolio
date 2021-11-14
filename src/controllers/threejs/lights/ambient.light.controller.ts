@@ -13,7 +13,7 @@ export class AmbientLightController extends LightController<AmbientLight> {
 		this.scene.add(this.three)
 	}
 
-	public override update(options: AmbientLightControllerOptions): void {
+	public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
 		this.setColor(options.color)
 		this.setPosition(options.position)
 		this.setRotation(options.rotation)

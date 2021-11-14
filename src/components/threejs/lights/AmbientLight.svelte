@@ -9,5 +9,7 @@
 
 	export let options: AmbientLightOptions
 
-	new AmbientLightController({ ...options, scene: $sceneStore })
+	const ambientLightController = new AmbientLightController({ ...options, scene: $sceneStore })
+
+	$: ambientLightController.update(options)
 </script>
