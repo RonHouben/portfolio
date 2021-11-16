@@ -1,4 +1,5 @@
-import { EventDispatcher, Object3D, Raycaster, Scene } from 'three'
+import { EventDispatcher, Scene } from 'three'
+import type { Object3D } from 'three'
 import type { RaycasterController } from './raycaster.controller'
 
 export interface BaseControllerOptions<T> {
@@ -23,11 +24,11 @@ export interface ShadowOptions {
 	receiveShadow?: boolean
 }
 
-interface UpdateOptions<T> extends Omit<BaseControllerOptions<T>, 'scene'> {
+export interface UpdateOptions<T> extends Omit<BaseControllerOptions<T>, 'scene'> {
 	raycasterIntersects: RaycasterController['intersects']
 }
 
-export abstract class BaseController<T extends Object3D> extends EventDispatcher  {
+export abstract class BaseController<T extends Object3D> extends EventDispatcher {
 	public three!: T
 	public name: BaseControllerOptions<T>['name']
 	public scene: BaseControllerOptions<T>['scene']
@@ -47,7 +48,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 		this.onClick = onClick
 	}
 
-	public abstract update(options: UpdateOptions<T>): void
+	public abstract update(options: UpdateOptions<T> | unknown): void
 
 	protected addEventListeners(): void {
 		this.three.addEventListener('click', () => {
@@ -58,7 +59,9 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 	}
 
 	private isIntersected(): boolean {
-		const intersected = this.raycasterIntersects.find(({ object }) => object.uuid === this.three.uuid)
+		const intersected = this.raycasterIntersects.find(
+			({ object }) => object.uuid === this.three.uuid
+		)
 
 		return intersected ? true : false
 	}

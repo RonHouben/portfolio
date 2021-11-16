@@ -1,7 +1,8 @@
 import { DirectionalLight, DirectionalLightHelper } from 'three'
 import type {
 	LightControllerOptions,
-	LightHelperOptions
+	LightHelperOptions,
+	LightUpdateOptions
 } from './light.controller'
 import { LightController } from './light.controller'
 
@@ -11,6 +12,8 @@ export interface DirectionalLightControllerOptions extends LightControllerOption
 }
 
 type DirectionalLightHelperOptions = LightHelperOptions 
+
+export interface DirectionalLightUpdateOptions extends LightUpdateOptions, Omit<DirectionalLightControllerOptions, 'scene'> {}
 
 export class DirectionalLightController extends LightController<DirectionalLight> {
 	constructor(options: DirectionalLightControllerOptions) {
@@ -24,7 +27,7 @@ export class DirectionalLightController extends LightController<DirectionalLight
 		this.scene.add(this.three)
 	}
 
-	public override update(options: DirectionalLightControllerOptions): void {
+	public override update(options: DirectionalLightUpdateOptions): void {
 		this.setTarget(options.targetName)
 		this.setHelpers(options.helpers)
 		this.setPosition(options.position)

@@ -7,8 +7,10 @@
 
 	export let options: Omit<DirectionalLightControllerOptions, 'scene'>
 
-	new DirectionalLightController({
+	const directionalLightController = new DirectionalLightController({
 		...options,
 		scene: $sceneStore
 	})
+
+	$: directionalLightController.update(options)
 </script>

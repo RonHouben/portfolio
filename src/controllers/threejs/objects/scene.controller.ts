@@ -4,7 +4,7 @@ import { sceneStore } from "../../../stores/threejs/scene.store";
 import type { BaseControllerOptions } from '../base.controller'
 import { BaseController } from "../base.controller";
 
-type PartialBaseControllerOptions = Pick<BaseControllerOptions, 'name'>
+type PartialBaseControllerOptions = Pick<BaseControllerOptions<Scene>, 'name'>
 
 export interface SceneControllerOptions extends PartialBaseControllerOptions {
 	autoUpdate?: boolean
