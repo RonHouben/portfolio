@@ -183,7 +183,7 @@
 									receiveShadow: true
 								}
 							}}
-							onMousemove={(obj) => {
+							onClick={(obj) => {
 								obj.material.color.set(0x9931ff)
 							}}
 						/>

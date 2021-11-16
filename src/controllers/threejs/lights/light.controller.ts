@@ -3,7 +3,7 @@ import type { Light } from 'three'
 import type { BaseControllerOptions, ShadowOptions, AnimateFunction } from '../base.controller'
 import { BaseController } from '../base.controller'
 
-export interface LightControllerOptions extends BaseControllerOptions {
+export interface LightControllerOptions extends Omit<BaseControllerOptions, 'raycaster'> {
 	color?: Color
 	intensity?: number
 }

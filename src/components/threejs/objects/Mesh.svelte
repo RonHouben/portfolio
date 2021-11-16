@@ -1,46 +1,32 @@
 <script lang="ts">
 	import {
-		MeshGeometry,
 		MeshController,
-		MeshMaterial,
 		MeshAnimateFunction,
-		MeshOnMousemoveFunction,
+		MeshObjectInteractionFunction,
 		MeshControllerOptions
 	} from '../../../controllers/threejs/objects/mesh.controller'
 	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import { raycasterStore } from '../../../stores/threejs/raycaster.store'
-	import type { Mesh } from 'three'
 
-	export let options: Omit<MeshControllerOptions, 'scene'>
+	export let options: Omit<Omit<MeshControllerOptions, 'scene'>, 'raycaster'>
 	export let animate: MeshAnimateFunction | undefined = undefined
-	export let onMousemove: MeshOnMousemoveFunction | undefined = undefined
-	export let onClick: MeshOnMousemoveFunction | undefined = undefined
+	export let onClick: MeshObjectInteractionFunction | undefined = undefined
 
 	const meshController = new MeshController({
 		...options,
-		scene: $sceneStore
+		scene: $sceneStore,
+		onClick
 	})
 
 	if (animate) {
 		animate(meshController.three)
 	}
 
-	$: if ($raycasterStore) {
-		// TODO: make method in controller
-		const intersected = $raycasterStore.intersects.find(({ object }) => object.name === options.name)
+	addEventListener('mousedown', () => {
+		meshController.three.dispatchEvent({
+			type: 'click'
+		})
+	})
 
-		if (intersected) {
-			const mesh = intersected.object as unknown as Mesh<MeshGeometry, MeshMaterial>
-
-			if (onMousemove) {
-				onMousemove(mesh)
-			}
-
-			if (onClick) {
-				onClick(mesh)
-			}
-		}
-	}
-
-	$: meshController.update(options)
+	$: meshController.update({ ...options, raycasterIntersects: $raycasterStore.intersects })
 </script>

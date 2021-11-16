@@ -14,17 +14,21 @@ import { Mesh } from 'three'
 import type {
 	AnimateFunction,
 	BaseControllerOptions,
-	OnMousemoveFunction
+	ObjectInteractionFunction
 } from '../base.controller'
 import { BaseController } from '../base.controller'
+import type { RaycasterController } from '../raycaster.controller'
 
-export interface MeshControllerOptions extends BaseControllerOptions {
+export interface MeshControllerOptions
+	extends BaseControllerOptions<Mesh<MeshGeometry, MeshMaterial>> {
 	geometry: MeshGeometry
 	material: MeshMaterial
 }
 
 export type MeshAnimateFunction = AnimateFunction<Mesh<MeshGeometry, MeshMaterial>>
-export type MeshOnMousemoveFunction = OnMousemoveFunction<Mesh<MeshGeometry, MeshMaterial>>
+export type MeshObjectInteractionFunction = ObjectInteractionFunction<
+	Mesh<MeshGeometry, MeshMaterial>
+>
 
 export type MeshGeometry =
 	| BoxGeometry
@@ -37,19 +41,30 @@ export type MeshGeometry =
 
 export type MeshMaterial = MeshPhongMaterial | MeshBasicMaterial | MeshStandardMaterial
 
+interface UpdateOptions extends Omit<MeshControllerOptions, 'scene'> {
+	raycasterIntersects: RaycasterController['intersects']
+}
+
 export class MeshController extends BaseController<Mesh<MeshGeometry, MeshMaterial>> {
 	constructor(options: MeshControllerOptions) {
-		super({ name: options.name, scene: options.scene })
+		const { name, scene, onClick, geometry, material } = options
+		super({
+			name,
+			scene,
+			onClick
+		})
 
-		this.three = new Mesh(options.geometry, options.material)
-		this.three.name = options.name
+		this.three = new Mesh(geometry, material)
+		this.three.name = name
 
-		this.update(options)
+		this.update({ ...options, raycasterIntersects: [] })
+		this.addEventListeners()
 
 		this.scene.add(this.three)
 	}
 
-	public override update(options: Omit<MeshControllerOptions, 'scene'>): void {
+	public override update(options: UpdateOptions): void {
+		this.raycasterIntersects = options.raycasterIntersects
 		this.setPosition(options.position)
 		this.setRotation(options.rotation)
 		this.setShadow(options.shadow)
