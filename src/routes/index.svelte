@@ -19,7 +19,7 @@
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
 
-	interface Slide {
+	interface Sphere {
 		name: string
 		position: {
 			x: number
@@ -61,13 +61,13 @@
 		}, [] as T[])
 	}
 
-	const slides: Slide[] = positionInCircle<Slide>(
+	const spheres: Sphere[] = positionInCircle<Sphere>(
 		50,
 		0,
 		25,
 		new Array(20)
 			.fill(undefined)
-			.map((_x, i) => ({ name: `slide-${i}`, position: { x: 0, y: 0, z: 0 } }))
+			.map((_x, i) => ({ name: `sphere-${i}`, position: { x: 0, y: 0, z: 0 } }))
 	)
 </script>
 
@@ -171,13 +171,13 @@
 
 				<!-- Meshes -->
 				<svelte:fragment slot="meshes">
-					{#each slides as slide}
+					{#each spheres as sphere}
 						<Mesh
 							options={{
-								name: slide.name,
+								name: sphere.name,
 								material: new MeshPhongMaterial({ color: 0x4080ff }),
 								geometry: new SphereGeometry(5),
-								position: slide.position,
+								position: sphere.position,
 								shadow: {
 									castShadow: true,
 									receiveShadow: true
