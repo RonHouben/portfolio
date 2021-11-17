@@ -8,27 +8,28 @@ import type {
 	MeshStandardMaterial,
 	PlaneBufferGeometry,
 	PlaneGeometry,
-	SphereGeometry
+	SphereGeometry,
 } from 'three'
-import { Mesh } from 'three'
+import { Mesh as ThreeMesh } from 'three'
 import type {
 	AnimateFunction,
 	BaseControllerOptions,
+	BaseInitOptions,
 	ObjectInteractionFunction
 } from '../base.controller'
 import { BaseController } from '../base.controller'
 import type { RaycasterController } from '../raycaster.controller'
 
+type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
+
 export interface MeshControllerOptions
-	extends BaseControllerOptions<Mesh<MeshGeometry, MeshMaterial>> {
+	extends BaseControllerOptions<Mesh> {
 	geometry: MeshGeometry
 	material: MeshMaterial
 }
 
-export type MeshAnimateFunction = AnimateFunction<Mesh<MeshGeometry, MeshMaterial>>
-export type MeshObjectInteractionFunction = ObjectInteractionFunction<
-	Mesh<MeshGeometry, MeshMaterial>
->
+export type MeshAnimateFunction = AnimateFunction<Mesh>
+export type MeshObjectInteractionFunction = ObjectInteractionFunction<Mesh>
 
 export type MeshGeometry =
 	| BoxGeometry
@@ -41,11 +42,16 @@ export type MeshGeometry =
 
 export type MeshMaterial = MeshPhongMaterial | MeshBasicMaterial | MeshStandardMaterial
 
-interface UpdateOptions extends Omit<MeshControllerOptions, 'scene'> {
+export interface MeshInitOptions extends BaseInitOptions<Mesh> {
+	geometry: MeshControllerOptions['geometry']
+	material: MeshControllerOptions['material']
+} 
+
+export interface MeshUpdateOptions extends Omit<Omit<Omit<MeshControllerOptions, 'scene'>, 'position'>, 'rotation'> {
 	raycasterIntersects: RaycasterController['intersects']
 }
 
-export class MeshController extends BaseController<Mesh<MeshGeometry, MeshMaterial>> {
+export class MeshController extends BaseController<Mesh> {
 	constructor(options: MeshControllerOptions) {
 		const { name, scene, onClick, geometry, material } = options
 		super({
@@ -54,21 +60,32 @@ export class MeshController extends BaseController<Mesh<MeshGeometry, MeshMateri
 			onClick
 		})
 
-		this.three = new Mesh(geometry, material)
+		this.three = new ThreeMesh(geometry, material)
 		this.three.name = name
 
-		this.update({ ...options, raycasterIntersects: [] })
+		this.init(options)
+	}
+
+	protected override init(options: MeshInitOptions): void {
 		this.addEventListeners()
+		this.setGeometry(options.geometry)
+		this.setMaterial(options.material)
+		this.setPosition(options.position)
+		this.setRotation(options.rotation)
+		this.setShadow(options.shadow)
 
 		this.scene.add(this.three)
 	}
 
-	public override update(options: UpdateOptions): void {
+	public override update(options: MeshUpdateOptions): void {
 		this.raycasterIntersects = options.raycasterIntersects
-		this.setPosition(options.position)
-		this.setRotation(options.rotation)
 		this.setShadow(options.shadow)
 		this.setMaterial(options.material)
+		this.setGeometry(options.geometry)
+	}
+
+	private setGeometry(geometry: MeshGeometry): void {
+		this.three.geometry = geometry
 	}
 
 	private setMaterial(material: MeshMaterial): void {

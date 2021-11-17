@@ -17,7 +17,7 @@
 	})
 
 	if (animate) {
-		animate(cameraController.three)
+		animate(cameraController.three, cameraController.scene)
 	}
 
 	$: cameraController.update(options)

@@ -1,6 +1,9 @@
 import { EventDispatcher, Scene } from 'three'
 import type { Object3D } from 'three'
 import type { RaycasterController } from './raycaster.controller'
+import type { MeshUpdateOptions } from './objects/mesh.controller'
+import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
+import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
 
 export interface BaseControllerOptions<T> {
 	name: string
@@ -18,13 +21,14 @@ interface Vector3 {
 }
 
 export type AnimateFunction<T> = ObjectInteractionFunction<T>
-export type ObjectInteractionFunction<T> = (obj: T) => void
+export type ObjectInteractionFunction<T> = (obj: T, scene: Scene) => void
 export interface ShadowOptions {
 	castShadow?: boolean
 	receiveShadow?: boolean
 }
 
-export interface UpdateOptions<T> extends Omit<BaseControllerOptions<T>, 'scene'> {
+export type BaseInitOptions<T> = Omit<Omit<BaseControllerOptions<T>, 'scene'>, 'name'> 
+export interface BaseUpdateOptions<T> extends Omit<BaseControllerOptions<T>, 'scene'> {
 	raycasterIntersects: RaycasterController['intersects']
 }
 
@@ -48,12 +52,13 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 		this.onClick = onClick
 	}
 
-	public abstract update(options: UpdateOptions<T> | unknown): void
+	protected abstract init(options: BaseInitOptions<T>): void
+	public abstract update(options: BaseUpdateOptions<T> | MeshUpdateOptions | DirectionalLightUpdateOptions | PerspectiveCameraUpdateOptions): void
 
 	protected addEventListeners(): void {
 		this.three.addEventListener('click', () => {
 			if (this.onClick && this.isIntersected()) {
-				this.onClick(this.three)
+				this.onClick(this.three, this.scene)
 			}
 		})
 	}
@@ -85,9 +90,5 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 			this.three.castShadow = options.castShadow || this.three.castShadow
 			this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow
 		}
-	}
-
-	protected animate(func: AnimateFunction<T>): void {
-		func(this.three as T)
 	}
 }

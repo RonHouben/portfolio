@@ -4,6 +4,7 @@ import type {
 	LightAnimateFunction,
 	LightControllerOptions,
 	LightHelperOptions,
+	LightInitOptions,
 	LightShadowOptions
 } from './light.controller'
 import { LightController } from './light.controller'
@@ -28,6 +29,26 @@ export interface SpotLightHelperOptions extends LightHelperOptions {
 	}
 }
 
+export interface SpotLightInitOptions extends LightInitOptions<SpotLight> {
+	targetName?: SpotLightControllerOptions['targetName']
+	distance?: SpotLightControllerOptions['distance']
+	angle?: SpotLightControllerOptions['angle']
+	penumbra?: SpotLightControllerOptions['penumbra']
+	decay?: SpotLightControllerOptions['decay']
+	shadow?: SpotLightControllerOptions['shadow']
+	helpers?: SpotLightControllerOptions['helpers']
+} 
+
+export interface SpotLightUpdateOptions extends Omit<Omit<Omit<SpotLightControllerOptions, 'scene'>, 'position'>, 'rotation'> {
+	targetName?: SpotLightControllerOptions['targetName']
+	distance?: SpotLightControllerOptions['distance']
+	angle?: SpotLightControllerOptions['angle']
+	penumbra?: SpotLightControllerOptions['penumbra']
+	decay?: SpotLightControllerOptions['decay']
+	shadow?: SpotLightControllerOptions['shadow']
+	helpers?: SpotLightControllerOptions['helpers']
+}
+
 export class SpotLightController extends LightController<SpotLight> {
 	constructor(options: SpotLightControllerOptions) {
 		const { name, scene, color, intensity, distance, angle, penumbra, decay } = options
@@ -35,16 +56,25 @@ export class SpotLightController extends LightController<SpotLight> {
 
 		this.three = new SpotLight(color, intensity, distance, angle, penumbra, decay)
 
-		this.update(options)
+		this.init(options)
 
 		scene.add(this.three)
 	}
 
-	public override update(options: Omit<SpotLightControllerOptions, 'scene'>): void {
+	protected override init(options: SpotLightInitOptions): void {
 		this.setColor(options.color)
 		this.setHelpers(options.helpers)
+		this.setIntensity(options.intensity)
 		this.setPosition(options.position)
 		this.setRotation(options.rotation)
+		this.setShadow(options.shadow)
+		this.setTarget(options.targetName)
+	}
+
+	public override update(options: SpotLightUpdateOptions): void {
+		this.setColor(options.color)
+		this.setHelpers(options.helpers)
+		this.setIntensity(options.intensity)
 		this.setShadow(options.shadow)
 		this.setTarget(options.targetName)
 	}
