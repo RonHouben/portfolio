@@ -18,6 +18,7 @@
 	import Raycaster from '../components/threejs/Raycaster.svelte'
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
+	import type { MeshObjectInteractionFunction } from 'src/controllers/threejs/objects/mesh.controller'
 
 	interface Sphere {
 		name: string
@@ -69,6 +70,32 @@
 			.fill(undefined)
 			.map((_x, i) => ({ name: `sphere-${i}`, position: { x: 0, y: 0, z: 0 } }))
 	)
+
+	const handleSphereClick: MeshObjectInteractionFunction = (sphere, scene) => {
+		const box = scene.getObjectByName('box')
+
+		if (box) {
+			const timeline = anime.timeline({
+				easing: 'spring(1, 50, 10, 0)'
+			})
+
+			timeline.add({
+				targets: box.position,
+				x: sphere.position.x,
+				y: sphere.position.y,
+				z: sphere.position.z
+			})
+			timeline.add({
+				targets: [sphere.material, sphere.scale],
+				x: 0,
+				y: 0,
+				z: 0,
+				begin: (anim) => {
+					sphere.material.visible = false
+				}
+			})
+		}
+	}
 </script>
 
 <section id="threejs">
@@ -136,13 +163,9 @@
 						options={{
 							name: 'ambient-light',
 							color: new Color($theme.colors.background),
-							intensity: 0.75,
-							position: {}
+							intensity: 0.75
 						}}
 					/>
-					<!-- <HemisphereLight intensity={4} skyColor={0xffffbb} groundColor={0x080820} /> -->
-
-					<!-- position={{ x: 15, y: 50, z: 35 }} -->
 					<SpotLight
 						options={{
 							name: 'spotlight',
@@ -183,9 +206,7 @@
 									receiveShadow: true
 								}
 							}}
-							onClick={(obj) => {
-								obj.material.color.set(0x9931ff)
-							}}
+							onClick={handleSphereClick}
 						/>
 					{/each}
 
@@ -213,35 +234,6 @@
 								castShadow: true,
 								receiveShadow: true
 							}
-						}}
-						animate={(obj) => {
-							const timeline = anime.timeline({
-								easing: 'easeOutElastic(1.5, .4)',
-								duration: 2000,
-								loop: true
-							})
-
-							timeline
-								.add({
-									targets: obj.position,
-									y: 25
-								})
-								.add({
-									targets: obj.position,
-									x: 30
-								})
-								.add({
-									targets: obj.position,
-									x: -30
-								})
-								.add({
-									targets: obj.position,
-									x: 0
-								})
-								.add({
-									targets: obj.position,
-									y: 5
-								})
 						}}
 					/>
 					<Mesh

@@ -1,22 +1,27 @@
 import { AmbientLight } from 'three'
-import type { LightControllerOptions } from './light.controller'
+import type { LightControllerOptions, LightInitOptions } from './light.controller'
 import { LightController } from './light.controller'
 
-export type AmbientLightControllerOptions = LightControllerOptions
+export type AmbientLightControllerOptions = Omit<Omit<LightControllerOptions, 'position'>, 'rotation'>
+export type AmbientLightInitOptions = Omit<Omit<LightInitOptions<AmbientLight>, 'scene'>, 'position'>
+export type AmbientLightUpdateOptions = Omit<Omit<Omit<AmbientLightControllerOptions, 'scene'>, 'position'>, 'rotation'>
 
 export class AmbientLightController extends LightController<AmbientLight> {
 	constructor(options: AmbientLightControllerOptions) {
 		super(options)
 		this.three = new AmbientLight(options.color, options.intensity)
 
-		this.update(options)
+		this.init(options)
 		this.scene.add(this.three)
+	}
+
+	protected override init(options: AmbientLightInitOptions): void {
+		this.setColor(options.color)
+		this.setShadow(options.shadow)
 	}
 
 	public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
 		this.setColor(options.color)
-		this.setPosition(options.position)
-		this.setRotation(options.rotation)
 		this.setShadow(options.shadow)
 	}
 }

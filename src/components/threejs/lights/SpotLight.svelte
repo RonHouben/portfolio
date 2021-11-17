@@ -15,7 +15,7 @@
 	})
 
 	if (animate) {
-		animate(lightController.three)
+		animate(lightController.three, lightController.scene)
 	}
 
 	$: lightController.update(options)

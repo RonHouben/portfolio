@@ -1,7 +1,7 @@
 import type { Fog, Color, Material, Texture } from "three";
 import { Scene } from 'three'
 import { sceneStore } from "../../../stores/threejs/scene.store";
-import type { BaseControllerOptions } from '../base.controller'
+import type { BaseControllerOptions, BaseInitOptions } from '../base.controller'
 import { BaseController } from "../base.controller";
 
 type PartialBaseControllerOptions = Pick<BaseControllerOptions<Scene>, 'name'>
@@ -14,15 +14,27 @@ export interface SceneControllerOptions extends PartialBaseControllerOptions {
 	overrideMaterial?: Material
 }
 
+interface SceneInitOptions extends Pick<BaseInitOptions<Scene>, 'onClick'>, Omit<SceneControllerOptions, 'name'> {}
+
 export class SceneController extends BaseController<Scene> {
 	constructor(options: SceneControllerOptions) {
 		super({ ...options, scene: new Scene() })
 
 		this.three = this.scene
+		this.three.name = options.name
 
-		this.update(options)
+		this.init(options)
 
 		sceneStore.set(this.three)
+	}
+
+	protected override init(options: SceneInitOptions): void {
+		this.setAutoUpdate(options.autoUpdate)
+		this.setBackground(options.background)
+		this.setEnvironment(options.environment)
+		this.setFog(options.fog)
+		this.setOverrideMaterial(options.overrideMaterial)
+		
 	}
 
 	public override update(options: SceneControllerOptions): void {

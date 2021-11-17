@@ -19,7 +19,7 @@
 	})
 
 	if (animate) {
-		animate(meshController.three)
+		animate(meshController.three, meshController.scene)
 	}
 
 	addEventListener('mousedown', () => {
