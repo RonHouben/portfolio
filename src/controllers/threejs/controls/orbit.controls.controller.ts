@@ -42,7 +42,7 @@ export class OrbitControlsController {
 
 		const camera = this.getCamera(options.cameraName)
 
-		this.three = new OrbitControls(camera, options.domElement!)
+		this.three = new OrbitControls(camera, options.domElement)
 
 		this.update(options)
 
