@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import {
 		AmbientLightController,
 		AmbientLightControllerOptions
 	} from '../../../controllers/threejs/lights/ambient.light.controller'
 
-	export let options: Omit<AmbientLightControllerOptions, 'scene'>
+	export let options: AmbientLightControllerOptions
 
-	const ambientLightController = new AmbientLightController({ ...options, scene: $sceneStore })
+	const ambientLightController = new AmbientLightController(options)
 
 	$: ambientLightController.update(options)
 </script>

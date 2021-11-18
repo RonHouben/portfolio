@@ -1,12 +1,10 @@
-import type { Fog, Color, Material, Texture } from "three";
+import type { Fog, Color, Material, Texture } from 'three'
 import { Scene } from 'three'
-import { sceneStore } from "../../../stores/threejs/scene.store";
-import type { BaseControllerOptions, BaseInitOptions } from '../base.controller'
-import { BaseController } from "../base.controller";
+import { sceneStore } from '../../../stores/threejs/scene.store'
+import type { BaseControllerOptions } from '../base.controller'
+import { BaseController } from '../base.controller'
 
-type PartialBaseControllerOptions = Pick<BaseControllerOptions<Scene>, 'name'>
-
-export interface SceneControllerOptions extends PartialBaseControllerOptions {
+export interface SceneControllerOptions extends Pick<BaseControllerOptions, 'name'> {
 	autoUpdate?: boolean
 	background?: Color | Texture
 	environment?: Texture
@@ -14,27 +12,27 @@ export interface SceneControllerOptions extends PartialBaseControllerOptions {
 	overrideMaterial?: Material
 }
 
-interface SceneInitOptions extends Pick<BaseInitOptions<Scene>, 'onClick'>, Omit<SceneControllerOptions, 'name'> {}
-
+type SceneInitOptions  = SceneControllerOptions
 export class SceneController extends BaseController<Scene> {
 	constructor(options: SceneControllerOptions) {
-		super({ ...options, scene: new Scene() })
-
-		this.three = this.scene
-		this.three.name = options.name
+		super(options)
 
 		this.init(options)
 
+		// set Svelte store
 		sceneStore.set(this.three)
 	}
 
 	protected override init(options: SceneInitOptions): void {
+		this.scene = new Scene()
+		this.three = this.scene
+		this.three.name = options.name
+
 		this.setAutoUpdate(options.autoUpdate)
 		this.setBackground(options.background)
 		this.setEnvironment(options.environment)
 		this.setFog(options.fog)
 		this.setOverrideMaterial(options.overrideMaterial)
-		
 	}
 
 	public override update(options: SceneControllerOptions): void {
@@ -43,8 +41,11 @@ export class SceneController extends BaseController<Scene> {
 		this.setEnvironment(options.environment)
 		this.setFog(options.fog)
 		this.setOverrideMaterial(options.overrideMaterial)
+
+		// update Svelte store
+		sceneStore.update(() => this.three)
 	}
-	
+
 	private setAutoUpdate(autoUpdate: SceneControllerOptions['autoUpdate']): void {
 		this.three.autoUpdate = autoUpdate || this.three.autoUpdate
 	}

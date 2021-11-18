@@ -29,7 +29,7 @@ export interface SpotLightHelperOptions extends LightHelperOptions {
 	}
 }
 
-export interface SpotLightInitOptions extends LightInitOptions<SpotLight> {
+export interface SpotLightInitOptions extends LightInitOptions {
 	targetName?: SpotLightControllerOptions['targetName']
 	distance?: SpotLightControllerOptions['distance']
 	angle?: SpotLightControllerOptions['angle']
@@ -51,17 +51,19 @@ export interface SpotLightUpdateOptions extends Omit<Omit<Omit<SpotLightControll
 
 export class SpotLightController extends LightController<SpotLight> {
 	constructor(options: SpotLightControllerOptions) {
-		const { name, scene, color, intensity, distance, angle, penumbra, decay } = options
-		super({ name, scene })
+		const { name, color, intensity, distance, angle, penumbra, decay } = options
+		super({ name })
 
 		this.three = new SpotLight(color, intensity, distance, angle, penumbra, decay)
 
 		this.init(options)
 
-		scene.add(this.three)
+		this.scene.add(this.three)
 	}
 
 	protected override init(options: SpotLightInitOptions): void {
+		this.three.name = options.name
+
 		this.setColor(options.color)
 		this.setHelpers(options.helpers)
 		this.setIntensity(options.intensity)

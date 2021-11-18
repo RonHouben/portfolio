@@ -7,7 +7,7 @@ export interface HemisphereLightControllerOptions extends Omit<LightControllerOp
 	groundColor?: Color
 }
 
-export interface HemisphereLightInitOptions extends LightInitOptions<HemisphereLight> {
+export interface HemisphereLightInitOptions extends LightInitOptions {
 	skyColor?: HemisphereLightControllerOptions['skyColor']
 	groundColor?: HemisphereLightControllerOptions['groundColor']
 }

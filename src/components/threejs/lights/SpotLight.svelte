@@ -9,13 +9,10 @@
 	export let options: Omit<SpotLightControllerOptions, 'scene'>
 	export let animate: SpotLightAnimateFunction | undefined = undefined
 
-	const lightController = new SpotLightController({
-		...options,
-		scene: $sceneStore
-	})
+	const lightController = new SpotLightController(options)
 
 	if (animate) {
-		animate(lightController.three, lightController.scene)
+		animate(lightController.three, $sceneStore)
 	}
 
 	$: lightController.update(options)

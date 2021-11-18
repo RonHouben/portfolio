@@ -1,14 +1,14 @@
 import { GridHelper } from 'three'
-import { BaseHelperController, BaseHelperControllerOptions } from './base.helper.controller'
+import { BaseHelperController } from './base.helper.controller'
 
-export interface GridHelperControllerOptions extends BaseHelperControllerOptions {
+export interface GridHelperControllerOptions {
 	size: number
 	divisions: number
 }
 
 export class GridHelperController extends BaseHelperController<GridHelper> {
-	constructor({ scene, size, divisions }: GridHelperControllerOptions) {
-		super({ scene })
+	constructor({ size, divisions }: GridHelperControllerOptions) {
+		super()
 
 		this.three = new GridHelper(size, divisions)
 

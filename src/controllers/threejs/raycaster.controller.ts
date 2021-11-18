@@ -1,34 +1,46 @@
-import type { Intersection, Object3D, Scene, Camera, Renderer } from 'three'
+import { get } from 'svelte/store'
+import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
 import { Raycaster, Vector2 } from 'three'
 import { raycasterStore } from '../../stores/threejs/raycaster.store'
+import { rendererStore } from '../../stores/threejs/renderer.store'
+import { sceneStore } from '../../stores/threejs/scene.store'
 
-interface RaycasterControllerOptions {
-	renderer: Renderer
-	scene: Scene
-	camera: Camera
+export interface RaycasterControllerOptions {
+	cameraName: string
 }
 
 export class RaycasterController {
-	private renderer: RaycasterControllerOptions['renderer']
-	private scene: RaycasterControllerOptions['scene']
-	private camera: RaycasterControllerOptions['camera']
+	private renderer: Renderer
+	private scene: Scene
+	private camera: Camera
 	private mouse: Vector2
 	public three: Raycaster
 	public intersects: Intersection<Object3D<Event>>[] = []
 
-	constructor({ renderer, scene, camera }: RaycasterControllerOptions) {
-		this.renderer = renderer
-		this.scene = scene
-		this.camera = camera
+	constructor({ cameraName }: RaycasterControllerOptions) {
+		this.renderer = get(rendererStore)
+		this.scene = get(sceneStore)
 		this.mouse = new Vector2()
 		this.three = new Raycaster()
 		this.intersects = []
+
+		this.camera = this.getCamera(cameraName)
 
 		addEventListener('mousemove', this.updateMouse.bind(this), false)
 
 		this.render()
 
 		raycasterStore.set(this)
+	}
+
+	private getCamera<T extends Camera>(cameraName: RaycasterControllerOptions['cameraName']): T {
+		const camera = this.scene.getObjectByName(cameraName) as T | undefined
+
+		if (!camera) {
+			throw new Error(`Couldn't find camera with name: "${cameraName}"`)
+		}
+
+		return camera
 	}
 
 	private updateMouse(event: MouseEvent): void {

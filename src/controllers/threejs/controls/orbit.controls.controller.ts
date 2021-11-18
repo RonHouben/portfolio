@@ -1,14 +1,15 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import type { Scene } from 'three'
+import type { Camera, Scene } from 'three'
+import { get } from 'svelte/store'
+import { sceneStore } from '../../../stores/threejs/scene.store'
 
 export interface OrbitControlsControllerOptions {
-	scene: Scene
-	camera: OrbitControls['object']
+	cameraName: string
+	domElement: HTMLElement
 	targetName?: string
 	autoRotate?: OrbitControls['autoRotate']
 	autoRorateSpeed?: OrbitControls['autoRotateSpeed']
 	dampingFactor?: OrbitControls['dampingFactor']
-	domElement: HTMLElement
 	enabled?: OrbitControls['enabled']
 	enableDamping?: OrbitControls['enableDamping']
 	enablePan?: OrbitControls['enablePan']
@@ -33,19 +34,22 @@ export interface OrbitControlsControllerOptions {
 }
 
 export class OrbitControlsController {
-	private scene: OrbitControlsControllerOptions['scene']
+	private scene: Scene
 	public three: OrbitControls
 
 	constructor(options: OrbitControlsControllerOptions) {
-		this.scene = options.scene
-		this.three = new OrbitControls(options.camera, options.domElement)
+		this.scene = get(sceneStore)
+
+		const camera = this.getCamera(options.cameraName)
+
+		this.three = new OrbitControls(camera, options.domElement!)
 
 		this.update(options)
 
 		this.renderLoop()
 	}
 
-	public update(options: Omit<Omit<Omit<OrbitControlsControllerOptions, 'scene'>, 'camera'>, 'domElement'>): void {
+	public update(options: Omit<OrbitControlsControllerOptions, 'domElement'>): void {
 		this.three.autoRotate = options.autoRotate || this.three.autoRotate
 		this.three.autoRotateSpeed = options.autoRorateSpeed || this.three.autoRotateSpeed
 		this.three.dampingFactor = options.dampingFactor || this.three.dampingFactor
@@ -72,6 +76,16 @@ export class OrbitControlsController {
 		this.three.zoomSpeed = options.zoomSpeed || this.three.zoomSpeed
 
 		this.setTarget(options.targetName)
+	}
+
+	private getCamera<T extends Camera>(cameraName: OrbitControlsControllerOptions['cameraName']): T {
+		const camera = this.scene.getObjectByName(cameraName) as T | undefined
+
+		if (!camera) {
+			throw new Error(`Couldn't find camera with name ${cameraName}`)
+		}
+
+		return camera
 	}
 
 	private renderLoop(): void {

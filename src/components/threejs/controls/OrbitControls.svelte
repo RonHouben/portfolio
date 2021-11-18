@@ -1,24 +1,15 @@
 <script lang="ts">
-	import { rendererStore } from '../../../stores/threejs/renderer.store'
 	import {
 		OrbitControlsController,
 		OrbitControlsControllerOptions
 	} from '../../../controllers/threejs/controls/orbit.controls.controller'
-	import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
-	import { sceneStore } from '../../../stores/threejs/scene.store'
+	import { rendererStore } from '../../../stores/threejs/renderer.store'
 
-	export let options: OrbitControlsOptions
+	export let options: Omit<OrbitControlsControllerOptions, 'domElement'>
 
-	type OrbitControlsOptions = Omit<
-		Omit<Omit<OrbitControlsControllerOptions, 'scene'>, 'camera'>,
-		'domElement'
-	>
-
-	$: if ($rendererStore && $sceneStore && $cameraStore && options) {
+	$: if ($rendererStore && options) {
 		const orbitControlsController = new OrbitControlsController({
 			...options,
-			camera: $cameraStore,
-			scene: $sceneStore,
 			domElement: $rendererStore.domElement
 		})
 

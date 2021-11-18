@@ -1,5 +1,6 @@
-import { rendererStore } from '../../../stores/threejs/renderer.store'
+import { get } from 'svelte/store'
 import type {
+	Camera,
 	PerspectiveCamera,
 	Scene,
 	TextureEncoding,
@@ -7,10 +8,11 @@ import type {
 	WebGLShadowMap
 } from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
+import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
+import { rendererStore } from '../../../stores/threejs/renderer.store'
+import { sceneStore } from '../../../stores/threejs/scene.store'
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
-	scene: Scene
-	camera: PerspectiveCamera
 	domElementId?: string
 	width?: number
 	height?: number
@@ -27,16 +29,17 @@ export enum RendererType {
 }
 
 export class RendererController {
-	private scene: RendererControllerOptions['scene']
-	private camera: RendererControllerOptions['camera']
+	private scene: Scene
+	private camera: Camera
 	private width: RendererControllerOptions['width']
 	private height: RendererControllerOptions['height']
 	public three: WebGLRenderer | WebGL1Renderer
 
 	constructor(options: RendererControllerOptions, rendererType: RendererType) {
-		const { scene, camera, width, height, domElementId } = options
-		this.scene = scene
-		this.camera = camera
+		const { width, height, domElementId } = options
+
+		this.scene = get(sceneStore)
+		this.camera = get(cameraStore)
 		this.width = width || 0
 		this.height = height || 0
 
@@ -51,22 +54,25 @@ export class RendererController {
 				throw new Error(`Unknown rendererType of ${rendererType}`)
 		}
 
+		addEventListener('resize', () => this.onWindowResize(domElementId), false)
+
 		this.update(options)
 
 		this.attachToDOM(domElementId)
 
 		this.render()
 
-		addEventListener('resize', () => this.onWindowResize(domElementId), false)
-
+		// set Svelte store
 		rendererStore.set(this.three)
 	}
 
 	private attachToDOM(domElementId?: string): void {
 		if (this.width && this.height) {
 			this.three.setSize(this.width, this.height)
-			this.camera.aspect = this.width / this.height
-			this.camera.updateProjectionMatrix()
+
+			if (this.camera.type === 'PerspectiveCamera') {
+				this.setPerspectiveCamera()
+			}
 
 			return
 		}
@@ -83,8 +89,10 @@ export class RendererController {
 				this.height = parentElement.offsetHeight
 
 				this.three.setSize(this.width, this.height)
-				this.camera.aspect = this.width / this.height
-				this.camera.updateProjectionMatrix()
+
+				if (this.camera.type === 'PerspectiveCamera') {
+					this.setPerspectiveCamera()
+				}
 
 				return
 			}
@@ -96,6 +104,7 @@ export class RendererController {
 		this.setPixelRatio(options.pixelRatio)
 		this.setOutputEncoding(options.outputEncoding)
 
+		// update Svelte store
 		rendererStore.update(() => this.three)
 	}
 
@@ -118,8 +127,10 @@ export class RendererController {
 				this.height = parentElement.offsetHeight
 
 				this.three.setSize(this.width, this.height)
-				this.camera.aspect = this.width / this.height
-				this.camera.updateProjectionMatrix()
+
+				if (this.camera.type === 'PerspectiveCamera') {
+					this.setPerspectiveCamera()
+				}
 			}
 		}
 	}
@@ -130,10 +141,17 @@ export class RendererController {
 	}
 
 	private setPixelRatio(ratio: RendererControllerOptions['pixelRatio']): void {
-		this.three.pixelRatio =  ratio || this.three.pixelRatio
+		this.three.pixelRatio = ratio || this.three.pixelRatio
 	}
 
 	private setOutputEncoding(encoding: RendererControllerOptions['outputEncoding']): void {
 		this.three.outputEncoding = encoding || this.three.outputEncoding
+	}
+
+	private setPerspectiveCamera(): void {
+		const camera = this.camera as PerspectiveCamera
+
+		camera.aspect = (this.width || 0) / (this.height || 0)
+		camera.updateProjectionMatrix()
 	}
 }

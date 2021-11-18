@@ -2,13 +2,11 @@
 	import { onMount } from 'svelte'
 	import type { WebGLRendererControllerOptions } from '../../../controllers/threejs/renderers/webGL.renderer.controller'
 	import { WebGLRendererController } from '../../../controllers/threejs/renderers/webGL.renderer.controller'
-	import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
-	import { sceneStore } from '../../../stores/threejs/scene.store'
 
-	export let options: Omit<Omit<WebGLRendererControllerOptions, 'scene'>, 'camera'>
+	export let options: WebGLRendererControllerOptions
 
 	onMount(() => {
-		new WebGLRendererController({ ...options, scene: $sceneStore, camera: $cameraStore })
+		new WebGLRendererController(options)
 	})
 </script>
 
