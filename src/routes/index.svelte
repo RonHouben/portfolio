@@ -19,9 +19,6 @@
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
 	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
-	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte'
-	import CameraHelper from '../components/threejs/helpers/CameraHelper.svelte'
-	import GridHelper from '../components/threejs/helpers/GridHelper.svelte'
 
 	interface Sphere {
 		name: string
@@ -127,9 +124,9 @@
 				}}
 			>
 				<svelte:fragment slot="helpers">
-					<AxesHelper options={{ size: 200 }} />
-					<CameraHelper options={{ cameraName: 'perspective' }} />
-					<GridHelper options={{ size: 200, divisions: 50 }} />
+					<!-- <AxesHelper options={{ size: 200 }} /> -->
+					<!-- <CameraHelper options={{ cameraName: 'perspective' }} /> -->
+					<!-- <GridHelper options={{ size: 200, divisions: 50 }} /> -->
 				</svelte:fragment>
 				<!-- Cameras -->
 				<!-- TODO: implement support for multiple camera's & viewports -->
