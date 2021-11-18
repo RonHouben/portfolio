@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
 		DirectionalLightController,
-		DirectionalLightControllerOptions,
+		DirectionalLightControllerOptions
 	} from '../../../controllers/threejs/lights/directional.light.controller'
 
 	export let options: DirectionalLightControllerOptions

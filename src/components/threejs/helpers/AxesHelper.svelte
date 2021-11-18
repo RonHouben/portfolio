@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { AxesHelperController, AxesHelperControllerOptions } from '../../../controllers/threejs/helpers/axes.helper.controller';
+	import {
+		AxesHelperController,
+		AxesHelperControllerOptions
+	} from '../../../controllers/threejs/helpers/axes.helper.controller'
 
 	export let options: AxesHelperControllerOptions
 

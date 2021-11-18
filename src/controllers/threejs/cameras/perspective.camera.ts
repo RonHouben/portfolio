@@ -1,6 +1,11 @@
 import { PerspectiveCamera } from 'three'
 import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
-import type { CameraAnimateFunction, CameraControllerOptions, CameraInitOptions, CameraUpdateOptions } from './camera.controller'
+import type {
+	CameraAnimateFunction,
+	CameraControllerOptions,
+	CameraInitOptions,
+	CameraUpdateOptions
+} from './camera.controller'
 import { CameraController } from './camera.controller'
 
 export interface PerspectiveCameraControllerOptions extends CameraControllerOptions {
@@ -26,7 +31,12 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
 		cameraStore.set(this.three)
 	}
 
-	protected override init({  name, position, rotation, shadow }: PerspectiveCameraInitOptions): void {
+	protected override init({
+		name,
+		position,
+		rotation,
+		shadow
+	}: PerspectiveCameraInitOptions): void {
 		this.three.name = name
 
 		this.setPosition(position)

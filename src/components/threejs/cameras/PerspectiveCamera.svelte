@@ -1,10 +1,10 @@
 <script lang="ts">
 	import {
-	PerspectiveCameraAnimateFunction,
-	PerspectiveCameraController,
-	PerspectiveCameraControllerOptions
-	} from '../../../controllers/threejs/cameras/perspective.camera';
-	import { sceneStore } from '../../../stores/threejs/scene.store';
+		PerspectiveCameraAnimateFunction,
+		PerspectiveCameraController,
+		PerspectiveCameraControllerOptions
+	} from '../../../controllers/threejs/cameras/perspective.camera'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
 
 	export let options: PerspectiveCameraControllerOptions
 	export let animate: PerspectiveCameraAnimateFunction | undefined = undefined

@@ -37,9 +37,10 @@ export interface SpotLightInitOptions extends LightInitOptions {
 	decay?: SpotLightControllerOptions['decay']
 	shadow?: SpotLightControllerOptions['shadow']
 	helpers?: SpotLightControllerOptions['helpers']
-} 
+}
 
-export interface SpotLightUpdateOptions extends Omit<Omit<Omit<SpotLightControllerOptions, 'scene'>, 'position'>, 'rotation'> {
+export interface SpotLightUpdateOptions
+	extends Omit<Omit<Omit<SpotLightControllerOptions, 'scene'>, 'position'>, 'rotation'> {
 	targetName?: SpotLightControllerOptions['targetName']
 	distance?: SpotLightControllerOptions['distance']
 	angle?: SpotLightControllerOptions['angle']

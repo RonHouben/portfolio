@@ -1,6 +1,12 @@
 import type { Color, ColorRepresentation } from 'three'
 import type { Light } from 'three'
-import type { BaseControllerOptions, ShadowOptions, AnimateFunction, BaseUpdateOptions, BaseInitOptions } from '../base.controller'
+import type {
+	BaseControllerOptions,
+	ShadowOptions,
+	AnimateFunction,
+	BaseUpdateOptions,
+	BaseInitOptions
+} from '../base.controller'
 import { BaseController } from '../base.controller'
 
 export interface LightControllerOptions extends Omit<BaseControllerOptions, 'onClick'> {
@@ -28,7 +34,7 @@ export interface LightInitOptions extends BaseInitOptions {
 	intensity?: LightControllerOptions['intensity']
 }
 
-export interface LightUpdateOptions  extends Omit<BaseUpdateOptions, 'raycasterIntersects'> {
+export interface LightUpdateOptions extends Omit<BaseUpdateOptions, 'raycasterIntersects'> {
 	color?: LightControllerOptions['color']
 	intensity?: LightControllerOptions['intensity']
 }

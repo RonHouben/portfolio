@@ -1,5 +1,5 @@
-import { AxesHelper } from "three";
-import { BaseHelperController } from "./base.helper.controller";
+import { AxesHelper } from 'three'
+import { BaseHelperController } from './base.helper.controller'
 
 export interface AxesHelperControllerOptions {
 	size: number

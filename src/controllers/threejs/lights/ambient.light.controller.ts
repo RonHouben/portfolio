@@ -2,9 +2,15 @@ import { AmbientLight } from 'three'
 import type { LightControllerOptions, LightInitOptions } from './light.controller'
 import { LightController } from './light.controller'
 
-export type AmbientLightControllerOptions = Omit<Omit<LightControllerOptions, 'position'>, 'rotation'>
+export type AmbientLightControllerOptions = Omit<
+	Omit<LightControllerOptions, 'position'>,
+	'rotation'
+>
 export type AmbientLightInitOptions = Omit<Omit<LightInitOptions, 'position'>, 'rotation'>
-export type AmbientLightUpdateOptions = Omit<Omit<AmbientLightControllerOptions, 'position'>, 'rotation'>
+export type AmbientLightUpdateOptions = Omit<
+	Omit<AmbientLightControllerOptions, 'position'>,
+	'rotation'
+>
 
 export class AmbientLightController extends LightController<AmbientLight> {
 	constructor(options: AmbientLightControllerOptions) {

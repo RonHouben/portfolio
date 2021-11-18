@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { SceneController, SceneControllerOptions } from '../../../controllers/threejs/objects/scene.controller';
+	import {
+		SceneController,
+		SceneControllerOptions
+	} from '../../../controllers/threejs/objects/scene.controller'
 
 	export let options: Omit<SceneControllerOptions, 'scene'>
 
 	const sceneController = new SceneController(options)
 
 	$: sceneController.update(options)
-
 </script>
 
 <slot name="lights" />

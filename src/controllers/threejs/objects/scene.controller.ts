@@ -12,7 +12,7 @@ export interface SceneControllerOptions extends Pick<BaseControllerOptions, 'nam
 	overrideMaterial?: Material
 }
 
-type SceneInitOptions  = SceneControllerOptions
+type SceneInitOptions = SceneControllerOptions
 export class SceneController extends BaseController<Scene> {
 	constructor(options: SceneControllerOptions) {
 		super(options)
