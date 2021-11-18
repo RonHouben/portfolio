@@ -1,14 +1,12 @@
-import type { Scene } from "three"
-
-export interface BaseHelperControllerOptions {
-	scene: Scene 
-}
+import { sceneStore } from '../../../stores/threejs/scene.store'
+import { get } from 'svelte/store'
+import type { Scene } from 'three'
 
 export abstract class BaseHelperController<T> {
 	public three!: T
-	protected scene: BaseHelperControllerOptions['scene']
+	protected scene: Scene
 
-	constructor({ scene }: BaseHelperControllerOptions) {
-		this.scene = scene
+	constructor() {
+		this.scene = get(sceneStore)
 	}
 }

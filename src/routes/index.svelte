@@ -18,7 +18,7 @@
 	import Raycaster from '../components/threejs/Raycaster.svelte'
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
-	import type { MeshObjectInteractionFunction } from 'src/controllers/threejs/objects/mesh.controller'
+	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
 
 	interface Sphere {
 		name: string
@@ -83,17 +83,22 @@
 				targets: box.position,
 				x: sphere.position.x,
 				y: sphere.position.y,
-				z: sphere.position.z
-			})
-			timeline.add({
-				targets: [sphere.material, sphere.scale],
-				x: 0,
-				y: 0,
-				z: 0,
-				begin: (anim) => {
+				z: sphere.position.z,
+				begin: () => {
 					sphere.material.visible = false
 				}
 			})
+
+			// timeline.add({
+			// 	targets: sphere.material,
+			// 	opacity: 0,
+			// 	x: 0,
+			// 	y: 0,
+			// 	z: 0,
+			// 	// begin: () => {
+			// 	// 	sphere.material.visible = false
+			// 	// }
+			// })
 		}
 	}
 </script>
@@ -119,13 +124,12 @@
 				}}
 			>
 				<svelte:fragment slot="helpers">
-					<!-- <AxesHelper size={200} /> -->
-					<!-- <CameraHelper /> -->
-					<!-- <GridHelper size={200} divisions={50} /> -->
+					<!-- <AxesHelper options={{ size: 200 }} /> -->
+					<!-- <CameraHelper options={{ cameraName: 'perspective' }} /> -->
+					<!-- <GridHelper options={{ size: 200, divisions: 50 }} /> -->
 				</svelte:fragment>
 				<!-- Cameras -->
 				<!-- TODO: implement support for multiple camera's & viewports -->
-
 				<svelte:fragment slot="cameras">
 					<PerspectiveCamera
 						options={{
@@ -146,6 +150,7 @@
 				<svelte:fragment slot="controls">
 					<OrbitControls
 						options={{
+							cameraName: 'perspective',
 							enableDamping: true,
 							maxPolarAngle: 1.5,
 							minDistance: 50,
@@ -155,7 +160,7 @@
 				</svelte:fragment>
 
 				<!-- Raycaster -->
-				<Raycaster slot="raycaster" />
+				<Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
 
 				<!-- Lights -->
 				<svelte:fragment slot="lights">

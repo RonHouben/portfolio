@@ -13,21 +13,21 @@ export interface DirectionalLightControllerOptions extends LightControllerOption
 
 type DirectionalLightHelperOptions = LightHelperOptions
 
-export interface DirectionalLightInitOptions extends LightInitOptions<DirectionalLight> {
+export interface DirectionalLightInitOptions extends LightInitOptions {
 	targetName: DirectionalLightControllerOptions['targetName']
 	helpers?: DirectionalLightControllerOptions['helpers']
 }
 
 export interface DirectionalLightUpdateOptions
-	extends Omit<Omit<Omit<DirectionalLightControllerOptions, 'scene'>, 'position'>, 'rotation'> {
+	extends Omit<Omit<DirectionalLightControllerOptions, 'position'>, 'rotation'> {
 	targetName: DirectionalLightControllerOptions['targetName']
 	helpers?: DirectionalLightControllerOptions['helpers']
 }
 
 export class DirectionalLightController extends LightController<DirectionalLight> {
 	constructor(options: DirectionalLightControllerOptions) {
-		const { name, scene, color, intensity } = options
-		super({ name, scene })
+		const { name, color, intensity } = options
+		super({ name })
 
 		this.three = new DirectionalLight(color, intensity)
 
@@ -37,11 +37,14 @@ export class DirectionalLightController extends LightController<DirectionalLight
 	}
 
 	protected override init(options: DirectionalLightInitOptions): void {
+		this.three.name = options.name
+
 		this.setTarget(options.targetName)
 
 		if (options.helpers) {
 			this.setHelpers(options.helpers)
 		}
+
 		this.setPosition(options.position)
 		this.setShadow(options.shadow)
 		this.setColor(options.color)

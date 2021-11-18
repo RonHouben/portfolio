@@ -1,23 +1,18 @@
 <script lang="ts">
-	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import {
 		PerspectiveCameraAnimateFunction,
 		PerspectiveCameraController,
 		PerspectiveCameraControllerOptions
 	} from '../../../controllers/threejs/cameras/perspective.camera'
+	import { sceneStore } from '../../../stores/threejs/scene.store'
 
-	type PerspectiveCameraOptions = Omit<PerspectiveCameraControllerOptions, 'scene'>
-
-	export let options: PerspectiveCameraOptions
+	export let options: PerspectiveCameraControllerOptions
 	export let animate: PerspectiveCameraAnimateFunction | undefined = undefined
 
-	const cameraController = new PerspectiveCameraController({
-		...options,
-		scene: $sceneStore
-	})
+	const cameraController = new PerspectiveCameraController(options)
 
 	if (animate) {
-		animate(cameraController.three, cameraController.scene)
+		animate(cameraController.three, $sceneStore)
 	}
 
 	$: cameraController.update(options)

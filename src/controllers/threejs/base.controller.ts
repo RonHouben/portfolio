@@ -4,14 +4,14 @@ import type { RaycasterController } from './raycaster.controller'
 import type { MeshUpdateOptions } from './objects/mesh.controller'
 import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
 import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
+import { get } from 'svelte/store'
+import { sceneStore } from '../../stores/threejs/scene.store'
 
-export interface BaseControllerOptions<T> {
+export interface BaseControllerOptions {
 	name: string
-	scene: Scene
 	position: Vector3
 	rotation?: Vector3
 	shadow?: ShadowOptions
-	onClick?: ObjectInteractionFunction<T>
 }
 
 interface Vector3 {
@@ -26,44 +26,34 @@ export interface ShadowOptions {
 	castShadow?: boolean
 	receiveShadow?: boolean
 }
-
-export type BaseInitOptions<T> = Omit<Omit<BaseControllerOptions<T>, 'scene'>, 'name'> 
-export interface BaseUpdateOptions<T> extends Omit<BaseControllerOptions<T>, 'scene'> {
+export type BaseInitOptions = Omit<BaseControllerOptions, 'scene'>
+export interface BaseUpdateOptions extends Omit<BaseControllerOptions, 'scene'> {
 	raycasterIntersects: RaycasterController['intersects']
 }
 
 export abstract class BaseController<T extends Object3D> extends EventDispatcher {
 	public three!: T
-	public name: BaseControllerOptions<T>['name']
-	public scene: BaseControllerOptions<T>['scene']
+	public name: BaseControllerOptions['name']
+	protected scene: Scene
 	protected raycasterIntersects: RaycasterController['intersects'] = []
-	private onClick: BaseControllerOptions<T>['onClick']
 
-	constructor({
-		name,
-		scene,
-		onClick
-	}: Pick<BaseControllerOptions<T>, 'scene'> &
-		Pick<BaseControllerOptions<T>, 'name'> &
-		Pick<BaseControllerOptions<T>, 'onClick'>) {
+	constructor({ name }: Pick<BaseControllerOptions, 'name'>) {
 		super()
 		this.name = name
-		this.scene = scene
-		this.onClick = onClick
+		this.scene = get(sceneStore)
 	}
 
-	protected abstract init(options: BaseInitOptions<T>): void
-	public abstract update(options: BaseUpdateOptions<T> | MeshUpdateOptions | DirectionalLightUpdateOptions | PerspectiveCameraUpdateOptions): void
+	protected abstract init(options: BaseInitOptions): void
 
-	protected addEventListeners(): void {
-		this.three.addEventListener('click', () => {
-			if (this.onClick && this.isIntersected()) {
-				this.onClick(this.three, this.scene)
-			}
-		})
-	}
+	public abstract update(
+		options:
+			| BaseUpdateOptions
+			| MeshUpdateOptions
+			| DirectionalLightUpdateOptions
+			| PerspectiveCameraUpdateOptions
+	): void
 
-	private isIntersected(): boolean {
+	protected isIntersected(): boolean {
 		const intersected = this.raycasterIntersects.find(
 			({ object }) => object.uuid === this.three.uuid
 		)
@@ -71,13 +61,13 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 		return intersected ? true : false
 	}
 
-	protected setPosition(options: BaseControllerOptions<T>['position']): void {
+	protected setPosition(options: BaseControllerOptions['position']): void {
 		this.three.position.x = options.x || this.three.position.x
 		this.three.position.y = options.y || this.three.position.y
 		this.three.position.z = options.z || this.three.position.z
 	}
 
-	protected setRotation(options: BaseControllerOptions<T>['rotation']): void {
+	protected setRotation(options: BaseControllerOptions['rotation']): void {
 		if (options) {
 			this.three.rotation.x = options.x || this.three.rotation.x
 			this.three.rotation.y = options.y || this.three.rotation.y
@@ -85,7 +75,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 		}
 	}
 
-	protected setShadow(options: BaseControllerOptions<T>['shadow']): void {
+	protected setShadow(options: BaseControllerOptions['shadow']): void {
 		if (options) {
 			this.three.castShadow = options.castShadow || this.three.castShadow
 			this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow

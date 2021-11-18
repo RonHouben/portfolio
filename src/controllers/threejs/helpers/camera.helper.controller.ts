@@ -1,18 +1,22 @@
-import type { Camera, Scene } from 'three'
-import { CameraHelper } from 'three'
+import { Camera, CameraHelper } from 'three'
 import { BaseHelperController } from './base.helper.controller'
 
-interface CameraHelperControllerOptions {
-	camera: Camera
-	scene: Scene
+export interface CameraHelperControllerOptions {
+	cameraName: string
 }
 
 export class CameraHelperController extends BaseHelperController<CameraHelper> {
-	constructor({ camera, scene }: CameraHelperControllerOptions) {
-		super({ scene })
+	constructor({ cameraName }: CameraHelperControllerOptions) {
+		super()
 
-		this.three = new CameraHelper(camera)
+		const camera = this.scene.getObjectByName(cameraName) as Camera
 
-		this.scene.add(this.three)
+		if (!camera) {
+			throw new Error(`Couldn't find camera with name: "${cameraName}"`)
+		} else {
+			this.three = new CameraHelper(camera)
+
+			this.scene.add(this.three)
+		}
 	}
 }

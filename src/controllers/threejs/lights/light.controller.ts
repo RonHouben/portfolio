@@ -1,9 +1,15 @@
 import type { Color, ColorRepresentation } from 'three'
 import type { Light } from 'three'
-import type { BaseControllerOptions, ShadowOptions, AnimateFunction, BaseUpdateOptions, BaseInitOptions } from '../base.controller'
+import type {
+	BaseControllerOptions,
+	ShadowOptions,
+	AnimateFunction,
+	BaseUpdateOptions,
+	BaseInitOptions
+} from '../base.controller'
 import { BaseController } from '../base.controller'
 
-export interface LightControllerOptions extends Omit<BaseControllerOptions<Light>, 'onClick'> {
+export interface LightControllerOptions extends Omit<BaseControllerOptions, 'onClick'> {
 	color?: Color
 	intensity?: number
 }
@@ -23,8 +29,15 @@ export interface LightShadowOptions extends ShadowOptions {
 	}
 }
 
-export interface LightInitOptions <T> extends Pick<BaseInitOptions<T>, 'onClick'>, Omit<LightControllerOptions, 'name'> {}
-export type LightUpdateOptions <T> = Omit<BaseUpdateOptions<T>, 'raycasterIntersects'>
+export interface LightInitOptions extends BaseInitOptions {
+	color?: LightControllerOptions['color']
+	intensity?: LightControllerOptions['intensity']
+}
+
+export interface LightUpdateOptions extends Omit<BaseUpdateOptions, 'raycasterIntersects'> {
+	color?: LightControllerOptions['color']
+	intensity?: LightControllerOptions['intensity']
+}
 export abstract class LightController<T extends Light> extends BaseController<T> {
 	protected setColor(color: LightControllerOptions['color']): void {
 		this.three.color = color || this.three.color

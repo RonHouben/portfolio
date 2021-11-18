@@ -12,14 +12,10 @@
 	export let animate: MeshAnimateFunction | undefined = undefined
 	export let onClick: MeshObjectInteractionFunction | undefined = undefined
 
-	const meshController = new MeshController({
-		...options,
-		scene: $sceneStore,
-		onClick
-	})
+	const meshController = new MeshController({ ...options, onClick })
 
 	if (animate) {
-		animate(meshController.three, meshController.scene)
+		animate(meshController.three, $sceneStore)
 	}
 
 	addEventListener('mousedown', () => {
