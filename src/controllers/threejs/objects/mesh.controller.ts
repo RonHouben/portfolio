@@ -41,7 +41,7 @@ export interface MeshInitOptions extends BaseInitOptions {
 	geometry: MeshControllerOptions['geometry']
 	material: MeshControllerOptions['material']
 }
-export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'> 
+export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 export class MeshController extends BaseController<Mesh> {
 	private onClick?: MeshControllerOptions['onClick']
 

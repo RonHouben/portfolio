@@ -53,9 +53,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 	protected isIntersected(): boolean {
 		const raycasterIntersects = get(raycasterIntersectsStore)
 
-		const intersected = raycasterIntersects.find(
-			({ object }) => object.uuid === this.three.uuid
-		)
+		const intersected = raycasterIntersects.find(({ object }) => object.uuid === this.three.uuid)
 
 		return intersected ? true : false
 	}
