@@ -8,7 +8,7 @@
 	import { sceneStore } from '../../../stores/threejs/scene.store'
 	import { raycasterStore } from '../../../stores/threejs/raycaster.store'
 
-	export let options: Omit<Omit<MeshControllerOptions, 'scene'>, 'raycaster'>
+	export let options: MeshControllerOptions
 	export let animate: MeshAnimateFunction | undefined = undefined
 	export let onClick: MeshObjectInteractionFunction | undefined = undefined
 
