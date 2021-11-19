@@ -19,6 +19,8 @@
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
 	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
+	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte';
+	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte';
 
 	interface Sphere {
 		name: string
@@ -72,19 +74,20 @@
 	)
 
 	const handleSphereClick: MeshObjectInteractionFunction = (sphere, scene) => {
-		const box = scene.getObjectByName('box')
+		const head = scene.getObjectByName('head')
 
-		if (box) {
+		if (head) {
 			const timeline = anime.timeline({
 				easing: 'spring(1, 50, 10, 0)'
 			})
 
 			timeline.add({
-				targets: box.position,
+				targets: head.position,
 				x: sphere.position.x,
 				y: sphere.position.y,
 				z: sphere.position.z,
 				begin: () => {
+					head.lookAt(sphere.position)
 					sphere.material.visible = false
 				}
 			})
@@ -124,7 +127,7 @@
 				}}
 			>
 				<svelte:fragment slot="helpers">
-					<!-- <AxesHelper options={{ size: 200 }} /> -->
+					<AxesHelper options={{ size: 200 }} />
 					<!-- <CameraHelper options={{ cameraName: 'perspective' }} /> -->
 					<!-- <GridHelper options={{ size: 200, divisions: 50 }} /> -->
 				</svelte:fragment>
@@ -214,6 +217,7 @@
 							onClick={handleSphereClick}
 						/>
 					{/each}
+					<GLTFLoader options={{ name: 'head', path: 'gltf-models/adam-head/adamHead.gltf' }} />
 
 					<Mesh
 						options={{
