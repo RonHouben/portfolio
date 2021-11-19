@@ -18,7 +18,6 @@ import type {
 	ObjectInteractionFunction
 } from '../base.controller'
 import { BaseController } from '../base.controller'
-import type { RaycasterController } from '../raycaster.controller'
 
 type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
 export interface MeshControllerOptions extends BaseControllerOptions {
@@ -42,10 +41,7 @@ export interface MeshInitOptions extends BaseInitOptions {
 	geometry: MeshControllerOptions['geometry']
 	material: MeshControllerOptions['material']
 }
-export interface MeshUpdateOptions
-	extends Omit<Omit<Omit<MeshControllerOptions, 'scene'>, 'position'>, 'rotation'> {
-	raycasterIntersects: RaycasterController['intersects']
-}
+export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'> 
 export class MeshController extends BaseController<Mesh> {
 	private onClick?: MeshControllerOptions['onClick']
 
@@ -73,7 +69,6 @@ export class MeshController extends BaseController<Mesh> {
 	}
 
 	public override update(options: MeshUpdateOptions): void {
-		this.raycasterIntersects = options.raycasterIntersects
 		this.setShadow(options.shadow)
 		this.setMaterial(options.material)
 		this.setGeometry(options.geometry)

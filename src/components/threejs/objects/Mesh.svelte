@@ -6,7 +6,6 @@
 		MeshControllerOptions
 	} from '../../../controllers/threejs/objects/mesh.controller'
 	import { sceneStore } from '../../../stores/threejs/scene.store'
-	import { raycasterStore } from '../../../stores/threejs/raycaster.store'
 
 	export let options: MeshControllerOptions
 	export let animate: MeshAnimateFunction | undefined = undefined
@@ -24,5 +23,5 @@
 		})
 	})
 
-	$: meshController.update({ ...options, raycasterIntersects: $raycasterStore.intersects })
+	$: meshController.update(options)
 </script>

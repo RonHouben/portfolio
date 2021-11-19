@@ -1,7 +1,7 @@
 import { get } from 'svelte/store'
 import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
 import { Raycaster, Vector2 } from 'three'
-import { raycasterStore } from '../../stores/threejs/raycaster.store'
+import { raycasterIntersectsStore } from '../../stores/threejs/raycaster.store'
 import { rendererStore } from '../../stores/threejs/renderer.store'
 import { sceneStore } from '../../stores/threejs/scene.store'
 
@@ -30,7 +30,8 @@ export class RaycasterController {
 
 		this.render()
 
-		raycasterStore.set(this)
+		// set Svelte store
+		raycasterIntersectsStore.set(this.intersects)
 	}
 
 	private getCamera<T extends Camera>(cameraName: RaycasterControllerOptions['cameraName']): T {
@@ -51,14 +52,14 @@ export class RaycasterController {
 		this.mouse.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1
 		this.mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1
 
-		this.intersects = this.three.intersectObjects(this.scene.children, false)
-
 		this.update()
 	}
 
 	private update(): void {
+		this.intersects = this.three.intersectObjects(this.scene.children, false)
+
 		// update store
-		raycasterStore.update(() => this)
+		raycasterIntersectsStore.update(() => this.intersects)
 	}
 
 	private render(): void {
@@ -66,9 +67,6 @@ export class RaycasterController {
 
 		// update the picking ray with the camera and mouse position
 		this.three.setFromCamera(this.mouse, this.camera)
-
-		// calculate objects intersecting the picking ray
-		this.intersects = this.three.intersectObjects(this.scene.children, false)
 
 		this.update()
 	}

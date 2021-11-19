@@ -1,11 +1,11 @@
-import { EventDispatcher, Scene } from 'three'
-import type { Object3D } from 'three'
-import type { RaycasterController } from './raycaster.controller'
-import type { MeshUpdateOptions } from './objects/mesh.controller'
-import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
-import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
 import { get } from 'svelte/store'
+import type { Object3D } from 'three'
+import { EventDispatcher, Scene } from 'three'
+import { raycasterIntersectsStore } from '../../stores/threejs/raycaster.store'
 import { sceneStore } from '../../stores/threejs/scene.store'
+import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
+import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
+import type { MeshUpdateOptions } from './objects/mesh.controller'
 
 export interface BaseControllerOptions {
 	name: string
@@ -26,16 +26,13 @@ export interface ShadowOptions {
 	castShadow?: boolean
 	receiveShadow?: boolean
 }
-export type BaseInitOptions = Omit<BaseControllerOptions, 'scene'>
-export interface BaseUpdateOptions extends Omit<BaseControllerOptions, 'scene'> {
-	raycasterIntersects: RaycasterController['intersects']
-}
+export type BaseInitOptions = BaseControllerOptions
+export type BaseUpdateOptions = BaseControllerOptions
 
 export abstract class BaseController<T extends Object3D> extends EventDispatcher {
 	public three!: T
 	public name: BaseControllerOptions['name']
 	protected scene: Scene
-	protected raycasterIntersects: RaycasterController['intersects'] = []
 
 	constructor({ name }: Pick<BaseControllerOptions, 'name'>) {
 		super()
@@ -54,7 +51,9 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 	): void
 
 	protected isIntersected(): boolean {
-		const intersected = this.raycasterIntersects.find(
+		const raycasterIntersects = get(raycasterIntersectsStore)
+
+		const intersected = raycasterIntersects.find(
 			({ object }) => object.uuid === this.three.uuid
 		)
 
