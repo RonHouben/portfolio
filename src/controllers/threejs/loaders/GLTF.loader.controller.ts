@@ -24,7 +24,7 @@ export class GLTFLoaderController {
 			path,
 			(gltf) => {
 				this.scene.add(gltf.scene)
-				gltf.scene.name  = name
+				gltf.scene.name = name
 				gltf.scene.scale.set(10, 10, 10)
 
 				if (onLoad) {

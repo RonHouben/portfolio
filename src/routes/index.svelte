@@ -19,8 +19,8 @@
 	import { PlaneGeometry } from 'three'
 	import { DoubleSide } from 'three'
 	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
-	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte';
-	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte';
+	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte'
+	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte'
 
 	interface Sphere {
 		name: string
