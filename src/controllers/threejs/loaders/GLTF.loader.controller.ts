@@ -1,8 +1,8 @@
 import { sceneStore } from '../../../stores/threejs/scene.store'
 import { get } from 'svelte/store'
 import type { Scene } from 'three'
-import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export interface GLTFLoaderControllerOptions {
 	name: string
