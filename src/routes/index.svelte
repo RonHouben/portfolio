@@ -8,11 +8,9 @@
 	import Scene from '../components/threejs/scenes/Scene.svelte'
 	import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
 	import { PCFSoftShadowMap } from 'three'
-	import { BoxGeometry } from 'three'
 	import SpotLight from '../components/threejs/lights/SpotLight.svelte'
 	import { sRGBEncoding } from 'three'
 	import { MeshPhongMaterial } from 'three'
-	import { MultiplyOperation } from 'three'
 	import anime from 'animejs'
 	import { SphereGeometry } from 'three'
 	import Raycaster from '../components/threejs/Raycaster.svelte'
@@ -20,7 +18,7 @@
 	import { DoubleSide } from 'three'
 	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
 	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte'
-	import AxesHelper from '../components/threejs/helpers/AxesHelper.svelte'
+	import LoadingManager from '../components/threejs/loaders/LoadingManager.svelte'
 
 	interface Sphere {
 		name: string
@@ -65,43 +63,29 @@
 	}
 
 	const spheres: Sphere[] = positionInCircle<Sphere>(
-		50,
+		10,
 		0,
-		25,
+		1,
 		new Array(20)
 			.fill(undefined)
 			.map((_x, i) => ({ name: `sphere-${i}`, position: { x: 0, y: 0, z: 0 } }))
 	)
 
 	const handleSphereClick: MeshObjectInteractionFunction = (sphere, scene) => {
-		const head = scene.getObjectByName('head')
+		const model = scene.getObjectByName('3d-model')
 
-		if (head) {
-			const timeline = anime.timeline({
-				easing: 'spring(1, 50, 10, 0)'
-			})
-
-			timeline.add({
-				targets: head.position,
+		if (model) {
+			anime({
+				targets: model.position,
+				easing: 'spring(1, 50, 10, 0)',
 				x: sphere.position.x,
 				y: sphere.position.y,
 				z: sphere.position.z,
 				begin: () => {
-					head.lookAt(sphere.position)
+					model.lookAt(sphere.position)
 					sphere.material.visible = false
 				}
 			})
-
-			// timeline.add({
-			// 	targets: sphere.material,
-			// 	opacity: 0,
-			// 	x: 0,
-			// 	y: 0,
-			// 	z: 0,
-			// 	// begin: () => {
-			// 	// 	sphere.material.visible = false
-			// 	// }
-			// })
 		}
 	}
 </script>
@@ -126,8 +110,11 @@
 					background: new Color($theme.colors.background)
 				}}
 			>
+				<LoadingManager slot="loading-manager">
+					<GLTFLoader options={{ name: '3d-model', path: 'gltf-models/astronaut.glb' }} />
+				</LoadingManager>
 				<svelte:fragment slot="helpers">
-					<AxesHelper options={{ size: 200 }} />
+					<!-- <AxesHelper options={{ size: 200 }} /> -->
 					<!-- <CameraHelper options={{ cameraName: 'perspective' }} /> -->
 					<!-- <GridHelper options={{ size: 200, divisions: 50 }} /> -->
 				</svelte:fragment>
@@ -139,10 +126,10 @@
 							name: 'perspective',
 							position: {
 								x: 0,
-								y: 235,
-								z: 0
+								y: 2,
+								z: 7
 							},
-							fov: 55,
+							fov: 50,
 							near: 1,
 							far: 1000
 						}}
@@ -154,10 +141,12 @@
 					<OrbitControls
 						options={{
 							cameraName: 'perspective',
+							targetName: '3d-model',
 							enableDamping: true,
-							maxPolarAngle: 1.5,
-							minDistance: 50,
-							maxDistance: 500
+							// maxPolarAngle: 1.5,
+							// minDistance: 1,
+							maxDistance: 500,
+							// autoRotate: true
 						}}
 					/>
 				</svelte:fragment>
@@ -207,7 +196,7 @@
 							options={{
 								name: sphere.name,
 								material: new MeshPhongMaterial({ color: 0x4080ff }),
-								geometry: new SphereGeometry(5),
+								geometry: new SphereGeometry(1),
 								position: sphere.position,
 								shadow: {
 									castShadow: true,
@@ -217,9 +206,8 @@
 							onClick={handleSphereClick}
 						/>
 					{/each}
-					<GLTFLoader options={{ name: 'head', path: 'gltf-models/adam-head/adamHead.gltf' }} />
 
-					<Mesh
+					<!-- <Mesh
 						options={{
 							name: 'box',
 							material: new MeshPhongMaterial({
@@ -244,7 +232,7 @@
 								receiveShadow: true
 							}
 						}}
-					/>
+					/> -->
 					<Mesh
 						options={{
 							name: 'plane',

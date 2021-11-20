@@ -48,5 +48,7 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
 		this.setPosition(position)
 		this.setRotation(rotation)
 		this.setShadow(shadow)
+
+		this.three.updateProjectionMatrix()
 	}
 }

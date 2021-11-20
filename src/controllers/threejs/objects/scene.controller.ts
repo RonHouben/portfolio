@@ -27,7 +27,6 @@ export class SceneController extends BaseController<Scene> {
 		this.scene = new Scene()
 		this.three = this.scene
 		this.three.name = options.name
-
 		this.setAutoUpdate(options.autoUpdate)
 		this.setBackground(options.background)
 		this.setEnvironment(options.environment)

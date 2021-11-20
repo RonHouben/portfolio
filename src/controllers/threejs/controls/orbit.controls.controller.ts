@@ -35,16 +35,19 @@ export interface OrbitControlsControllerOptions {
 
 export class OrbitControlsController {
 	private scene: Scene
+	private camera: Camera
 	public three: OrbitControls
 
 	constructor(options: OrbitControlsControllerOptions) {
 		this.scene = get(sceneStore)
 
-		const camera = this.getCamera(options.cameraName)
+		this.camera = this.getCamera(options.cameraName)
 
-		this.three = new OrbitControls(camera, options.domElement)
+		this.three = new OrbitControls(this.camera, options.domElement)
 
 		this.update(options)
+
+		this.getCamera(options.cameraName).rotateY(90)
 
 		this.renderLoop()
 	}
@@ -74,8 +77,8 @@ export class OrbitControlsController {
 		this.three.screenSpacePanning = options.screenSpacePanning || this.three.screenSpacePanning
 		this.three.touches = options.touches || this.three.touches
 		this.three.zoomSpeed = options.zoomSpeed || this.three.zoomSpeed
-
 		this.setTarget(options.targetName)
+
 	}
 
 	private getCamera<T extends Camera>(cameraName: OrbitControlsControllerOptions['cameraName']): T {
@@ -89,7 +92,7 @@ export class OrbitControlsController {
 	}
 
 	private renderLoop(): void {
-		requestAnimationFrame(() => this.renderLoop())
+		requestAnimationFrame(this.renderLoop.bind(this))
 
 		this.three.update()
 	}
