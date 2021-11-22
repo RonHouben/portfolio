@@ -13,7 +13,7 @@ import { rendererStore } from '../../../stores/threejs/renderer.store'
 import { sceneStore } from '../../../stores/threejs/scene.store'
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
-	domElementId?: string
+	domElementId: string
 	width?: number
 	height?: number
 	shadowMap?: RendererShadowMapOptions

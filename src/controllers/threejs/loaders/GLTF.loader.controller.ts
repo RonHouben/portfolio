@@ -79,11 +79,10 @@ export class GLTFLoaderController {
 
 	public playSpecificAnimationClip(name: string): void {
 		if (this.three?.animations && this.mixer) {
-			console.log(this.three.animations)
 			const clip = AnimationClip.findByName(this.three.animations, name)
 			const action = this.mixer.clipAction(clip)
 
-			action.setLoop(LoopRepeat, 999)
+			action.setLoop(LoopRepeat, -1)
 			action.play()
 		}
 	}
