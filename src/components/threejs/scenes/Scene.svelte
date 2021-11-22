@@ -23,3 +23,4 @@
 <slot name="controls" />
 <slot name="raycaster" />
 <slot name="meshes" />
+<slot name="loading-manager" />

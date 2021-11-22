@@ -111,7 +111,7 @@ export class SpotLightController extends LightController<SpotLight> {
 
 			if (target) {
 				this.three.target = target
-			}
+			} 
 		}
 	}
 }

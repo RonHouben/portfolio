@@ -46,18 +46,17 @@ export class MeshController extends BaseController<Mesh> {
 	private onClick?: MeshControllerOptions['onClick']
 
 	constructor(options: MeshControllerOptions) {
-		const { name, onClick, geometry, material } = options
+		const { name, onClick } = options
 		super({ name })
 
-		this.three = new ThreeMesh(geometry, material)
 		this.onClick = onClick
 
 		this.init(options)
 	}
 
 	protected override init(options: MeshInitOptions): void {
+		this.three = new ThreeMesh(options.geometry, options.material)
 		this.three.name = options.name
-
 		this.addEventListeners()
 		this.setGeometry(options.geometry)
 		this.setMaterial(options.material)
