@@ -33,7 +33,7 @@ export class GLTFLoaderController {
 				this.three = gltf
 				this.scene.add(this.three.scene)
 				this.three.scene.name = name
-				// TOOD: create more config options
+				// TODO: create more config options
 				this.three.scene.castShadow = true
 				this.three.scene.receiveShadow = true
 
