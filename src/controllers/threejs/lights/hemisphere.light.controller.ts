@@ -1,5 +1,6 @@
 import type { Color } from 'three'
 import { HemisphereLight } from 'three'
+import type { AnimateFunction } from '../base.controller'
 import { LightController, LightControllerOptions, LightInitOptions } from './light.controller'
 
 export interface HemisphereLightControllerOptions extends Omit<LightControllerOptions, 'shadow'> {
@@ -40,6 +41,12 @@ export class HemisphereLightController extends LightController<HemisphereLight> 
 		this.setColor(options.color)
 		this.setGroundColor(options.groundColor)
 		this.setIntensity(options.intensity)
+	}
+
+	public override animate(animateFunction: AnimateFunction<HemisphereLight>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 
 	private setGroundColor(groundColor: HemisphereLightControllerOptions['groundColor']): void {

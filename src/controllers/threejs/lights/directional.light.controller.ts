@@ -1,4 +1,5 @@
 import { DirectionalLight, DirectionalLightHelper } from 'three'
+import type { AnimateFunction } from '../base.controller'
 import type {
 	LightControllerOptions,
 	LightHelperOptions,
@@ -60,6 +61,12 @@ export class DirectionalLightController extends LightController<DirectionalLight
 
 		this.setShadow(options.shadow)
 		this.setColor(options.color)
+	}
+
+	public override animate(animateFunction: AnimateFunction<DirectionalLight>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 
 	private setTarget(targetName: DirectionalLightControllerOptions['targetName']): void {

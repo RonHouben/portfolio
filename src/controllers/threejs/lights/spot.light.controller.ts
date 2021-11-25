@@ -8,6 +8,7 @@ import type {
 	LightShadowOptions
 } from './light.controller'
 import { LightController } from './light.controller'
+import type { AnimateFunction } from '../base.controller'
 
 export interface SpotLightControllerOptions extends LightControllerOptions {
 	targetName?: string
@@ -80,6 +81,12 @@ export class SpotLightController extends LightController<SpotLight> {
 		this.setIntensity(options.intensity)
 		this.setShadow(options.shadow)
 		this.setTarget(options.targetName)
+	}
+
+	public override animate(animateFunction: AnimateFunction<SpotLight>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 
 	protected override setShadow(options: SpotLightControllerOptions['shadow']): void {

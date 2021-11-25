@@ -1,7 +1,7 @@
 import type { Fog, Color, Material, Texture } from 'three'
 import { Scene } from 'three'
 import { sceneStore } from '../../../stores/threejs/scene.store'
-import type { BaseControllerOptions } from '../base.controller'
+import type { AnimateFunction, BaseControllerOptions } from '../base.controller'
 import { BaseController } from '../base.controller'
 
 export interface SceneControllerOptions extends Pick<BaseControllerOptions, 'name'> {
@@ -43,6 +43,12 @@ export class SceneController extends BaseController<Scene> {
 
 		// update Svelte store
 		sceneStore.update(() => this.three)
+	}
+
+	public override animate(animateFunction: AnimateFunction<Scene>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 
 	private setAutoUpdate(autoUpdate: SceneControllerOptions['autoUpdate']): void {

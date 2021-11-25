@@ -6,6 +6,7 @@ import { sceneStore } from '../../stores/threejs/scene.store'
 import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
 import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
 import type { MeshUpdateOptions } from './objects/mesh.controller'
+import type { PointsInitOptions, PointsUpdateOptions } from './objects/points.controller'
 
 export interface BaseControllerOptions {
 	name: string
@@ -40,7 +41,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 		this.scene = get(sceneStore)
 	}
 
-	protected abstract init(options: BaseInitOptions): void
+	protected abstract init(options: BaseInitOptions | PointsInitOptions): void
 
 	public abstract update(
 		options:
@@ -48,7 +49,10 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 			| MeshUpdateOptions
 			| DirectionalLightUpdateOptions
 			| PerspectiveCameraUpdateOptions
+			| PointsUpdateOptions
 	): void
+
+	public abstract animate(animateFunction: AnimateFunction<T>): void
 
 	protected isIntersected(): boolean {
 		const raycasterIntersects = get(raycasterIntersectsStore)

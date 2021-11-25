@@ -72,6 +72,12 @@ export class MeshController extends BaseController<Mesh> {
 		this.setMaterial(options.material)
 		this.setGeometry(options.geometry)
 	}
+	
+	public override animate(animateFunction: AnimateFunction<Mesh>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
+	}
 
 	protected addEventListeners(): void {
 		this.three.addEventListener('click', () => {
