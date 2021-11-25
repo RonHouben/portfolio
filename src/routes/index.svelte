@@ -1,5 +1,8 @@
 <script lang="ts">
 	import anime from 'animejs'
+	import { PointsMaterial } from 'three'
+	import { BufferGeometry } from 'three'
+	import { AdditiveBlending } from 'three'
 	import {
 		Color,
 		DoubleSide,
@@ -7,7 +10,7 @@
 		PCFSoftShadowMap,
 		PlaneGeometry,
 		SphereGeometry,
-		sRGBEncoding,
+		sRGBEncoding
 	} from 'three'
 	import { useTheme } from '../actions/useTheme'
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
@@ -17,6 +20,7 @@
 	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte'
 	import LoadingManager from '../components/threejs/loaders/LoadingManager.svelte'
 	import Mesh from '../components/threejs/objects/Mesh.svelte'
+	import Points from '../components/threejs/objects/Points.svelte'
 	import Raycaster from '../components/threejs/Raycaster.svelte'
 	import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
 	import Scene from '../components/threejs/scenes/Scene.svelte'
@@ -218,6 +222,23 @@
 								width: 512
 							}
 						}
+					}}
+				/>
+			</svelte:fragment>
+			<svelte:fragment slot="points">
+				<Points
+					options={{
+						name: 'particles',
+						geometry: new BufferGeometry(),
+						material: new PointsMaterial({
+							color: 'rgb(255, 255, 255)',
+							size: 0.1,
+							transparent: true,
+							blending: AdditiveBlending
+						})
+					}}
+					animate={(obj) => {
+						obj.rotateY(0.0001)
 					}}
 				/>
 			</svelte:fragment>
