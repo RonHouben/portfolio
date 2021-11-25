@@ -1,24 +1,27 @@
 <script lang="ts">
-	import { Color } from 'three'
+	import anime from 'animejs'
+	import {
+		Color,
+		DoubleSide,
+		MeshPhongMaterial,
+		PCFSoftShadowMap,
+		PlaneGeometry,
+		SphereGeometry,
+		sRGBEncoding,
+	} from 'three'
 	import { useTheme } from '../actions/useTheme'
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
 	import OrbitControls from '../components/threejs/controls/OrbitControls.svelte'
 	import AmbientLight from '../components/threejs/lights/AmbientLight.svelte'
-	import Mesh from '../components/threejs/objects/Mesh.svelte'
-	import Scene from '../components/threejs/scenes/Scene.svelte'
-	import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
-	import { PCFSoftShadowMap } from 'three'
 	import SpotLight from '../components/threejs/lights/SpotLight.svelte'
-	import { sRGBEncoding } from 'three'
-	import { MeshPhongMaterial } from 'three'
-	import anime from 'animejs'
-	import { SphereGeometry } from 'three'
-	import Raycaster from '../components/threejs/Raycaster.svelte'
-	import { PlaneGeometry } from 'three'
-	import { DoubleSide } from 'three'
-	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
 	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte'
 	import LoadingManager from '../components/threejs/loaders/LoadingManager.svelte'
+	import Mesh from '../components/threejs/objects/Mesh.svelte'
+	import Raycaster from '../components/threejs/Raycaster.svelte'
+	import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
+	import Scene from '../components/threejs/scenes/Scene.svelte'
+	import { AnimationMixerController } from '../controllers/threejs/animation/animation.mixer.controller'
+	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
 
 	interface Sphere {
 		name: string
@@ -75,16 +78,22 @@
 		const model = scene.getObjectByName('3d-model')
 
 		if (model) {
+			const mixer = new AnimationMixerController(model)
+
 			anime({
 				targets: model.position,
-				easing: 'spring(1, 50, 10, 0)',
+				easing: 'easeInOutQuad',
+				duration: 2000,
 				x: sphere.position.x,
 				y: sphere.position.y,
 				z: sphere.position.z,
 				begin: () => {
-					
+					mixer.playAnimationByName('moon_walk')
 					model.lookAt(sphere.position)
+				},
+				complete: () => {
 					sphere.material.visible = false
+					mixer.playAnimationByName('wave')
 				}
 			})
 		}
@@ -126,7 +135,14 @@
 			>
 				<GLTFLoader
 					slot="loader"
-					options={{ name: '3d-model', path: 'gltf-models/astronaut.glb' }}
+					options={{
+						name: '3d-model',
+						path: 'gltf-models/astronaut.glb',
+						onLoaded: (gltf) => {
+							const animationMixer = new AnimationMixerController(gltf.scene)
+							animationMixer.playAnimationByName('idle')
+						}
+					}}
 				/>
 				<!-- <div slot="loading-screen">TEST</div> -->
 			</LoadingManager>
