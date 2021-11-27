@@ -1,16 +1,18 @@
 <script lang="ts">
 	import anime from 'animejs'
-	import { PointsMaterial } from 'three'
-	import { BufferGeometry } from 'three'
-	import { AdditiveBlending } from 'three'
+import { Vector3 } from 'three';
 	import {
+		AdditiveBlending,
+		BufferGeometry,
 		Color,
 		DoubleSide,
 		MeshPhongMaterial,
 		PCFSoftShadowMap,
 		PlaneGeometry,
+		PointsMaterial,
 		SphereGeometry,
-		sRGBEncoding
+		sRGBEncoding,
+		TextureLoader
 	} from 'three'
 	import { useTheme } from '../actions/useTheme'
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
@@ -232,13 +234,35 @@
 						geometry: new BufferGeometry(),
 						material: new PointsMaterial({
 							color: 'rgb(255, 255, 255)',
-							size: 0.1,
+							map: new TextureLoader().load('./static/images/particle.png'),
+							alphaTest: 0.5,
 							transparent: true,
-							blending: AdditiveBlending
+							sizeAttenuation: true,
+							blending: AdditiveBlending,
+							size: 0.25
 						})
+					}}
+					createPoints={() => {
+						const amount = 5000
+						const distance = 50
+						const points = []
+
+						for (let i = 0; i < amount; i++) {
+							const x = (Math.random() - 0.5) * distance
+							const y = (Math.random() - 0.5) * distance
+							const z = (Math.random() - 0.5) * distance
+
+							const point = new Vector3(x, y, z)
+
+							points.push(point)
+						}
+
+						return points
 					}}
 					animate={(obj) => {
 						obj.rotateY(0.0001)
+						// console.log(obj.animations)
+						// animationMixer.playAllAnimations()
 					}}
 				/>
 			</svelte:fragment>
@@ -249,7 +273,7 @@
 					<Mesh
 						options={{
 							name: sphere.name,
-							material: new MeshPhongMaterial({ color: 0x4080ff }),
+							material: new MeshPhongMaterial({ color: 0x4080ff, opacity: 0.5, transparent: true, wireframe: true }),
 							geometry: new SphereGeometry(1),
 							position: sphere.position,
 							shadow: {
@@ -260,33 +284,6 @@
 						onClick={handleSphereClick}
 					/>
 				{/each}
-
-				<!-- <Mesh
-						options={{
-							name: 'box',
-							material: new MeshPhongMaterial({
-								color: 0x9931ff,
-								dithering: true,
-								shininess: 90,
-								emissive: 0x0,
-								specular: 0x111111,
-								fog: true,
-								reflectivity: 0.9,
-								refractionRatio: 0.98,
-								combine: MultiplyOperation
-							}),
-							geometry: new BoxGeometry(10, 10, 10),
-							position: {
-								x: 0,
-								y: 5,
-								z: 0
-							},
-							shadow: {
-								castShadow: true,
-								receiveShadow: true
-							}
-						}}
-					/> -->
 				<Mesh
 					options={{
 						name: 'plane',

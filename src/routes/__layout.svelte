@@ -36,17 +36,10 @@
 
 	main {
 		height: 100vh;
-
 		/* For mobile */
-		padding-right: var(--theme-spacing-padding-sm);
-		padding-left: var(--theme-spacing-padding-sm);
 	}
 
 	/* For desktop */
 	@media only screen and (min-width: 768px) {
-		main {
-			padding-right: var(--theme-spacing-padding-md);
-			padding-left: var(--theme-spacing-padding-md);
-		}
 	}
 </style>
