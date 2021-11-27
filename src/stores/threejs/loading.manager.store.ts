@@ -1,5 +1,5 @@
-import { writable } from "svelte/store";
-import type { LoadingManager } from "three";
+import { writable } from 'svelte/store'
+import type { LoadingManager } from 'three'
 
 interface LoadingManagerStore {
 	manager: LoadingManager

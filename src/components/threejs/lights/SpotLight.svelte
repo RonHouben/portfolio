@@ -16,7 +16,10 @@
 		animate(lightController.three, $sceneStore)
 	}
 
-	$: if ($loadingManagerStore && (!$loadingManagerStore.isLoading || !$loadingManagerStore.hasError)) {
+	$: if (
+		$loadingManagerStore &&
+		(!$loadingManagerStore.isLoading || !$loadingManagerStore.hasError)
+	) {
 		lightController.update(options)
 	}
 

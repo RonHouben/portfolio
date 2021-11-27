@@ -34,7 +34,7 @@ export class AmbientLightController extends LightController<AmbientLight> {
 		this.setColor(options.color)
 		this.setShadow(options.shadow)
 	}
-	
+
 	public override animate(animateFunction: AnimateFunction<AmbientLight>): void {
 		requestAnimationFrame(() => this.animate(animateFunction))
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import anime from 'animejs'
-import { Vector3 } from 'three';
+	import { Vector3 } from 'three'
 	import {
 		AdditiveBlending,
 		BufferGeometry,
@@ -273,7 +273,12 @@ import { Vector3 } from 'three';
 					<Mesh
 						options={{
 							name: sphere.name,
-							material: new MeshPhongMaterial({ color: 0x4080ff, opacity: 0.5, transparent: true, wireframe: true }),
+							material: new MeshPhongMaterial({
+								color: 0x4080ff,
+								opacity: 0.5,
+								transparent: true,
+								wireframe: true
+							}),
 							geometry: new SphereGeometry(1),
 							position: sphere.position,
 							shadow: {

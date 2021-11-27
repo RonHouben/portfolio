@@ -78,7 +78,6 @@ export class OrbitControlsController {
 		this.three.touches = options.touches || this.three.touches
 		this.three.zoomSpeed = options.zoomSpeed || this.three.zoomSpeed
 		this.setTarget(options.targetName)
-
 	}
 
 	private getCamera<T extends Camera>(cameraName: OrbitControlsControllerOptions['cameraName']): T {

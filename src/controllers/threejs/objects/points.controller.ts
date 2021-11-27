@@ -1,9 +1,4 @@
-import {
-	BufferGeometry,
-	Material,
-	Points,
-	Vector3
-} from 'three'
+import { BufferGeometry, Material, Points, Vector3 } from 'three'
 import type { AnimateFunction, BaseControllerOptions } from '../base.controller'
 import { BaseController } from '../base.controller'
 
@@ -15,7 +10,6 @@ export interface PointsControllerOptions extends Omit<BaseControllerOptions, 'po
 export type PointsInitOptions = Omit<PointsControllerOptions, 'position'>
 export type PointsUpdateOptions = Omit<PointsControllerOptions, 'position'>
 export type CreatePointsFunction = () => Vector3[]
-
 
 export class PointsController extends BaseController<Points> {
 	public three: Points

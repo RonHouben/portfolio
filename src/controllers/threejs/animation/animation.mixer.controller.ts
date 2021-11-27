@@ -1,7 +1,7 @@
 import type { AnimationAction, AnimationActionLoopStyles, Object3D } from 'three'
 import { AnimationMixer, AnimationClip, Clock } from 'three'
 
-export class AnimationMixerController <T extends Object3D> {
+export class AnimationMixerController<T extends Object3D> {
 	public three: AnimationMixer
 	public rootObject: T
 	private readonly clock: Clock

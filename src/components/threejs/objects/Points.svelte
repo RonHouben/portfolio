@@ -2,7 +2,7 @@
 	import type { AnimateFunction } from '../../../controllers/threejs/base.controller'
 	import type { Points } from 'three'
 	import {
-CreatePointsFunction,
+		CreatePointsFunction,
 		PointsController,
 		PointsControllerOptions
 	} from '../../../controllers/threejs/objects/points.controller'
