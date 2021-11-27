@@ -234,7 +234,7 @@ import { Vector3 } from 'three';
 						geometry: new BufferGeometry(),
 						material: new PointsMaterial({
 							color: 'rgb(255, 255, 255)',
-							map: new TextureLoader().load('./static/images/particle.png'),
+							map: new TextureLoader().load('/images/particle.png'),
 							alphaTest: 0.5,
 							transparent: true,
 							sizeAttenuation: true,
