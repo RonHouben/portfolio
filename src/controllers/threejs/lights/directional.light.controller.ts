@@ -1,4 +1,5 @@
 import { DirectionalLight, DirectionalLightHelper } from 'three'
+import type { AnimateFunction } from '../base.controller'
 import type {
 	LightControllerOptions,
 	LightHelperOptions,
@@ -62,8 +63,18 @@ export class DirectionalLightController extends LightController<DirectionalLight
 		this.setColor(options.color)
 	}
 
+	public override animate(animateFunction: AnimateFunction<DirectionalLight>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
+	}
+
 	private setTarget(targetName: DirectionalLightControllerOptions['targetName']): void {
 		const target = this.scene.getObjectByName(targetName)
+
+		if (!target) {
+			throw new Error(`Couldn't find target with name: "${targetName}"`)
+		}
 
 		if (target) {
 			this.three.target = target
@@ -71,8 +82,8 @@ export class DirectionalLightController extends LightController<DirectionalLight
 	}
 
 	private setHelpers(options: DirectionalLightHelperOptions): void {
-		if (options.light && options.light.enabled) {
-			const helper = new DirectionalLightHelper(this.three, options.light.size, options.light.color)
+		if (options.enabled) {
+			const helper = new DirectionalLightHelper(this.three, options.size, options.color)
 
 			this.scene.add(helper)
 		}

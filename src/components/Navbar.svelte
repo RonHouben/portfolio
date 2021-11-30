@@ -15,8 +15,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-top: var(--theme-spacing-padding-sm);
-		padding-bottom: var(--theme-spacing-padding-sm);
+		padding: var(--theme-spacing-padding-sm);
 		background-color: var(--theme-colors-background);
 	}
 
@@ -24,5 +23,9 @@
 		font-family: var(--theme-fonts-selected);
 		font-weight: bold;
 		text-transform: uppercase;
+	}
+
+	button {
+		z-index: 2;
 	}
 </style>

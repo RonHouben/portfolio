@@ -1,263 +1,115 @@
 <script lang="ts">
-	import anime from 'animejs'
-	import {
-		Color,
-		DoubleSide,
-		MeshPhongMaterial,
-		PCFSoftShadowMap,
-		PlaneGeometry,
-		SphereGeometry,
-		sRGBEncoding,
-	} from 'three'
+	import Mesh from '../components/threejs/objects/Mesh.svelte'
+	import { MeshPhysicalMaterial } from 'three'
+	import { PCFSoftShadowMap, sRGBEncoding } from 'three'
 	import { useTheme } from '../actions/useTheme'
 	import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
-	import OrbitControls from '../components/threejs/controls/OrbitControls.svelte'
 	import AmbientLight from '../components/threejs/lights/AmbientLight.svelte'
-	import SpotLight from '../components/threejs/lights/SpotLight.svelte'
-	import GLTFLoader from '../components/threejs/loaders/GLTFLoader.svelte'
-	import LoadingManager from '../components/threejs/loaders/LoadingManager.svelte'
-	import Mesh from '../components/threejs/objects/Mesh.svelte'
 	import Raycaster from '../components/threejs/Raycaster.svelte'
 	import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
 	import Scene from '../components/threejs/scenes/Scene.svelte'
-	import { AnimationMixerController } from '../controllers/threejs/animation/animation.mixer.controller'
-	import type { MeshObjectInteractionFunction } from '../controllers/threejs/objects/mesh.controller'
+	import { MouseHelper } from '$lib/threejs/MouseHelper'
+	import { IcosahedronGeometry } from 'three'
+	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
+	import anime from 'animejs'
+	import SpotLight from '../components/threejs/lights/SpotLight.svelte'
+	import { BoxGeometry } from 'three'
 
-	interface Sphere {
-		name: string
-		position: {
-			x: number
-			y: number
-			z: number
-		}
-	}
+	const { theme, toggle } = useTheme()
 
-	const { theme } = useTheme()
-	interface Positional {
-		position: {
-			x: number
-			y: number
-			z: number
-		}
-	}
-
-	function positionInCircle<T extends Positional>(
-		radius: number,
-		center: number,
-		height: number,
-		items: T[]
-	): T[] {
-		return items.reduce((result, item, index, array) => {
-			const angle = (index * Math.PI * 2) / array.length
-
-			return [
-				...result,
-				{
-					...item,
-					position: {
-						...item.position,
-						x: center + Math.cos(angle) * radius,
-						y: height,
-						z: center + Math.sin(angle) * radius
-					}
-				} as T
-			]
-		}, [] as T[])
-	}
-
-	const spheres: Sphere[] = positionInCircle<Sphere>(
-		10,
-		0,
-		1,
-		new Array(20)
-			.fill(undefined)
-			.map((_x, i) => ({ name: `sphere-${i}`, position: { x: 0, y: 0, z: 0 } }))
-	)
-
-	const handleSphereClick: MeshObjectInteractionFunction = (sphere, scene) => {
-		const model = scene.getObjectByName('3d-model')
-
-		if (model) {
-			const mixer = new AnimationMixerController(model)
-
-			anime({
-				targets: model.position,
-				easing: 'easeInOutQuad',
-				duration: 2000,
-				x: sphere.position.x,
-				y: sphere.position.y,
-				z: sphere.position.z,
-				begin: () => {
-					mixer.playAnimationByName('moon_walk')
-					model.lookAt(sphere.position)
-				},
-				complete: () => {
-					sphere.material.visible = false
-					mixer.playAnimationByName('wave')
-				}
-			})
-		}
-	}
 </script>
 
-<WebGlRenderer
-	options={{
-		alpha: true,
-		antialias: true,
-		outputEncoding: sRGBEncoding,
-		shadowMap: {
-			enabled: true,
-			type: PCFSoftShadowMap
-		}
-	}}
->
-	<svelte:fragment slot="scenes">
-		<Scene
-			options={{
-				name: 'scene-one',
-				background: new Color($theme.colors.background)
-			}}
-		>
-			<LoadingManager
-				slot="loading-manager"
+<div class="canvas-container">
+	<WebGlRenderer
+		options={{
+			alpha: true,
+			antialias: true,
+			outputEncoding: sRGBEncoding,
+			shadowMap: {
+				enabled: true,
+				type: PCFSoftShadowMap
+			}
+		}}
+	>
+		<svelte:fragment slot="scenes">
+			<Scene
 				options={{
-					loadingScreen: {
-						enabled: true,
-						backgroundColor: $theme.colors.background,
-						fontFamily: $theme.fonts.find((f) => f.defaultFont)?.family
-					},
-					errorScreen: {
-						enabled: true,
-						backgroundColor: $theme.colors.background,
-						fontFamily: $theme.fonts.find((f) => f.defaultFont)?.family
-					}
+					name: 'scene'
 				}}
 			>
-				<GLTFLoader
-					slot="loader"
-					options={{
-						name: '3d-model',
-						path: 'gltf-models/astronaut.glb',
-						onLoaded: (gltf) => {
-							const animationMixer = new AnimationMixerController(gltf.scene)
-							animationMixer.playAnimationByName('idle')
-						}
-					}}
-				/>
-				<!-- <div slot="loading-screen">TEST</div> -->
-			</LoadingManager>
-			<svelte:fragment slot="helpers">
-				<!-- <AxesHelper options={{ size: 200 }} /> -->
-				<!-- <CameraHelper options={{ cameraName: 'perspective' }} /> -->
-				<!-- <GridHelper options={{ size: 200, divisions: 50 }} /> -->
-			</svelte:fragment>
-			<!-- Cameras -->
-			<!-- TODO: implement support for multiple camera's & viewports -->
-			<svelte:fragment slot="cameras">
-				<PerspectiveCamera
-					options={{
-						name: 'perspective',
-						position: {
-							x: 0,
-							y: 2,
-							z: 7
-						},
-						fov: 50,
-						near: 2,
-						far: 1000
-					}}
-				/>
-			</svelte:fragment>
-
-			<!-- Controls -->
-			<svelte:fragment slot="controls">
-				<OrbitControls
-					options={{
-						cameraName: 'perspective',
-						targetName: '3d-model',
-						enableDamping: true,
-						maxPolarAngle: 1.5,
-						minDistance: 1,
-						maxDistance: 500
-						// autoRotate: true
-					}}
-				/>
-			</svelte:fragment>
-
-			<!-- Raycaster -->
-			<Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
-
-			<!-- Lights -->
-			<svelte:fragment slot="lights">
-				<AmbientLight
-					options={{
-						name: 'ambient-light',
-						color: new Color($theme.colors.background),
-						intensity: 0.75
-					}}
-				/>
-				<SpotLight
-					options={{
-						name: 'spotlight',
-						targetName: '3d-model',
-						angle: Math.PI / 4,
-						color: new Color($theme.colors.background),
-						decay: 1,
-						distance: 150,
-						intensity: 1,
-						penumbra: 0.1,
-						position: {
-							x: 0,
-							y: 5,
-							z: 0
-						},
-						shadow: {
-							castShadow: true,
-							mapSize: {
-								height: 512,
-								width: 512
-							}
-						}
-					}}
-				/>
-			</svelte:fragment>
-
-			<!-- Meshes -->
-			<svelte:fragment slot="meshes">
-				{#each spheres as sphere}
-					<Mesh
+				<svelte:fragment slot="cameras">
+					<PerspectiveCamera
 						options={{
-							name: sphere.name,
-							material: new MeshPhongMaterial({ color: 0x4080ff }),
-							geometry: new SphereGeometry(1),
-							position: sphere.position,
-							shadow: {
-								castShadow: true,
-								receiveShadow: true
-							}
-						}}
-						onClick={handleSphereClick}
-					/>
-				{/each}
-
-				<!-- <Mesh
-						options={{
-							name: 'box',
-							material: new MeshPhongMaterial({
-								color: 0x9931ff,
-								dithering: true,
-								shininess: 90,
-								emissive: 0x0,
-								specular: 0x111111,
-								fog: true,
-								reflectivity: 0.9,
-								refractionRatio: 0.98,
-								combine: MultiplyOperation
-							}),
-							geometry: new BoxGeometry(10, 10, 10),
+							name: 'perspective',
 							position: {
 								x: 0,
-								y: 5,
+								y: 2,
+								z: 7
+							},
+							fov: 50,
+							near: 2,
+							far: 1000
+						}}
+					/>
+				</svelte:fragment>
+				<!-- Raycaster -->
+				<Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
+
+				<!-- Lights -->
+				<svelte:fragment slot="lights">
+					<AmbientLight
+						options={{
+							name: 'ambient-light',
+							color: '#08313A',
+							intensity: 0.75
+						}}
+					/>
+					<SpotLight
+						options={{
+							name: 'spotlight-left',
+							targetName: 'ball',
+							color: '#5CD85A',
+							position: {
+								y: 10,
+								x: -10
+							}
+						}}
+					/>
+					<SpotLight
+						options={{
+							name: 'spotlight-right',
+							targetName: 'ball',
+							color: '#107869',
+							position: {
+								y: 10,
+								x: 10
+							}
+						}}
+					/>
+					<DirectionalLight
+						options={{
+							name: 'directional-light-bottom',
+							color: '#055F66',
+							targetName: 'ball',
+							position: {
+								y: -10
+							}
+						}}
+					/>
+				</svelte:fragment>
+				<!-- Meshes -->
+				<svelte:fragment slot="meshes">
+					<Mesh
+						options={{
+							geometry: new IcosahedronGeometry(0.5),
+							material: new MeshPhysicalMaterial({
+								clearcoat: 0.5,
+								metalness: 1
+							}),
+							name: 'ball',
+							position: {
+								x: 0,
+								y: 2,
 								z: 0
 							},
 							shadow: {
@@ -265,30 +117,79 @@
 								receiveShadow: true
 							}
 						}}
-					/> -->
-				<Mesh
-					options={{
-						name: 'plane',
-						material: new MeshPhongMaterial({
-							color: $theme.colors.background,
-							dithering: true,
-							side: DoubleSide
-						}),
-						geometry: new PlaneGeometry(2000, 2000),
-						position: {
-							x: 0,
-							y: -1,
-							z: 0
-						},
-						rotation: {
-							x: -Math.PI * 0.5
-						},
-						shadow: {
-							receiveShadow: true
-						}
-					}}
-				/>
-			</svelte:fragment>
-		</Scene>
-	</svelte:fragment>
-</WebGlRenderer>
+						onClick={({ target }) => {
+							anime({
+								targets: target.rotation,
+								x: target.rotation.x + Math.random() * 10,
+								y: target.rotation.y + Math.random() * 10,
+								begin: () => {
+									target.material.wireframe = !target.material.wireframe
+
+									toggle()
+								}
+							})
+						}}
+						onMousemove={({ target, mousePosition }) => {
+							MouseHelper.followMouse(mousePosition.x, mousePosition.y, target, {
+								targets: [target.position, target.rotation],
+								x: +1,
+								y: +1
+							})
+						}}
+					/>
+					{#each [0, 1, 2, 3, 4] as row}
+						{#each [-2, -1, 0, 1, 2] as column}
+							<Mesh
+								options={{
+									name: `row-${row}`,
+									geometry: new BoxGeometry(0.5, 0.5, 0.5),
+									material: new MeshPhysicalMaterial({
+										metalness: 1
+									}),
+									position: {
+										y: row,
+										x: column
+									}
+								}}
+								onClick={({ target }) => {
+									target.material.wireframe = !target.material.wireframe
+								}}
+								onMouseover={({ target }) => {
+									anime({
+										targets: target.rotation,
+										y: target.rotation.y + 1,
+										x: target.rotation.x + 1
+									})
+
+									anime({
+										targets: target.position,
+										z: target.position.z - 5
+									})
+								}}
+							/>
+						{/each}
+					{/each}
+				</svelte:fragment>
+			</Scene>
+		</svelte:fragment>
+	</WebGlRenderer>
+</div>
+
+<section>
+	<h1>HELLO WORLD</h1>
+</section>
+
+<style>
+	section {
+		padding-left: var(--theme-spacing-padding-sm);
+	}
+	.canvas-container {
+		position: fixed;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 100vh;
+		z-index: 1;
+		cursor: none;
+	}
+</style>

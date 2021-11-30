@@ -4,8 +4,6 @@
 	import { Theme, themes } from '../themes'
 	import type { ThemeContext } from './types'
 
-	let isLoaded = false
-
 	const initialTheme = themes[0]
 
 	const getCurrentTheme = (name: Theme['name']): Theme | undefined =>
@@ -13,30 +11,31 @@
 
 	const themeStore = writable(getCurrentTheme(initialTheme.name))
 
-	setContext<ThemeContext>('theme', {
-		theme: themeStore,
-		toggle: () => {
-			const currentThemeIndex = themes.findIndex((theme) => theme.name === $themeStore.name)
-			const isIndexOutOfBounds = currentThemeIndex === -1 || currentThemeIndex >= themes.length - 1
+		setContext<ThemeContext>('theme', {
+			theme: themeStore,
+			toggle: () => {
+				const currentThemeIndex = themes.findIndex((theme) => theme.name === $themeStore.name)
+				const isIndexOutOfBounds =
+					currentThemeIndex === -1 || currentThemeIndex >= themes.length - 1
 
-			if (isIndexOutOfBounds) {
-				const firstTheme = getCurrentTheme(themes[0].name)
+				if (isIndexOutOfBounds) {
+					const firstTheme = getCurrentTheme(themes[0].name)
 
-				if (firstTheme) {
-					themeStore.update((theme) => ({ ...theme, ...firstTheme }))
-					setCSSTheme(firstTheme)
-				}
-			} else {
-				const nextIndex = currentThemeIndex + 1
-				const nextTheme = getCurrentTheme(themes[nextIndex].name)
+					if (firstTheme) {
+						themeStore.update((theme) => ({ ...theme, ...firstTheme }))
+						setCSSTheme(firstTheme)
+					}
+				} else {
+					const nextIndex = currentThemeIndex + 1
+					const nextTheme = getCurrentTheme(themes[nextIndex].name)
 
-				if (nextTheme) {
-					themeStore.update((theme) => ({ ...theme, ...nextTheme }))
-					setCSSTheme(nextTheme)
+					if (nextTheme) {
+						themeStore.update((theme) => ({ ...theme, ...nextTheme }))
+						setCSSTheme(nextTheme)
+					}
 				}
 			}
-		}
-	})
+		})
 
 	onMount(async () => {
 		const currentTheme = getCurrentTheme($themeStore.name)
@@ -44,7 +43,6 @@
 		if (currentTheme) {
 			// set CSS vars on mount
 			await setCSSTheme(currentTheme)
-			isLoaded = true
 		}
 	})
 
@@ -92,6 +90,4 @@
 	}
 </script>
 
-{#if isLoaded}
-	<slot />
-{/if}
+<slot />

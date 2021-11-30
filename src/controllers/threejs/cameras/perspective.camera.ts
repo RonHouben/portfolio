@@ -1,5 +1,6 @@
 import { PerspectiveCamera } from 'three'
 import { cameraStore } from '../../../stores/threejs/cameras/perspective.camera.store'
+import type { AnimateFunction } from '../base.controller'
 import type {
 	CameraAnimateFunction,
 	CameraControllerOptions,
@@ -50,5 +51,11 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
 		this.setShadow(shadow)
 
 		this.three.updateProjectionMatrix()
+	}
+
+	public override animate(animateFunction: AnimateFunction<PerspectiveCamera>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 }

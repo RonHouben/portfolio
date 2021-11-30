@@ -1,3 +1,4 @@
+import { MouseHelper } from '$lib/threejs/MouseHelper'
 import type {
 	BoxGeometry,
 	BufferGeometry,
@@ -5,9 +6,11 @@ import type {
 	CylinderGeometry,
 	MeshBasicMaterial,
 	MeshPhongMaterial,
+	MeshPhysicalMaterial,
 	MeshStandardMaterial,
 	PlaneBufferGeometry,
 	PlaneGeometry,
+	Scene,
 	SphereGeometry
 } from 'three'
 import { Mesh as ThreeMesh } from 'three'
@@ -20,13 +23,30 @@ import type {
 import { BaseController } from '../base.controller'
 
 type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
+
+export enum MouseEventType {
+	Mousemove = 'mousemove',
+	Click = 'click',
+	Mouseover = 'mouseover',
+	Touchmove = 'touchmove'
+}
+export interface MouseEvent {
+	mousePosition: {
+		x: number
+		y: number
+	}
+	target: Mesh
+	scene: Scene
+}
+
 export interface MeshControllerOptions extends BaseControllerOptions {
-	onClick?: ObjectInteractionFunction<Mesh>
+	onClick?: ObjectInteractionFunction<MouseEvent>
+	onMousemove?: ObjectInteractionFunction<MouseEvent>
+	onMouseover?: ObjectInteractionFunction<MouseEvent>
 	geometry: MeshGeometry
 	material: MeshMaterial
 }
 export type MeshAnimateFunction = AnimateFunction<Mesh>
-export type MeshObjectInteractionFunction = ObjectInteractionFunction<Mesh>
 export type MeshGeometry =
 	| BoxGeometry
 	| PlaneBufferGeometry
@@ -35,21 +55,33 @@ export type MeshGeometry =
 	| CircleGeometry
 	| SphereGeometry
 	| BufferGeometry
-export type MeshMaterial = MeshPhongMaterial | MeshBasicMaterial | MeshStandardMaterial
+export type MeshMaterial =
+	| MeshPhysicalMaterial
+	| MeshPhongMaterial
+	| MeshBasicMaterial
+	| MeshStandardMaterial
+
 export interface MeshInitOptions extends BaseInitOptions {
 	onClick?: MeshControllerOptions['onClick']
+	onMousemove?: MeshControllerOptions['onMousemove']
 	geometry: MeshControllerOptions['geometry']
 	material: MeshControllerOptions['material']
 }
 export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 export class MeshController extends BaseController<Mesh> {
+	private mouseHelper: MouseHelper
 	private onClick?: MeshControllerOptions['onClick']
+	private onMousemove?: MeshControllerOptions['onMousemove']
+	private onMouseover?: MeshControllerOptions['onMouseover']
 
 	constructor(options: MeshControllerOptions) {
-		const { name, onClick } = options
+		const { name, onClick, onMousemove, onMouseover } = options
 		super({ name })
 
+		this.mouseHelper = new MouseHelper()
 		this.onClick = onClick
+		this.onMousemove = onMousemove
+		this.onMouseover = onMouseover
 
 		this.init(options)
 	}
@@ -73,12 +105,42 @@ export class MeshController extends BaseController<Mesh> {
 		this.setGeometry(options.geometry)
 	}
 
+	public override animate(animateFunction: AnimateFunction<Mesh>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
+	}
+
 	protected addEventListeners(): void {
-		this.three.addEventListener('click', () => {
-			if (this.onClick && this.isIntersected()) {
-				this.onClick(this.three, this.scene)
-			}
-		})
+		if (this.onClick) {
+			this.three.addEventListener(MouseEventType.Click, () => {
+				const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+
+				if (this.onClick && this.isIntersected()) {
+					this.onClick({ target: this.three, mousePosition, scene: this.scene })
+				}
+			})
+		}
+
+		if (this.onMousemove) {
+			this.three.addEventListener(MouseEventType.Mousemove, () => {
+				if (this.onMousemove) {
+					const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+
+					this.onMousemove({ target: this.three, mousePosition, scene: this.scene })
+				}
+			})
+		}
+
+		if (this.onMouseover) {
+			this.three.addEventListener(MouseEventType.Mouseover, () => {
+				const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+
+				if (this.onMouseover && this.isIntersected()) {
+					this.onMouseover({ target: this.three, mousePosition, scene: this.scene })
+				}
+			})
+		}
 	}
 
 	private setGeometry(geometry: MeshGeometry): void {

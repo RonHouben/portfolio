@@ -12,7 +12,7 @@ export class LoadingManagerController {
 		loadingManagerStore.set({
 			manager: this.three,
 			isLoading: false,
-			hasError: false,
+			hasError: false
 		})
 	}
 
@@ -30,7 +30,11 @@ export class LoadingManagerController {
 		}
 
 		this.three.onError = (): void => {
-			loadingManagerStore.update((prevStore) => ({ ...prevStore, isLoading: false, hasError: true }))
+			loadingManagerStore.update((prevStore) => ({
+				...prevStore,
+				isLoading: false,
+				hasError: true
+			}))
 		}
 	}
 }

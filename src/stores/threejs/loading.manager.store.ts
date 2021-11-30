@@ -1,12 +1,14 @@
-import { writable } from "svelte/store";
-import type { LoadingManager } from "three";
+import { writable } from 'svelte/store'
+import type { LoadingManager } from 'three'
 
 interface LoadingManagerStore {
 	manager: LoadingManager
 	isLoading: boolean
 	hasError: boolean
-	loaded?: number
-	total?: number
+	amountLoaded?: number
+	totalToLoad?: number
 }
 
-export const loadingManagerStore = writable<LoadingManagerStore>()
+export const loadingManagerStore = writable<LoadingManagerStore>({ 
+	isLoading: true
+} as LoadingManagerStore)

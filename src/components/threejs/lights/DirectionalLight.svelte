@@ -1,4 +1,6 @@
 <script lang="ts">
+import { onMount } from 'svelte';
+
 	import {
 		DirectionalLightController,
 		DirectionalLightControllerOptions
@@ -6,7 +8,13 @@
 
 	export let options: DirectionalLightControllerOptions
 
-	const directionalLightController = new DirectionalLightController(options)
+	let directionalLightController: DirectionalLightController | undefined
 
-	$: directionalLightController.update(options)
+	onMount(() => {
+		directionalLightController = new DirectionalLightController(options)
+	})
+
+	$: if (directionalLightController) {
+		directionalLightController.update(options)
+	}
 </script>

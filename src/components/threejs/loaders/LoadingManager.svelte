@@ -19,7 +19,7 @@
 		}
 	}
 
-	new LoadingManagerController()
+		new LoadingManagerController()
 </script>
 
 {#if loadingScreen.enabled && $loadingManagerStore.isLoading}
@@ -41,7 +41,10 @@
 		</div>
 	</slot>
 {/if}
-<slot name="loader" />
+
+{#if !$loadingManagerStore.isLoading}
+	<slot name="loadable" />
+{/if}
 
 <style>
 	div {

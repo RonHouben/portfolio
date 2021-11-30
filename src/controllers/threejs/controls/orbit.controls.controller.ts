@@ -2,10 +2,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { Camera, Scene } from 'three'
 import { get } from 'svelte/store'
 import { sceneStore } from '../../../stores/threejs/scene.store'
+import { rendererStore } from '../../../stores/threejs/renderer.store'
 
 export interface OrbitControlsControllerOptions {
 	cameraName: string
-	domElement: HTMLElement
 	targetName?: string
 	autoRotate?: OrbitControls['autoRotate']
 	autoRorateSpeed?: OrbitControls['autoRotateSpeed']
@@ -40,14 +40,17 @@ export class OrbitControlsController {
 
 	constructor(options: OrbitControlsControllerOptions) {
 		this.scene = get(sceneStore)
-
 		this.camera = this.getCamera(options.cameraName)
 
-		this.three = new OrbitControls(this.camera, options.domElement)
+		const renderer = get(rendererStore)
+
+		if (!renderer) {
+			throw new Error(`Unable to find renderer`)
+		}
+
+		this.three = new OrbitControls(this.camera, renderer.domElement)
 
 		this.update(options)
-
-		this.getCamera(options.cameraName).rotateY(90)
 
 		this.renderLoop()
 	}
@@ -78,7 +81,6 @@ export class OrbitControlsController {
 		this.three.touches = options.touches || this.three.touches
 		this.three.zoomSpeed = options.zoomSpeed || this.three.zoomSpeed
 		this.setTarget(options.targetName)
-
 	}
 
 	private getCamera<T extends Camera>(cameraName: OrbitControlsControllerOptions['cameraName']): T {

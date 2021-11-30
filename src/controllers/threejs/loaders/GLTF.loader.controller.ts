@@ -27,6 +27,7 @@ export class GLTFLoaderController {
 			path,
 			(gltf) => {
 				this.three = gltf
+
 				this.scene.add(this.three.scene)
 				this.three.scene.name = name
 				this.three.scene.animations = this.three.animations

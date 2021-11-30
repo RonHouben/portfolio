@@ -11,6 +11,7 @@
 	$: sceneController.update(options)
 </script>
 
+<slot name="meshes" />
 <slot name="lights" />
 <slot name="helpers" />
 <slot name="cameras">
@@ -22,5 +23,5 @@
 </slot>
 <slot name="controls" />
 <slot name="raycaster" />
-<slot name="meshes" />
+<slot name="points" />
 <slot name="loading-manager" />

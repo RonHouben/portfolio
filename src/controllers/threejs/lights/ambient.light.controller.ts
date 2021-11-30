@@ -1,4 +1,5 @@
 import { AmbientLight } from 'three'
+import type { AnimateFunction } from '../base.controller'
 import type { LightControllerOptions, LightInitOptions } from './light.controller'
 import { LightController } from './light.controller'
 
@@ -32,5 +33,11 @@ export class AmbientLightController extends LightController<AmbientLight> {
 	public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
 		this.setColor(options.color)
 		this.setShadow(options.shadow)
+	}
+
+	public override animate(animateFunction: AnimateFunction<AmbientLight>): void {
+		requestAnimationFrame(() => this.animate(animateFunction))
+
+		animateFunction(this.three, this.scene)
 	}
 }
