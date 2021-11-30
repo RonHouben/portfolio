@@ -6,6 +6,7 @@
 		PointsController,
 		PointsControllerOptions
 	} from '../../../controllers/threejs/objects/points.controller'
+	import { onMount } from 'svelte'
 
 	export let options: PointsControllerOptions
 	export let animate: AnimateFunction<Points> | undefined = undefined
@@ -13,11 +14,13 @@
 
 	const pointsController = new PointsController(options)
 
-	if (animate) {
-		pointsController.animate(animate)
-	}
+	onMount(() => {
+		if (animate) {
+			pointsController.animate(animate)
+		}
 
-	pointsController.createPoints(createPoints)
+		pointsController.createPoints(createPoints)
+	})
 
 	$: pointsController.update(options)
 </script>

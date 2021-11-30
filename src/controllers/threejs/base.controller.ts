@@ -1,7 +1,7 @@
 import { get } from 'svelte/store'
 import type { Object3D } from 'three'
 import { EventDispatcher, Scene } from 'three'
-import { raycasterIntersectsStore } from '../../stores/threejs/raycaster.store'
+import { raycasterStore } from '../../stores/threejs/raycaster.store'
 import { sceneStore } from '../../stores/threejs/scene.store'
 import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
 import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
@@ -21,8 +21,8 @@ interface Vector3 {
 	z?: number
 }
 
-export type AnimateFunction<T> = ObjectInteractionFunction<T>
-export type ObjectInteractionFunction<T> = (obj: T, scene: Scene) => void
+export type AnimateFunction<T> = (obj: T, scene: Scene) => void
+export type ObjectInteractionFunction<E> = (event: E) => void
 export interface ShadowOptions {
 	castShadow?: boolean
 	receiveShadow?: boolean
@@ -55,9 +55,9 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 	public abstract animate(animateFunction: AnimateFunction<T>): void
 
 	protected isIntersected(): boolean {
-		const raycasterIntersects = get(raycasterIntersectsStore)
+		const { intersects } = get(raycasterStore)
 
-		const intersected = raycasterIntersects.find(({ object }) => object.uuid === this.three.uuid)
+		const intersected = intersects.find(({ object }) => object.uuid === this.three.uuid)
 
 		return intersected ? true : false
 	}

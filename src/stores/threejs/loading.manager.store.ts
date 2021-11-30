@@ -9,4 +9,6 @@ interface LoadingManagerStore {
 	totalToLoad?: number
 }
 
-export const loadingManagerStore = writable<LoadingManagerStore>()
+export const loadingManagerStore = writable<LoadingManagerStore>({ 
+	isLoading: true
+} as LoadingManagerStore)

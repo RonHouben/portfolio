@@ -24,4 +24,8 @@
 		font-weight: bold;
 		text-transform: uppercase;
 	}
+
+	button {
+		z-index: 2;
+	}
 </style>

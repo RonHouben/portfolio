@@ -77,7 +77,7 @@ export class RendererController {
 			return
 		}
 
-		if (domElementId) {
+		if (document && domElementId) {
 			const parentElement = document.getElementById(domElementId)
 
 			if (!parentElement) {
@@ -115,7 +115,7 @@ export class RendererController {
 	}
 
 	private onWindowResize(domElementId?: string): void {
-		if (domElementId) {
+		if (document && domElementId) {
 			const parentElement = document.getElementById(domElementId)
 
 			if (!parentElement) {

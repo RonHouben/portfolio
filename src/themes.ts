@@ -66,13 +66,5 @@ export const themes: Theme[] = [
 			text: '#f1f1f1',
 			background: '#27323a'
 		}
-	},
-	{
-		...baseTheme,
-		name: 'purple',
-		colors: {
-			text: '#f1f1f1',
-			background: 'purple'
-		}
 	}
 ]

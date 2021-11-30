@@ -5,7 +5,7 @@
 
 	export let options: Omit<WebGLRendererControllerOptions, 'domElementId'>
 
-	const domElementId: string = 'threejs'
+	const domElementId = 'threejs'
 
 	onMount(() => {
 		new WebGLRendererController({ ...options, domElementId })

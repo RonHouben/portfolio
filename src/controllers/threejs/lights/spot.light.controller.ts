@@ -99,8 +99,8 @@ export class SpotLightController extends LightController<SpotLight> {
 	}
 
 	private setHelpers(options: SpotLightControllerOptions['helpers']): void {
-		if (options && options.light?.enabled) {
-			const lightHelper = new SpotLightHelper(this.three, options.light.color)
+		if (options?.enabled) {
+			const lightHelper = new SpotLightHelper(this.three, options.color)
 
 			this.scene.add(lightHelper)
 		}
@@ -115,6 +115,10 @@ export class SpotLightController extends LightController<SpotLight> {
 	private setTarget(targetName: SpotLightControllerOptions['targetName']): void {
 		if (targetName) {
 			const target = this.scene.getObjectByName(targetName)
+
+			if (!target) {
+				throw new Error(`Couldn't find target with name: "${targetName}"`)
+			}
 
 			if (target) {
 				this.three.target = target

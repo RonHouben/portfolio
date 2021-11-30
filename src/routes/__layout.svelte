@@ -1,6 +1,5 @@
 <script lang="ts">
 	import ThemeContext from '../contexts/ThemeContext.svelte'
-
 	import Navbar from '../components/Navbar.svelte'
 </script>
 

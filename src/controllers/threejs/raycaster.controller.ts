@@ -1,7 +1,7 @@
 import { get } from 'svelte/store'
 import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
 import { Raycaster, Vector2 } from 'three'
-import { raycasterIntersectsStore } from '../../stores/threejs/raycaster.store'
+import { raycasterStore } from '../../stores/threejs/raycaster.store'
 import { rendererStore } from '../../stores/threejs/renderer.store'
 import { sceneStore } from '../../stores/threejs/scene.store'
 
@@ -27,11 +27,15 @@ export class RaycasterController {
 		this.camera = this.getCamera(cameraName)
 
 		addEventListener('mousemove', this.updateMouse.bind(this), false)
+		addEventListener('touchmove', this.updateMouse.bind(this), false)
 
 		this.render()
 
 		// set Svelte store
-		raycasterIntersectsStore.set(this.intersects)
+		raycasterStore.set({
+			intersects: this.intersects,
+			raycaster: this.three
+		})
 	}
 
 	private getCamera<T extends Camera>(cameraName: RaycasterControllerOptions['cameraName']): T {
@@ -44,13 +48,20 @@ export class RaycasterController {
 		return camera
 	}
 
-	private updateMouse(event: MouseEvent): void {
+	private updateMouse(event: MouseEvent | TouchEvent): void {
 		// calculate mouse position in normalized device coordinates
 		// (-1 to +1) for both components
 		const rect = this.renderer.domElement.getBoundingClientRect()
 
-		this.mouse.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1
-		this.mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1
+		if (event instanceof MouseEvent) {
+			this.mouse.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1
+			this.mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1
+		}
+
+		if (event instanceof TouchEvent) {
+			this.mouse.x = ((event.touches[0].clientX - rect.left) / (rect.right - rect.left)) * 2 - 1
+			this.mouse.y = -((event.touches[0].clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1
+		}
 
 		this.update()
 	}
@@ -59,7 +70,10 @@ export class RaycasterController {
 		this.intersects = this.three.intersectObjects(this.scene.children, false)
 
 		// update store
-		raycasterIntersectsStore.update(() => this.intersects)
+		raycasterStore.update(() => ({
+			intersects: this.intersects,
+			raycaster: this.three
+		}))
 	}
 
 	private render(): void {

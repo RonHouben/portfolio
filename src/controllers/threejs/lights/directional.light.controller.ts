@@ -72,14 +72,18 @@ export class DirectionalLightController extends LightController<DirectionalLight
 	private setTarget(targetName: DirectionalLightControllerOptions['targetName']): void {
 		const target = this.scene.getObjectByName(targetName)
 
+		if (!target) {
+			throw new Error(`Couldn't find target with name: "${targetName}"`)
+		}
+
 		if (target) {
 			this.three.target = target
 		}
 	}
 
 	private setHelpers(options: DirectionalLightHelperOptions): void {
-		if (options.light && options.light.enabled) {
-			const helper = new DirectionalLightHelper(this.three, options.light.size, options.light.color)
+		if (options.enabled) {
+			const helper = new DirectionalLightHelper(this.three, options.size, options.color)
 
 			this.scene.add(helper)
 		}
