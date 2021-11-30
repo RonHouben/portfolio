@@ -144,7 +144,8 @@
 									name: `row-${row}`,
 									geometry: new BoxGeometry(0.5, 0.5, 0.5),
 									material: new MeshPhysicalMaterial({
-										metalness: 1
+										metalness: 1,
+										clearcoat: 0.5,
 									}),
 									position: {
 										y: row,
