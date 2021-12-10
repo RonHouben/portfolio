@@ -67,7 +67,7 @@ export class RaycasterController {
 	}
 
 	private update(): void {
-		this.intersects = this.three.intersectObjects(this.scene.children, false)
+		this.intersects = this.three.intersectObjects(this.scene.children, true)
 
 		// update store
 		raycasterStore.update(() => ({
