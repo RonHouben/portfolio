@@ -1,9 +1,9 @@
 import type { Camera } from 'three'
 import type {
-	AnimateFunction,
-	BaseControllerOptions,
-	BaseInitOptions,
-	BaseUpdateOptions
+  AnimateFunction,
+  BaseControllerOptions,
+  BaseInitOptions,
+  BaseUpdateOptions
 } from '../base.controller'
 import { BaseController } from '../base.controller'
 
