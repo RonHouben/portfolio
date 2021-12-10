@@ -126,6 +126,7 @@
 
               if (grid) {
                 grid.children.forEach((child) => {
+                  // @ts-ignore
                   child.material.wireframe = !child.material.wireframe
                 })
               }
