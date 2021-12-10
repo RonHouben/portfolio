@@ -1,20 +1,20 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+  import { onMount } from 'svelte'
 
-	import {
-		DirectionalLightController,
-		DirectionalLightControllerOptions
-	} from '../../../controllers/threejs/lights/directional.light.controller'
+  import {
+    DirectionalLightController,
+    DirectionalLightControllerOptions
+  } from '../../../controllers/threejs/lights/directional.light.controller'
 
-	export let options: DirectionalLightControllerOptions
+  export let options: DirectionalLightControllerOptions
 
-	let directionalLightController: DirectionalLightController | undefined
+  let directionalLightController: DirectionalLightController | undefined
 
-	onMount(() => {
-		directionalLightController = new DirectionalLightController(options)
-	})
+  onMount(() => {
+    directionalLightController = new DirectionalLightController(options)
+  })
 
-	$: if (directionalLightController) {
-		directionalLightController.update(options)
-	}
+  $: if (directionalLightController) {
+    directionalLightController.update(options)
+  }
 </script>

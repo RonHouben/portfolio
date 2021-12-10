@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
+  import { onMount } from 'svelte'
 
-	import {
-		SpotLightAnimateFunction,
-		SpotLightController,
-		SpotLightControllerOptions
-	} from '../../../controllers/threejs/lights/spot.light.controller'
-	import { sceneStore } from '../../../stores/threejs/scene.store'
+  import {
+    SpotLightAnimateFunction,
+    SpotLightController,
+    SpotLightControllerOptions
+  } from '../../../controllers/threejs/lights/spot.light.controller'
+  import { sceneStore } from '../../../stores/threejs/scene.store'
 
-	export let options: Omit<SpotLightControllerOptions, 'scene'>
-	export let animate: SpotLightAnimateFunction | undefined = undefined
+  export let options: Omit<SpotLightControllerOptions, 'scene'>
+  export let animate: SpotLightAnimateFunction | undefined = undefined
 
-	let spotLightController: SpotLightController
+  let spotLightController: SpotLightController
 
-	onMount(() => {
-		spotLightController = new SpotLightController(options)
-	})
+  onMount(() => {
+    spotLightController = new SpotLightController(options)
+  })
 
-	$: if (spotLightController) {
-		if (animate) {
-			animate(spotLightController.three, $sceneStore)
-		}
+  $: if (spotLightController) {
+    if (animate) {
+      animate(spotLightController.three, $sceneStore)
+    }
 
-		spotLightController.update(options)
-	}
+    spotLightController.update(options)
+  }
 </script>

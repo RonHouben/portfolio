@@ -4,40 +4,40 @@ import type { LightControllerOptions, LightInitOptions } from './light.controlle
 import { LightController } from './light.controller'
 
 export type AmbientLightControllerOptions = Omit<
-	Omit<LightControllerOptions, 'position'>,
-	'rotation'
+  Omit<LightControllerOptions, 'position'>,
+  'rotation'
 >
 export type AmbientLightInitOptions = Omit<Omit<LightInitOptions, 'position'>, 'rotation'>
 export type AmbientLightUpdateOptions = Omit<
-	Omit<AmbientLightControllerOptions, 'position'>,
-	'rotation'
+  Omit<AmbientLightControllerOptions, 'position'>,
+  'rotation'
 >
 
 export class AmbientLightController extends LightController<AmbientLight> {
-	constructor(options: AmbientLightControllerOptions) {
-		super(options)
-		this.three = new AmbientLight(options.color, options.intensity)
+  constructor(options: AmbientLightControllerOptions) {
+    super(options)
+    this.three = new AmbientLight(options.color, options.intensity)
 
-		this.init(options)
+    this.init(options)
 
-		this.scene.add(this.three)
-	}
+    this.scene.add(this.three)
+  }
 
-	protected override init(options: AmbientLightInitOptions): void {
-		this.three.name = options.name
+  protected override init(options: AmbientLightInitOptions): void {
+    this.three.name = options.name
 
-		this.setColor(options.color)
-		this.setShadow(options.shadow)
-	}
+    this.setColor(options.color)
+    this.setShadow(options.shadow)
+  }
 
-	public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
-		this.setColor(options.color)
-		this.setShadow(options.shadow)
-	}
+  public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
+    this.setColor(options.color)
+    this.setShadow(options.shadow)
+  }
 
-	public override animate(animateFunction: AnimateFunction<AmbientLight>): void {
-		requestAnimationFrame(() => this.animate(animateFunction))
+  public override animate(animateFunction: AnimateFunction<AmbientLight>): void {
+    requestAnimationFrame(() => this.animate(animateFunction))
 
-		animateFunction(this.three, this.scene)
-	}
+    animateFunction(this.three, this.scene)
+  }
 }

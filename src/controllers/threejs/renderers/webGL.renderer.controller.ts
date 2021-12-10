@@ -5,7 +5,7 @@ import { RendererController } from './renderer.controller'
 export type WebGLRendererControllerOptions = RendererControllerOptions
 
 export class WebGLRendererController extends RendererController {
-	constructor(options: WebGLRendererControllerOptions) {
-		super(options, RendererType.webGL)
-	}
+  constructor(options: WebGLRendererControllerOptions) {
+    super(options, RendererType.webGL)
+  }
 }
