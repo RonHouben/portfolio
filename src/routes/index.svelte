@@ -13,10 +13,9 @@
 	import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
 	import anime from 'animejs'
 	import SpotLight from '../components/threejs/lights/SpotLight.svelte'
-	import { BoxGeometry } from 'three'
+	import Grid from '../components/Grid.svelte'
 
 	const { theme, toggle } = useTheme()
-
 </script>
 
 <div class="canvas-container">
@@ -43,8 +42,11 @@
 							name: 'perspective',
 							position: {
 								x: 0,
-								y: 2,
+								y: 0,
 								z: 7
+							},
+							rotation: {
+								// x: 0.5
 							},
 							fov: 50,
 							near: 2,
@@ -69,6 +71,7 @@
 							name: 'spotlight-left',
 							targetName: 'ball',
 							color: '#5CD85A',
+							intensity: 4,
 							position: {
 								y: 10,
 								x: -10
@@ -101,23 +104,32 @@
 				<svelte:fragment slot="meshes">
 					<Mesh
 						options={{
-							geometry: new IcosahedronGeometry(0.5),
+							geometry: new IcosahedronGeometry(0.25),
 							material: new MeshPhysicalMaterial({
 								clearcoat: 0.5,
-								metalness: 1
+								metalness: 1,
+								// wireframe: true
 							}),
 							name: 'ball',
 							position: {
 								x: 0,
-								y: 2,
-								z: 0
+								y: 0,
+								z: 1
 							},
 							shadow: {
 								castShadow: true,
 								receiveShadow: true
 							}
 						}}
-						onClick={({ target }) => {
+						onClick={({ target, scene }) => {
+							const grid = scene.getObjectByName('grid')
+
+							if (grid) {
+								grid.children.forEach((child) => {
+									child.material.wireframe = !child.material.wireframe
+								})
+							}
+
 							anime({
 								targets: target.rotation,
 								x: target.rotation.x + Math.random() * 10,
@@ -131,45 +143,25 @@
 						}}
 						onMousemove={({ target, mousePosition }) => {
 							MouseHelper.followMouse(mousePosition.x, mousePosition.y, target, {
-								targets: [target.position, target.rotation],
+								targets: [target.rotation],
 								x: +1,
 								y: +1
 							})
 						}}
 					/>
-					{#each [0, 1, 2, 3, 4] as row}
-						{#each [-2, -1, 0, 1, 2] as column}
-							<Mesh
-								options={{
-									name: `row-${row}`,
-									geometry: new BoxGeometry(0.5, 0.5, 0.5),
-									material: new MeshPhysicalMaterial({
-										metalness: 1,
-										clearcoat: 0.5,
-									}),
-									position: {
-										y: row,
-										x: column
-									}
-								}}
-								onClick={({ target }) => {
-									target.material.wireframe = !target.material.wireframe
-								}}
-								onMouseover={({ target }) => {
-									anime({
-										targets: target.rotation,
-										y: target.rotation.y + 1,
-										x: target.rotation.x + 1
-									})
 
-									anime({
-										targets: target.position,
-										z: target.position.z - 5
-									})
-								}}
-							/>
-						{/each}
-					{/each}
+					<Grid
+						name="grid"
+						rows={10}
+						columns={10}
+						depth={2}
+						cellDistance={0.25}
+						cellSize={0.25}
+						position={{
+							x: -(10 / 4) + 0.25,
+							y: -(10 / 4) + 0.25
+						}}
+					/>
 				</svelte:fragment>
 			</Scene>
 		</svelte:fragment>
@@ -177,7 +169,7 @@
 </div>
 
 <section>
-	<h1>HELLO WORLD</h1>
+	<h1 style="user-select: none;">HELLO WORLD</h1>
 </section>
 
 <style>

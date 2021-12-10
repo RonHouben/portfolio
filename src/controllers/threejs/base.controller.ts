@@ -5,6 +5,7 @@ import { raycasterStore } from '../../stores/threejs/raycaster.store'
 import { sceneStore } from '../../stores/threejs/scene.store'
 import type { PerspectiveCameraUpdateOptions } from './cameras/perspective.camera'
 import type { DirectionalLightUpdateOptions } from './lights/directional.light.controller'
+import type { GroupInitOptions, GroupUpdateOptions } from './objects/group.controller'
 import type { MeshUpdateOptions } from './objects/mesh.controller'
 import type { PointsInitOptions, PointsUpdateOptions } from './objects/points.controller'
 
@@ -30,18 +31,22 @@ export interface ShadowOptions {
 export type BaseInitOptions = BaseControllerOptions
 export type BaseUpdateOptions = BaseControllerOptions
 
+type InteractionState = | 'idle' | 'entering' | 'interacting'
+
 export abstract class BaseController<T extends Object3D> extends EventDispatcher {
 	public three!: T
 	public name: BaseControllerOptions['name']
 	protected scene: Scene
+	protected interactionState: InteractionState
 
 	constructor({ name }: Pick<BaseControllerOptions, 'name'>) {
 		super()
 		this.name = name
 		this.scene = get(sceneStore)
+		this.interactionState = 'idle'
 	}
 
-	protected abstract init(options: BaseInitOptions | PointsInitOptions): void
+	protected abstract init(options: BaseInitOptions | PointsInitOptions | GroupInitOptions ): void
 
 	public abstract update(
 		options:
@@ -50,6 +55,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 			| DirectionalLightUpdateOptions
 			| PerspectiveCameraUpdateOptions
 			| PointsUpdateOptions
+			| GroupUpdateOptions
 	): void
 
 	public abstract animate(animateFunction: AnimateFunction<T>): void
@@ -59,13 +65,13 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 
 		const intersected = intersects.find(({ object }) => object.uuid === this.three.uuid)
 
-		return intersected ? true : false
+		return !!intersected
 	}
 
-	protected setPosition(options: BaseControllerOptions['position']): void {
-		this.three.position.x = options.x || this.three.position.x
-		this.three.position.y = options.y || this.three.position.y
-		this.three.position.z = options.z || this.three.position.z
+	protected setPosition(options?: BaseControllerOptions['position']): void {
+		this.three.position.x = options?.x || this.three.position.x
+		this.three.position.y = options?.y || this.three.position.y
+		this.three.position.z = options?.z || this.three.position.z
 	}
 
 	protected setRotation(options: BaseControllerOptions['rotation']): void {
