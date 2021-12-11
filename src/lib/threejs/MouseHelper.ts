@@ -4,6 +4,8 @@ import { Object3D, Vector3 } from 'three'
 import type { AnimeParams } from 'animejs'
 import anime from 'animejs'
 import { rendererStore } from '../../stores/threejs/renderer.store'
+import { Body } from 'cannon-es'
+import { Vec3 } from 'cannon-es'
 
 export class MouseHelper {
   private clientX!: number
@@ -28,12 +30,12 @@ export class MouseHelper {
   public static followMouse(
     mouseX: number,
     mouseY: number,
-    object: Object3D,
+    target: Object3D | Body,
     animeOptions?: Omit<AnimeParams, 'targets'>
   ): void {
     const camera = get(cameraStore)
     // Make the sphere follow the mouse
-    const vector = new Vector3(mouseX, mouseY, object.position.y)
+    const vector = new Vector3(mouseX, mouseY, target.position.z)
 
     vector.unproject(camera)
 
@@ -41,15 +43,20 @@ export class MouseHelper {
     const distance = -camera.position.z / direction.z
     const newPosition = camera.position.clone().add(direction.multiplyScalar(distance))
 
-    if (!animeOptions) {
-      object.position.copy(newPosition)
-    } else {
-      anime({
-        ...animeOptions,
-        targets: [object.position, object.rotation],
-        x: newPosition.x,
-        y: newPosition.y
-      })
+    if (target instanceof Body) {
+      target.position.set(newPosition.x, newPosition.y, newPosition.z)
+    }
+
+    if (target instanceof Object3D) {
+      if (!animeOptions) {
+        target.position.copy(newPosition as Vector3 & Vec3)
+      } else {
+        anime({
+          ...animeOptions,
+          x: newPosition.x,
+          y: newPosition.y
+        })
+      }
     }
   }
 }

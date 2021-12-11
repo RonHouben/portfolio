@@ -9,164 +9,187 @@
   import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '../components/threejs/scenes/Scene.svelte'
   import { MouseHelper } from '$lib/threejs/MouseHelper'
-  import { IcosahedronGeometry } from 'three'
   import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
-  import anime from 'animejs'
   import SpotLight from '../components/threejs/lights/SpotLight.svelte'
   import Grid from '../components/Grid.svelte'
+  import Physics from '../components/cannon-es/Physics.svelte'
+  import { Vec3 } from 'cannon-es'
+  import { MeshBasicMaterial } from 'three'
+  import PhysicsBody from '../components/cannon-es/PhysicsBody.svelte'
+  import * as CANNON from 'cannon-es'
+  import { SphereGeometry } from 'three'
+  import { BoxGeometry } from 'three'
 
   const { toggle } = useTheme()
 </script>
 
 <div class="canvas-container">
-  <WebGlRenderer
+  <Physics
     options={{
-      alpha: true,
-      antialias: true,
-      outputEncoding: sRGBEncoding,
-      shadowMap: {
-        enabled: true,
-        type: PCFSoftShadowMap
-      }
+      gravity: new Vec3(0, -9.82, 0) // m/s²
     }}
   >
-    <svelte:fragment slot="scenes">
-      <Scene
-        options={{
-          name: 'scene'
-        }}
-      >
-        <svelte:fragment slot="cameras">
-          <PerspectiveCamera
-            options={{
-              name: 'perspective',
-              position: {
-                x: 0,
-                y: 0,
-                z: 7
-              },
-              rotation: {
-                // x: 0.5
-              },
-              fov: 50,
-              near: 2,
-              far: 1000
-            }}
-          />
-        </svelte:fragment>
-        <!-- Raycaster -->
-        <Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
+    <WebGlRenderer
+      options={{
+        alpha: true,
+        antialias: true,
+        outputEncoding: sRGBEncoding,
+        shadowMap: {
+          enabled: true,
+          type: PCFSoftShadowMap
+        }
+      }}
+    >
+      <svelte:fragment slot="scenes">
+        <Scene
+          options={{
+            name: 'scene'
+          }}
+        >
+          <svelte:fragment slot="cameras">
+            <PerspectiveCamera
+              options={{
+                name: 'perspective',
+                position: {
+                  x: 0,
+                  y: 0,
+                  z: 15
+                },
+                rotation: {
+                  // x: 0.5
+                },
+                fov: 50,
+                near: 2,
+                far: 1000
+              }}
+            />
+          </svelte:fragment>
+          <!-- Raycaster -->
+          <Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
 
-        <!-- Lights -->
-        <svelte:fragment slot="lights">
-          <AmbientLight
-            options={{
-              name: 'ambient-light',
-              color: '#08313A',
-              intensity: 0.75
-            }}
-          />
-          <SpotLight
-            options={{
-              name: 'spotlight-left',
-              targetName: 'ball',
-              color: '#5CD85A',
-              intensity: 4,
-              position: {
-                y: 10,
-                x: -10
-              }
-            }}
-          />
-          <SpotLight
-            options={{
-              name: 'spotlight-right',
-              targetName: 'ball',
-              color: '#107869',
-              position: {
-                y: 10,
-                x: 10
-              }
-            }}
-          />
-          <DirectionalLight
-            options={{
-              name: 'directional-light-bottom',
-              color: '#055F66',
-              targetName: 'ball',
-              position: {
-                y: -10
-              }
-            }}
-          />
-        </svelte:fragment>
-        <!-- Meshes -->
-        <svelte:fragment slot="meshes">
-          <Mesh
-            options={{
-              geometry: new IcosahedronGeometry(0.25),
-              material: new MeshPhysicalMaterial({
-                clearcoat: 0.5,
-                metalness: 1
-                // wireframe: true
-              }),
-              name: 'ball',
-              position: {
-                x: 0,
-                y: 0,
-                z: 1
-              },
-              shadow: {
-                castShadow: true,
-                receiveShadow: true
-              }
-            }}
-            onClick={({ target, scene }) => {
-              const grid = scene.getObjectByName('grid')
-
-              if (grid) {
-                grid.children.forEach((child) => {
-                  // @ts-ignore
-                  child.material.wireframe = !child.material.wireframe
-                })
-              }
-
-              anime({
-                targets: target.rotation,
-                x: target.rotation.x + Math.random() * 10,
-                y: target.rotation.y + Math.random() * 10,
-                begin: () => {
-                  target.material.wireframe = !target.material.wireframe
-
-                  toggle()
+          <!-- Lights -->
+          <svelte:fragment slot="lights">
+            <AmbientLight
+              options={{
+                name: 'ambient-light',
+                color: '#08313A',
+                intensity: 0.75
+              }}
+            />
+            <SpotLight
+              options={{
+                name: 'spotlight-left',
+                targetName: 'ball',
+                color: '#5CD85A',
+                intensity: 4,
+                position: {
+                  y: 10,
+                  x: -10
                 }
-              })
-            }}
-            onMousemove={({ target, mousePosition }) => {
-              MouseHelper.followMouse(mousePosition.x, mousePosition.y, target, {
-                targets: [target.rotation],
-                x: +1,
-                y: +1
-              })
-            }}
-          />
+              }}
+            />
+            <SpotLight
+              options={{
+                name: 'spotlight-right',
+                targetName: 'ball',
+                color: '#107869',
+                position: {
+                  y: 10,
+                  x: 10
+                }
+              }}
+            />
+            <DirectionalLight
+              options={{
+                name: 'directional-light-bottom',
+                color: '#055F66',
+                targetName: 'ball',
+                position: {
+                  y: -10
+                }
+              }}
+            />
+          </svelte:fragment>
+          <!-- Meshes -->
+          <svelte:fragment slot="meshes">
+            <PhysicsBody
+              options={{
+                shape: new CANNON.Sphere(1),
+                mass: 5
+              }}
+              onMousemove={(target, mousePosition) => {
+                MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
+              }}
+            >
+              <Mesh
+                options={{
+                  geometry: new SphereGeometry(1),
+                  material: new MeshPhysicalMaterial({
+                    clearcoat: 0.5,
+                    metalness: 1
+                  }),
+                  name: 'ball',
+                  position: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                  },
+                  shadow: {
+                    castShadow: true,
+                    receiveShadow: true
+                  }
+                }}
+              />
+            </PhysicsBody>
 
-          <Grid
-            name="grid"
-            rows={10}
-            columns={10}
-            depth={2}
-            cellDistance={0.25}
-            cellSize={0.25}
-            position={{
-              x: -(10 / 4) + 0.25,
-              y: -(10 / 4) + 0.25
-            }}
-          />
-        </svelte:fragment>
-      </Scene>
-    </svelte:fragment>
-  </WebGlRenderer>
+            <Grid
+              name="grid"
+              rows={20}
+              columns={20}
+              depth={1}
+              cellDistance={0.5}
+              cellSize={0.25}
+              position={{
+                // x: -(5 / 4) // + 0.25,
+                // y: -(10 / 4) // + 0.25
+              }}
+            />
+
+            <PhysicsBody
+              options={{
+                type: CANNON.Body.STATIC,
+                shape: new CANNON.Box(new CANNON.Vec3(10, 10, 0.5)),
+                position: new CANNON.Vec3(0, 0, 0),
+                rotation: {
+                  x: -(Math.PI / 2)
+                }
+              }}
+            >
+              <Mesh
+                options={{
+                  name: 'plane',
+                  geometry: new BoxGeometry(10, 10, 0.5),
+                  material: new MeshBasicMaterial({
+                    opacity: 0.5,
+                    color: 'grey',
+                    transparent: true
+                  }),
+                  position: {
+                    x: 0,
+                    y: -4,
+                    z: 0
+                  },
+                  rotation: {
+                    x: -(Math.PI / 2)
+                  }
+                }}
+              />
+            </PhysicsBody>
+          </svelte:fragment>
+        </Scene>
+      </svelte:fragment>
+    </WebGlRenderer>
+  </Physics>
 </div>
 
 <section>

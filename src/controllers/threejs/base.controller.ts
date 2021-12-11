@@ -76,7 +76,7 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
 
   protected setRotation(options: BaseControllerOptions['rotation']): void {
     if (options) {
-      this.three.rotation.x = options.x || this.three.rotation.x
+      this.three.rotation.z = options.x || this.three.rotation.x 
       this.three.rotation.y = options.y || this.three.rotation.y
       this.three.rotation.z = options.z || this.three.rotation.z
     }
