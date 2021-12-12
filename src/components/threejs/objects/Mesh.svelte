@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { getContext, onMount } from 'svelte'
   import {
     MeshController,
     MeshAnimateFunction,
     MeshControllerOptions,
     InteractionEvent
   } from '../../../controllers/threejs/objects/mesh.controller'
+  import type { Body } from 'cannon-es'
 
   export let options: MeshControllerOptions
   export let animate: MeshAnimateFunction | undefined = undefined
@@ -68,5 +69,11 @@
 
   $: if (animate && meshController) {
     meshController.animate(animate)
+  }
+
+  $: body = getContext<Body>('body')
+
+  $: if (meshController && body) {
+    meshController.setPositionFromPhysicsBody(body)
   }
 </script>

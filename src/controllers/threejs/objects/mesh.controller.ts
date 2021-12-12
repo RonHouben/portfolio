@@ -13,7 +13,9 @@ import type {
   PlaneBufferGeometry,
   PlaneGeometry,
   Scene,
-  SphereGeometry
+  SphereGeometry,
+  Vector3,
+  Quaternion
 } from 'three'
 import { Mesh as ThreeMesh } from 'three'
 import type {
@@ -23,6 +25,7 @@ import type {
   ObjectInteractionFunction
 } from '../base.controller'
 import { BaseController } from '../base.controller'
+import type { Body } from 'cannon-es'
 
 type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
 
@@ -189,5 +192,12 @@ export class MeshController extends BaseController<Mesh> {
 
   private setMaterial(material: MeshMaterial): void {
     this.three.material = material
+  }
+
+  public setPositionFromPhysicsBody(body: Body): void {
+    requestAnimationFrame(() => this.setPositionFromPhysicsBody(body))
+
+    this.three.position.copy(body.position as unknown as Vector3)
+    this.three.quaternion.copy(body.quaternion as unknown as Quaternion)
   }
 }
