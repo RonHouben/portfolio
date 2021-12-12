@@ -18,6 +18,7 @@
   import PhysicsBody from '../components/cannon-es/PhysicsBody.svelte'
   import * as CANNON from 'cannon-es'
   import { BoxGeometry } from 'three'
+  import anime from 'animejs';
 
   const { toggle } = useTheme()
 </script>
@@ -26,7 +27,7 @@
   <PhysicsWorld
     options={{
       gravity: new Vec3(0, -9.82, 0), // m/s²
-      debug: true 
+      debug: true
     }}
   >
     <WebGlRenderer
@@ -64,7 +65,7 @@
               }}
             />
           </svelte:fragment>
-          <svelte:fragment slot='controls'>
+          <svelte:fragment slot="controls">
             <!-- <OrbitControls options={{
               cameraName: 'perspective'
             }} /> -->
@@ -124,8 +125,15 @@
                 shape: new CANNON.Box(new CANNON.Vec3(1, 1, 5)),
                 mass: 1
               }}
-              onMousemove={(target, mousePosition) => {
+              onMousemove={({ target, mousePosition }) => {
                 MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
+              }}
+              onClick={({ target }) => {
+                anime({
+                  targets: target.quaternion,
+                  y: Math.round(target.quaternion.y) === 1 ? (Math.random() * -1) : Math.random() * 1,
+                  duration: 3000
+                })
               }}
             >
               <Mesh
@@ -146,6 +154,9 @@
                     castShadow: true,
                     receiveShadow: true
                   }
+                }}
+                onClick={({ target }) => {
+                  // target.rotation.y = 0.5 //Math.PI / 3
                 }}
               />
             </PhysicsBody>
@@ -178,7 +189,7 @@
                   name: 'plane',
                   geometry: new BoxGeometry(10, 10, 0.5),
                   material: new MeshBasicMaterial({
-                    opacity: 0.5,
+                    opacity: 0.75,
                     color: 'grey',
                     transparent: true
                   }),
