@@ -14,7 +14,6 @@
   import Grid from '../components/Grid.svelte'
   import PhysicsWorld from '../components/cannon-es/PhysicsWorld.svelte'
   import { Vec3 } from 'cannon-es'
-  import { MeshBasicMaterial } from 'three'
   import PhysicsBody from '../components/cannon-es/PhysicsBody.svelte'
   import * as CANNON from 'cannon-es'
   import { BoxGeometry } from 'three'
@@ -27,7 +26,7 @@
   <PhysicsWorld
     options={{
       gravity: new Vec3(0, -9.82, 0), // m/s²
-      debug: true
+      debug: false
     }}
   >
     <WebGlRenderer
@@ -188,10 +187,13 @@
                 options={{
                   name: 'plane',
                   geometry: new BoxGeometry(10, 10, 0.5),
-                  material: new MeshBasicMaterial({
+                  material: new MeshPhysicalMaterial({
                     opacity: 0.75,
-                    color: 'grey',
-                    transparent: true
+                    color: 'purple',
+                    transparent: true,
+                    clearcoat: 0.5,
+                    metalness: 0.5,
+                    roughness: 1,
                   }),
                   position: {
                     x: 0,
