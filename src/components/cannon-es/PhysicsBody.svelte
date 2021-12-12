@@ -9,6 +9,7 @@ import { MouseHelper } from '$lib/threejs/MouseHelper';
 
   type OnMousemove = (target: Body, mousePosition: { x: number, y: number }) => void
 
+  // TODO: extract to controller class
   const body = new Body(options)
 
   if (options.rotation) {

@@ -114,7 +114,8 @@
           <svelte:fragment slot="meshes">
             <PhysicsBody
               options={{
-                shape: new CANNON.Sphere(1),
+                type: CANNON.Body.KINEMATIC,
+                shape: new CANNON.Sphere(2.5),
                 mass: 5
               }}
               onMousemove={(target, mousePosition) => {
@@ -123,7 +124,7 @@
             >
               <Mesh
                 options={{
-                  geometry: new SphereGeometry(1),
+                  geometry: new SphereGeometry(2.5),
                   material: new MeshPhysicalMaterial({
                     clearcoat: 0.5,
                     metalness: 1

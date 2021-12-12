@@ -2,10 +2,16 @@
   import { World } from 'cannon-es'
   import type { WorldOptions } from 'cannon-es'
 	import { onMount, setContext } from 'svelte';
+  import { CannonDebugRenderer } from '../../controllers/cannon-es/helpers/CannonDebugRenderer';
+  import { sceneStore } from '../../stores/threejs/scene.store';
 
   export let options: WorldOptions
 
+  // TODO: extract to controller class
+
   const world = new World(options)
+  let cannonDebugRenderer: CannonDebugRenderer
+
 
   setContext<World>('world', world)
 
@@ -16,6 +22,8 @@
 
   function animate() {
     requestAnimationFrame(animate)
+
+    cannonDebugRenderer.update()
 
     const time = performance.now() / 1000 // seconds
 
@@ -29,6 +37,8 @@
   }
 
 	onMount(() => {
+    cannonDebugRenderer = new CannonDebugRenderer($sceneStore, world, { color: 'green' });
+
   	animate()
 	})
 </script>
