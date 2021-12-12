@@ -59,9 +59,6 @@
                 z: depth
               }
             }}
-            onClick={({ target }) => {
-              target.material.wireframe = !target.material.wireframe
-            }}
           />
         </PhysicsBody>
       {/each}

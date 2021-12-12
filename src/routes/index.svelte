@@ -18,6 +18,7 @@
   import * as CANNON from 'cannon-es'
   import { BoxGeometry } from 'three'
   import anime from 'animejs';
+import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
 
   const { toggle } = useTheme()
 </script>
@@ -37,7 +38,7 @@
         shadowMap: {
           enabled: true,
           type: PCFSoftShadowMap
-        }
+        },
       }}
     >
       <svelte:fragment slot="scenes">
@@ -64,7 +65,8 @@
               }}
             />
           </svelte:fragment>
-          <svelte:fragment slot="controls">
+          <svelte:fragment slot="helpers">
+            <StatsHelper />
             <!-- <OrbitControls options={{
               cameraName: 'perspective'
             }} /> -->
@@ -120,7 +122,6 @@
             <PhysicsBody
               options={{
                 type: CANNON.Body.KINEMATIC,
-                // shape: new CANNON.Sphere(2.5),
                 shape: new CANNON.Box(new CANNON.Vec3(1, 1, 5)),
                 mass: 1
               }}
@@ -137,7 +138,6 @@
             >
               <Mesh
                 options={{
-                  // geometry: new SphereGeometry(2.5),
                   geometry: new BoxGeometry(2, 2, 10),
                   material: new MeshPhysicalMaterial({
                     clearcoat: 0.5,
@@ -153,9 +153,6 @@
                     castShadow: true,
                     receiveShadow: true
                   }
-                }}
-                onClick={({ target }) => {
-                  // target.rotation.y = 0.5 //Math.PI / 3
                 }}
               />
             </PhysicsBody>
@@ -188,7 +185,7 @@
                   name: 'plane',
                   geometry: new BoxGeometry(10, 10, 0.5),
                   material: new MeshPhysicalMaterial({
-                    opacity: 0.75,
+                    // opacity: 0.75,
                     color: 'purple',
                     transparent: true,
                     clearcoat: 0.5,
