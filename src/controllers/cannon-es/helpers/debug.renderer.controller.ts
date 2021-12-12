@@ -7,7 +7,6 @@ interface CannonDebugRendererOptions {
 }
 
 export class CannonDebugRenderer {
-  private options: CannonDebugRendererOptions
   private scene: THREE.Scene
   private world: CANNON.World
 
@@ -16,27 +15,28 @@ export class CannonDebugRenderer {
   private sphereGeometry: THREE.SphereGeometry
   private boxGeometry: THREE.BoxGeometry
   private planeGeometry: THREE.PlaneGeometry
-  private cylinderGeometry: THREE.CylinderGeometry
 
   // for updating positions
   private tmpVec0 = new CANNON.Vec3()
-  private tmpVec1 = new CANNON.Vec3()
-  private tmpVec2 = new CANNON.Vec3()
   private tmpQuat0 = new CANNON.Quaternion()
 
   constructor(scene: THREE.Scene, world: CANNON.World, options: CannonDebugRendererOptions) {
     this.scene = scene
     this.world = world
-    this.options = options
 
     this.material = new THREE.MeshBasicMaterial({ color: options.color, wireframe: true })
     this.sphereGeometry = new THREE.SphereGeometry(1)
     this.boxGeometry = new THREE.BoxGeometry(1, 1, 1)
     this.planeGeometry = new THREE.PlaneGeometry(10, 10, 10, 10)
-    this.cylinderGeometry = new THREE.CylinderGeometry(1, 1, 10, 10)
   }
 
-  public update(): void {
+  public renderLoop(): void {
+    requestAnimationFrame(this.renderLoop.bind(this))
+
+    this.update()
+  }
+
+  private update(): void {
     const bodies = this.world.bodies
     const meshes = this.meshes
     const shapeWorldPosition = this.tmpVec0

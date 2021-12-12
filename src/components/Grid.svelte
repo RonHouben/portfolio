@@ -1,6 +1,4 @@
 <script lang="ts">
-  import anime from 'animejs'
-  import type { Object3D } from 'three'
   import { MeshNormalMaterial } from 'three'
   import { BoxGeometry } from 'three'
   import Group from './threejs/objects/Group.svelte'
@@ -45,7 +43,7 @@
             type: CANNON.Body.DYNAMIC,
             position: new CANNON.Vec3(column, row, depth),
             mass: 1,
-            shape: new CANNON.Box(new CANNON.Vec3(cellSize, cellSize, cellSize))
+            shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2))
           }}
         >
           <Mesh

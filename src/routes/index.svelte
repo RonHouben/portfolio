@@ -12,21 +12,21 @@
   import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
   import SpotLight from '../components/threejs/lights/SpotLight.svelte'
   import Grid from '../components/Grid.svelte'
-  import Physics from '../components/cannon-es/Physics.svelte'
+  import PhysicsWorld from '../components/cannon-es/PhysicsWorld.svelte'
   import { Vec3 } from 'cannon-es'
   import { MeshBasicMaterial } from 'three'
   import PhysicsBody from '../components/cannon-es/PhysicsBody.svelte'
   import * as CANNON from 'cannon-es'
-  import { SphereGeometry } from 'three'
   import { BoxGeometry } from 'three'
 
   const { toggle } = useTheme()
 </script>
 
 <div class="canvas-container">
-  <Physics
+  <PhysicsWorld
     options={{
-      gravity: new Vec3(0, -9.82, 0) // m/s²
+      gravity: new Vec3(0, -9.82, 0), // m/s²
+      debug: true 
     }}
   >
     <WebGlRenderer
@@ -63,6 +63,11 @@
                 far: 1000
               }}
             />
+          </svelte:fragment>
+          <svelte:fragment slot='controls'>
+            <!-- <OrbitControls options={{
+              cameraName: 'perspective'
+            }} /> -->
           </svelte:fragment>
           <!-- Raycaster -->
           <Raycaster options={{ cameraName: 'perspective' }} slot="raycaster" />
@@ -115,8 +120,9 @@
             <PhysicsBody
               options={{
                 type: CANNON.Body.KINEMATIC,
-                shape: new CANNON.Sphere(2.5),
-                mass: 5
+                // shape: new CANNON.Sphere(2.5),
+                shape: new CANNON.Box(new CANNON.Vec3(1, 1, 5)),
+                mass: 1
               }}
               onMousemove={(target, mousePosition) => {
                 MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
@@ -124,7 +130,8 @@
             >
               <Mesh
                 options={{
-                  geometry: new SphereGeometry(2.5),
+                  // geometry: new SphereGeometry(2.5),
+                  geometry: new BoxGeometry(2, 2, 10),
                   material: new MeshPhysicalMaterial({
                     clearcoat: 0.5,
                     metalness: 1
@@ -145,13 +152,13 @@
 
             <Grid
               name="grid"
-              rows={20}
-              columns={20}
+              rows={10}
+              columns={10}
               depth={1}
               cellDistance={0.5}
               cellSize={0.25}
               position={{
-                // x: -(5 / 4) // + 0.25,
+                // x: -(10 / 2) // + 0.25,
                 // y: -(10 / 4) // + 0.25
               }}
             />
@@ -159,8 +166,8 @@
             <PhysicsBody
               options={{
                 type: CANNON.Body.STATIC,
-                shape: new CANNON.Box(new CANNON.Vec3(10, 10, 0.5)),
-                position: new CANNON.Vec3(0, 0, 0),
+                shape: new CANNON.Box(new CANNON.Vec3(5, 5, 0.25)),
+                position: new CANNON.Vec3(0, -4, 0),
                 rotation: {
                   x: -(Math.PI / 2)
                 }
@@ -190,7 +197,7 @@
         </Scene>
       </svelte:fragment>
     </WebGlRenderer>
-  </Physics>
+  </PhysicsWorld>
 </div>
 
 <section>

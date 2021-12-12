@@ -5,7 +5,7 @@ import type { AnimeParams } from 'animejs'
 import anime from 'animejs'
 import { rendererStore } from '../../stores/threejs/renderer.store'
 import { Body } from 'cannon-es'
-import { Vec3 } from 'cannon-es'
+import type { Vec3 } from 'cannon-es'
 
 export class MouseHelper {
   private clientX!: number
@@ -17,13 +17,14 @@ export class MouseHelper {
       this.clientY = clientY
     })
   }
-  public getMousePositionInCanvas(): { x: number; y: number } {
+  public getMousePositionInCanvas(): { x: number; y: number, z: number } {
     const canvas = get(rendererStore).domElement
     const canvasRect = canvas.getBoundingClientRect()
 
     return {
       x: (this.clientX / canvasRect.width) * 2 - 1,
-      y: -(this.clientY / canvasRect.height) * 2 + 1
+      y: -(this.clientY / canvasRect.height) * 2 + 1,
+      z: 0.5
     }
   }
 

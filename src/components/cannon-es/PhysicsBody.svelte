@@ -1,26 +1,16 @@
 <script lang="ts">
-  import { Body } from 'cannon-es'
-  import type { BodyOptions, World } from 'cannon-es'
-  import { getContext, onMount, setContext } from 'svelte'
-import { MouseHelper } from '$lib/threejs/MouseHelper';
+  import type { Body, BodyOptions, World } from 'cannon-es'
+  import { getContext, onMount } from 'svelte'
+	import { MouseHelper } from '$lib/threejs/MouseHelper';
+  import { BodyController } from '../../controllers/cannon-es/body.controller';
 
   export let options: BodyOptions & { rotation?: { x?: number; y?: number; z?: number } }
   export let onMousemove: OnMousemove | undefined = undefined
 
   type OnMousemove = (target: Body, mousePosition: { x: number, y: number }) => void
 
-  // TODO: extract to controller class
-  const body = new Body(options)
-
-  if (options.rotation) {
-    const { x, y, z } = options.rotation
-    body.quaternion.setFromEuler(x || 0, y || 0, z || 0)
-  }
   const world = getContext<World>('world')
-
-  world.addBody(body)
-
-  setContext<Body>('body', body)
+  const bodyController = new BodyController(world, options)
 
   onMount(() => {
 		const mouseHelper = new MouseHelper()
@@ -31,7 +21,7 @@ import { MouseHelper } from '$lib/threejs/MouseHelper';
 				if (onMousemove){
 					const mousePosition = mouseHelper.getMousePositionInCanvas()
 
-      		onMousemove(body, mousePosition)
+      		onMousemove(bodyController.cannon, mousePosition)
 				}
 			})
     }

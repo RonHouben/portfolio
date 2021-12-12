@@ -1,4 +1,4 @@
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import type { Camera, Scene } from 'three'
 import { get } from 'svelte/store'
 import { sceneStore } from '../../../stores/threejs/scene.store'
