@@ -122,7 +122,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
             <PhysicsBody
               options={{
                 type: CANNON.Body.KINEMATIC,
-                shape: new CANNON.Box(new CANNON.Vec3(1, 1, 5)),
+                shape: new CANNON.Box(new CANNON.Vec3(5, 1, 1)),
                 mass: 1
               }}
               onMousemove={({ target, mousePosition }) => {
@@ -138,7 +138,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
             >
               <Mesh
                 options={{
-                  geometry: new BoxGeometry(2, 2, 10),
+                  geometry: new BoxGeometry(10, 2, 2),
                   material: new MeshPhysicalMaterial({
                     clearcoat: 0.5,
                     metalness: 1
@@ -161,7 +161,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
               name="grid"
               rows={10}
               columns={10}
-              depth={1}
+              depth={2}
               cellDistance={0.5}
               cellSize={0.25}
               position={{
