@@ -3,7 +3,6 @@
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
   import Grid from '$lib/components/Grid.svelte'
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
-  import StatsHelper from '$lib/components/threejs/helpers/StatsHelper.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
   import DirectionalLight from '$lib/components/threejs/lights/DirectionalLight.svelte'
   import SpotLight from '$lib/components/threejs/lights/SpotLight.svelte'
@@ -15,7 +14,7 @@
   import anime from 'animejs'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
-  import { BoxGeometry, MeshPhysicalMaterial, PCFSoftShadowMap, sRGBEncoding } from 'three'
+  import { BoxGeometry,MeshPhysicalMaterial,PCFSoftShadowMap,sRGBEncoding } from 'three'
 </script>
 
 <div class="canvas-container">
@@ -61,7 +60,7 @@
             />
           </svelte:fragment>
           <svelte:fragment slot="helpers">
-            <StatsHelper />
+            <!-- <StatsHelper /> -->
             <!-- <OrbitControls options={{
               cameraName: 'perspective'
             }} /> -->
