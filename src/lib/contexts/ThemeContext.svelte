@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ThemeContext } from '$lib/contexts/types'
-  import { onMount,setContext } from 'svelte'
+  import { onMount, setContext } from 'svelte'
   import { writable } from 'svelte/store'
-  import { Theme,themes } from '../../themes'
+  import { Theme, themes } from '../../themes'
 
   const initialTheme = themes[0]
 
