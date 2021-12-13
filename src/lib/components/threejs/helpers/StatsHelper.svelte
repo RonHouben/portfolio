@@ -4,15 +4,18 @@
 
   $: if ($rendererStore) {
     const stats = new Stats()
+    const parentElement = $rendererStore.domElement.parentElement
 
-    $rendererStore.domElement.parentElement!.appendChild(stats.dom)
+    if (parentElement) {
+      parentElement.appendChild(stats.dom)
 
-    function renderLoop(): void {
-      requestAnimationFrame(renderLoop)
-
-      stats.update()
+      renderLoop(stats)
     }
+  }
 
-    renderLoop()
+  function renderLoop(stats: Stats): void {
+    requestAnimationFrame(() => renderLoop(stats))
+
+    stats.update()
   }
 </script>
