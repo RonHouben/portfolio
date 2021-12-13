@@ -1,6 +1,6 @@
 <script lang="ts">
   import { BodyController } from '$lib/controllers/cannon-es/body.controller'
-  import { MouseHelper } from '$lib/threejs/MouseHelper'
+  import { MouseHelper } from '$lib/utils/MouseHelper'
   import type { Body, BodyOptions, World } from 'cannon-es'
   import { getContext, onMount } from 'svelte'
 

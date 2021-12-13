@@ -11,7 +11,7 @@
   import Raycaster from '$lib/components/threejs/Raycaster.svelte'
   import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '$lib/components/threejs/scenes/Scene.svelte'
-  import { MouseHelper } from '$lib/threejs/MouseHelper'
+  import { MouseHelper } from '$lib/utils/MouseHelper'
   import anime from 'animejs'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
