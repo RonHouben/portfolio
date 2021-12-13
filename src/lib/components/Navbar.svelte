@@ -1,0 +1,31 @@
+<script lang="ts">
+  import type { ThemeContext } from '$lib/contexts/types'
+  import { getContext } from 'svelte'
+
+  const { theme, toggle } = getContext<ThemeContext>('theme')
+</script>
+
+<nav>
+  <div id="logo">Ron Houben</div>
+  <button on:click={toggle}>{$theme.name}</button>
+</nav>
+
+<style>
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--theme-spacing-padding-sm);
+    background-color: var(--theme-colors-background);
+  }
+
+  #logo {
+    font-family: var(--theme-fonts-selected);
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  button {
+    z-index: 2;
+  }
+</style>
