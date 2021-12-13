@@ -1,26 +1,21 @@
 <script lang="ts">
-  import Mesh from '../components/threejs/objects/Mesh.svelte'
-  import { MeshPhysicalMaterial } from 'three'
-  import { PCFSoftShadowMap, sRGBEncoding } from 'three'
-  import { useTheme } from '../actions/useTheme'
-  import PerspectiveCamera from '../components/threejs/cameras/PerspectiveCamera.svelte'
-  import AmbientLight from '../components/threejs/lights/AmbientLight.svelte'
-  import Raycaster from '../components/threejs/Raycaster.svelte'
-  import WebGlRenderer from '../components/threejs/renderers/WebGLRenderer.svelte'
-  import Scene from '../components/threejs/scenes/Scene.svelte'
+  import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
+  import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
+  import Grid from '$lib/components/Grid.svelte'
+  import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
+  import StatsHelper from '$lib/components/threejs/helpers/StatsHelper.svelte'
+  import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
+  import DirectionalLight from '$lib/components/threejs/lights/DirectionalLight.svelte'
+  import SpotLight from '$lib/components/threejs/lights/SpotLight.svelte'
+  import Mesh from '$lib/components/threejs/objects/Mesh.svelte'
+  import Raycaster from '$lib/components/threejs/Raycaster.svelte'
+  import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
+  import Scene from '$lib/components/threejs/scenes/Scene.svelte'
   import { MouseHelper } from '$lib/threejs/MouseHelper'
-  import DirectionalLight from '../components/threejs/lights/DirectionalLight.svelte'
-  import SpotLight from '../components/threejs/lights/SpotLight.svelte'
-  import Grid from '../components/Grid.svelte'
-  import PhysicsWorld from '../components/cannon-es/PhysicsWorld.svelte'
-  import { Vec3 } from 'cannon-es'
-  import PhysicsBody from '../components/cannon-es/PhysicsBody.svelte'
+  import anime from 'animejs'
   import * as CANNON from 'cannon-es'
-  import { BoxGeometry } from 'three'
-  import anime from 'animejs';
-import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
-
-  const { toggle } = useTheme()
+  import { Vec3 } from 'cannon-es'
+  import { BoxGeometry, MeshPhysicalMaterial, PCFSoftShadowMap, sRGBEncoding } from 'three'
 </script>
 
 <div class="canvas-container">
@@ -38,7 +33,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
         shadowMap: {
           enabled: true,
           type: PCFSoftShadowMap
-        },
+        }
       }}
     >
       <svelte:fragment slot="scenes">
@@ -131,7 +126,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
               onClick={({ target }) => {
                 anime({
                   targets: target.quaternion,
-                  y: Math.round(target.quaternion.y) === 1 ? (Math.random() * -1) : Math.random() * 1,
+                  y: Math.round(target.quaternion.y) === 1 ? Math.random() * -1 : Math.random() * 1,
                   duration: 3000
                 })
               }}
@@ -190,7 +185,7 @@ import StatsHelper from '../components/threejs/helpers/StatsHelper.svelte';
                     transparent: true,
                     clearcoat: 0.5,
                     metalness: 0.5,
-                    roughness: 1,
+                    roughness: 1
                   }),
                   position: {
                     x: 0,

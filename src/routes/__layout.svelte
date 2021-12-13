@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ThemeContext from '../contexts/ThemeContext.svelte'
-  import Navbar from '../components/Navbar.svelte'
+  import ThemeContext from '$lib/contexts/ThemeContext.svelte'
+  import Navbar from '$lib/components/Navbar.svelte'
 </script>
 
 <svelte:head>
