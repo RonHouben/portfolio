@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { BodyController } from '$lib/controllers/cannon-es/body.controller'
+  import { BodyController,BodyControllerOptions } from '$lib/controllers/cannon-es/body.controller'
   import { MouseHelper } from '$lib/utils/MouseHelper'
-  import type { Body, BodyOptions, World } from 'cannon-es'
-  import { getContext, onMount } from 'svelte'
+  import type * as CANNON from 'cannon-es'
+  import { onMount } from 'svelte'
 
-  export let options: BodyOptions & { rotation?: { x?: number; y?: number; z?: number } }
+  export let options: BodyControllerOptions
   export let onMousemove: OnMousemove | undefined = undefined
   export let onClick: OnMouseclick | undefined = undefined
 
   interface PhysicsMouseEvent {
-    target: Body
+    target: CANNON.Body
     mousePosition: {
       x: number
       y: number
@@ -19,8 +19,7 @@
   type OnMousemove = (event: PhysicsMouseEvent) => void
   type OnMouseclick = (event: PhysicsMouseEvent) => void
 
-  const world = getContext<World>('world')
-  const bodyController = new BodyController(world, options)
+  const bodyController = new BodyController(options)
 
   onMount(() => {
     const mouseHelper = new MouseHelper()

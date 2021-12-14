@@ -1,28 +1,45 @@
-import type { BodyOptions, World } from 'cannon-es'
-import { Body } from 'cannon-es'
-import { setContext } from 'svelte'
+import * as CANNON from 'cannon-es'
+import { getContext, setContext } from 'svelte'
 
-export type BodyControllerOptions = BodyOptions & {
+export type BodyControllerOptions = CANNON.BodyOptions & {
   rotation?: {
     x?: number
     y?: number
     z?: number
   }
+  materialName?: string
 }
 
 export class BodyController {
-  public cannon: Body
-  private world: World
+  public cannon: CANNON.Body
+  private world: CANNON.World
 
-  constructor(world: World, options: BodyControllerOptions) {
-    this.cannon = new Body(options)
-    this.world = world
+  constructor(options: BodyControllerOptions) {
+    const { materialName, rotation, ...cannonBodyOptions } = options
+    this.cannon = new CANNON.Body(cannonBodyOptions)
+    this.world = getContext<CANNON.World>('world')
 
-    this.setRotation(options.rotation)
+    this.setRotation(rotation)
+    this.setMaterial(materialName)
 
     this.world.addBody(this.cannon)
 
-    setContext<Body>('body', this.cannon)
+    setContext<CANNON.Body>('body', this.cannon)
+  }
+
+  private setMaterial(name: BodyControllerOptions['materialName']): void {
+    if (name) {
+      const material = this.world.materials.find((m) => m.name === name)
+
+      if (!material) {
+        throw new Error(
+          `Couldn't find material with name: "${name}". Are you sure it added to PhysicsWorld.options.materials?`
+        )
+      } else {
+        // console.log(material)
+        this.cannon.material = material
+      }
+    }
   }
 
   private setRotation(options: BodyControllerOptions['rotation']): void {
