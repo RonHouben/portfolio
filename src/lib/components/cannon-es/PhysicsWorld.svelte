@@ -1,13 +1,13 @@
 <script lang="ts">
   import { CannonDebugRenderer } from '$lib/controllers/cannon-es/helpers/debug.renderer.controller'
-  import { WorldController } from '$lib/controllers/cannon-es/world.controller'
+  import { WorldController, WorldControllerOptions } from '$lib/controllers/cannon-es/world.controller'
   import { sceneStore } from '$lib/stores/threejs/scene.store'
-  import type { WorldOptions } from 'cannon-es'
   import { onMount } from 'svelte'
 
-  export let options: WorldOptions & { debug?: boolean }
+  export let options: Omit<WorldControllerOptions, 'createContactMaterials'> & { debug?: boolean }
+  export let createContactMaterials: WorldControllerOptions['createContactMaterials'] = undefined
 
-  const worldController = new WorldController(options)
+  const worldController = new WorldController({ ...options, createContactMaterials })
 
   onMount(() => {
     worldController.renderLoop()

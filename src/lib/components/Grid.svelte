@@ -41,7 +41,8 @@
             type: CANNON.Body.DYNAMIC,
             position: new CANNON.Vec3(column, row, depth),
             mass: 1,
-            shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2))
+            shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2)),
+            materialName: 'cube'
           }}
         >
           <Mesh

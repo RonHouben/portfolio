@@ -1,16 +1,45 @@
-import type { WorldOptions } from 'cannon-es'
-import { World } from 'cannon-es'
+import type { ContactMaterial } from 'cannon-es'
+import * as CANNON from 'cannon-es'
 import { setContext } from 'svelte'
 
+export type WorldControllerOptions = CANNON.WorldOptions & {
+  materials?: CANNON.Material[]
+  createContactMaterials?: (materials: CANNON.Material[]) => ContactMaterial[]
+}
 export class WorldController {
-  public cannon: World
+  public cannon: CANNON.World
   private lastCallTime?: number
   private timeStep: number = 1 / 60 // seconds
 
-  constructor(options: WorldOptions) {
-    this.cannon = new World(options)
+  constructor(options: WorldControllerOptions) {
+    this.cannon = new CANNON.World(options)
 
-    setContext<World>('world', this.cannon)
+    this.setMaterials(options.materials)
+    this.createContactMaterials(options.createContactMaterials)
+
+    setContext<CANNON.World>('world', this.cannon)
+  }
+
+  private setMaterials(materials: WorldControllerOptions['materials']): void {
+    if (materials) {
+      for (const material of materials) {
+        this.cannon.addMaterial(material)
+      }
+    }
+  }
+
+  // TODO: create a Material component instead of this helper function
+  // the materials can be saved in a store
+  private createContactMaterials(func: WorldControllerOptions['createContactMaterials']): void {
+    if (func) {
+      const contactMaterials = func(this.cannon.materials)
+
+      if (contactMaterials) {
+        for (const contactMaterial of contactMaterials) {
+          this.cannon.addContactMaterial(contactMaterial)
+        }
+      }
+    }
   }
 
   public renderLoop(): void {

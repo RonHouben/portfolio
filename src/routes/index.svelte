@@ -21,7 +21,31 @@
   <PhysicsWorld
     options={{
       gravity: new Vec3(0, -9.82, 0), // m/s²
-      debug: false
+      debug: false,
+      materials: [
+        new CANNON.Material('bouncy'),
+        new CANNON.Material('slippery'),
+        new CANNON.Material('cube'),
+      ]
+    }}
+    createContactMaterials={(materials) => {
+      const bouncyMaterial = materials[0]
+      const slipperyMaterial = materials[1]
+      const cubeMaterial = materials[2]
+
+      const cubeOnBouncyContactMaterial = new CANNON.ContactMaterial(bouncyMaterial, cubeMaterial, {
+        friction: 0.9,
+        restitution: 0.9,
+        // frictionEquationStiffness: 0.1
+
+      })
+
+      const cubeOnSlipperyContactMaterial = new CANNON.ContactMaterial(slipperyMaterial, cubeMaterial, {
+        friction: 0,
+        restitution: 0.0,
+      })
+
+      return [ cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial  ]
     }}
   >
     <WebGlRenderer
@@ -106,7 +130,8 @@
                 color: '#055F66',
                 targetName: 'ball',
                 position: {
-                  y: -10
+                  y: -5,
+                  z: 10 
                 }
               }}
             />
@@ -116,8 +141,9 @@
             <PhysicsBody
               options={{
                 type: CANNON.Body.KINEMATIC,
+                materialName: 'bouncy',
                 shape: new CANNON.Box(new CANNON.Vec3(5, 1, 1)),
-                mass: 1
+                mass: 2,
               }}
               onMousemove={({ target, mousePosition }) => {
                 MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
@@ -134,7 +160,9 @@
                 options={{
                   geometry: new BoxGeometry(10, 2, 2),
                   material: new MeshPhysicalMaterial({
-                    clearcoat: 0.5,
+                    // opacity: 0.5,
+                    // transparent: true,
+                    clearcoat: 5,
                     metalness: 1
                   }),
                   name: 'ball',
@@ -168,6 +196,7 @@
               options={{
                 type: CANNON.Body.STATIC,
                 shape: new CANNON.Box(new CANNON.Vec3(5, 5, 0.25)),
+                materialName: 'slippery',
                 position: new CANNON.Vec3(0, -4, 0),
                 rotation: {
                   x: -(Math.PI / 2)
@@ -179,13 +208,17 @@
                   name: 'plane',
                   geometry: new BoxGeometry(10, 10, 0.5),
                   material: new MeshPhysicalMaterial({
-                    // opacity: 0.75,
+                    // opacity: 0.3,
                     color: 'purple',
                     transparent: true,
-                    clearcoat: 0.5,
-                    metalness: 0.5,
-                    roughness: 1
+                    clearcoat: 0.9,
+                    // metalness: 0.9,
+                    roughness: 0
                   }),
+                  shadow: {
+                    receiveShadow: true,
+                    castShadow: true
+                  },
                   position: {
                     x: 0,
                     y: -4,
