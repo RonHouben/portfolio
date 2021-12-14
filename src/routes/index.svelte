@@ -110,6 +110,9 @@
                 position: {
                   y: 10,
                   x: -10
+                },
+                shadow: {
+                  castShadow: true
                 }
               }}
             />
@@ -121,6 +124,9 @@
                 position: {
                   y: 10,
                   x: 10
+                },
+                shadow: {
+                  castShadow: true
                 }
               }}
             />
@@ -132,6 +138,9 @@
                 position: {
                   y: -5,
                   z: 10 
+                },
+                shadow: {
+                  castShadow: true
                 }
               }}
             />
@@ -162,8 +171,9 @@
                   material: new MeshPhysicalMaterial({
                     // opacity: 0.5,
                     // transparent: true,
-                    clearcoat: 5,
-                    metalness: 1
+                    clearcoat: 1,
+                    metalness: 1,
+                    roughness: 0.5
                   }),
                   name: 'ball',
                   position: {
@@ -210,10 +220,10 @@
                   material: new MeshPhysicalMaterial({
                     // opacity: 0.3,
                     color: 'purple',
-                    transparent: true,
-                    clearcoat: 0.9,
-                    // metalness: 0.9,
-                    roughness: 0
+                    // transparent: true,
+                    // clearcoat: 0.9,
+                    metalness: 0.9,
+                    roughness: 0.5
                   }),
                   shadow: {
                     receiveShadow: true,

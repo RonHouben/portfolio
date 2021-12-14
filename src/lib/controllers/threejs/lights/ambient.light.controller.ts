@@ -5,11 +5,7 @@ import type {
 } from '$lib/controllers/threejs/lights/light.controller'
 import { LightController } from '$lib/controllers/threejs/lights/light.controller'
 import { AmbientLight } from 'three'
-
-export type AmbientLightControllerOptions = Omit<
-  Omit<LightControllerOptions, 'position'>,
-  'rotation'
->
+export type AmbientLightControllerOptions = Omit<Omit<Omit<LightControllerOptions, 'position'>,'rotation'>, 'shadow'>
 export type AmbientLightInitOptions = Omit<Omit<LightInitOptions, 'position'>, 'rotation'>
 export type AmbientLightUpdateOptions = Omit<
   Omit<AmbientLightControllerOptions, 'position'>,
@@ -35,7 +31,6 @@ export class AmbientLightController extends LightController<AmbientLight> {
 
   public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
     this.setColor(options.color)
-    this.setShadow(options.shadow)
   }
 
   public override animate(animateFunction: AnimateFunction<AmbientLight>): void {
