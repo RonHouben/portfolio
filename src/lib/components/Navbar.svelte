@@ -26,5 +26,7 @@
   #logo {
     font-weight: bold;
     text-transform: uppercase;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.15), 0px 1px 0.5px rgba(0, 0, 0, 0.1),
+      0px 1px 0.5px rgba(0, 0, 0, 0.1);
   }
 </style>
