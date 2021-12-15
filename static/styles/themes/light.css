@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Orbitron';
+  src: url('/fonts/Orbitron/Orbitron-Regular.ttf') format('truetype');
+}
+
+:root {
+	--theme-color-lightest: hsl(0deg, 0%, 100%);
+	--theme-color-lighter: hsl(0deg, 0%, 80%);
+	--theme-color-light: hsl(0deg, 0%, 60%);
+	--theme-color-strong: hsl(0deg, 0%, 40%);
+	--theme-color-stronger: hsl(0deg, 0%, 20%);
+	--theme-color-strongest: hsl(0deg, 0%, 0%);
+
+  /* fonts */
+  --theme-font-family: 'Orbitron';
+	--theme-font-color: hsl(0deg, 0%, 0%);
+}
