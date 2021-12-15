@@ -1,44 +1,33 @@
 <script lang="ts">
-  import ThemeContext from '$lib/contexts/ThemeContext.svelte'
   import Navbar from '$lib/components/Navbar.svelte'
+  import { theme } from '$lib/stores/theme.store'
 </script>
 
 <svelte:head>
+  <meta name="color-scheme" content={$theme === 'system' ? 'light dark' : $theme} />
+  <link rel="stylesheet" href="styles/global.css" />
+
+  {#if $theme === 'system'}
+    <link
+      rel="stylesheet"
+      href="styles/themes/light.css"
+      media="screen and (prefers-color-scheme: light)"
+    />
+    <link
+      rel="stylesheet"
+      href="styles/themes/dark.css"
+      media="screen and (prefers-color-scheme: dark)"
+    />
+  {:else if $theme === 'light'}
+    <link rel="stylesheet" href="styles/themes/light.css" />
+  {:else if $theme === 'dark'}
+    <link rel="stylesheet" href="styles/themes/dark.css" />
+  {/if}
+
   <title>Ron Houben's Portfolio</title>
 </svelte:head>
 
 <main>
-  <ThemeContext>
-    <Navbar />
-    <slot />
-  </ThemeContext>
+  <Navbar />
+  <slot />
 </main>
-
-<style>
-  :global(html, body, #svelte) {
-    width: 100%;
-    height: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-
-    background-color: var(--theme-colors-background);
-    color: var(--theme-colors-text);
-  }
-  :global(*, *:before, *:after) {
-    -webkit-box-sizing: inherit;
-    -moz-box-sizing: inherit;
-    box-sizing: inherit;
-  }
-
-  main {
-    height: 100vh;
-    /* For mobile */
-  }
-
-  /* For desktop */
-  @media only screen and (min-width: 768px) {
-  }
-</style>

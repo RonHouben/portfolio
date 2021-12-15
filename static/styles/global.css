@@ -1,0 +1,41 @@
+@import './normalize.css';
+
+:root {
+  /* padding */
+  --theme-padding-xs: 0.25rem;
+  --theme-padding-sm: 0.5rem;
+  --theme-padding-md: 1rem;
+  /* margin */
+  --theme-margin-sm: 0.5rem;
+  /* border-radius */
+  --theme-border-radius-xs: 0.25rem;
+  --theme-border-radius-sm: 0.5rem;
+  /* shadow */
+  --theme-shadow-xs: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  /* --theme-shadow-xs: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px; */
+  /* --theme-shadow-xs: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px; */
+}
+
+html,
+body,
+#svelte {
+  box-sizing: inherit;
+  height: 100%;
+
+  font-family: var(--theme-font-family);
+
+  color: var(--theme-font-color);
+  background-color: var(--theme-color-lightest);
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}

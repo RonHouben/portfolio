@@ -253,15 +253,13 @@
 
 <style>
   section {
-    padding-left: var(--theme-spacing-padding-sm);
+    padding-left: var(--theme-padding-sm);
+    padding-right: var(--theme-padding-sm);
   }
   .canvas-container {
     position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1;
+    height: 100%;
+    width: 100%;
     cursor: none;
   }
 </style>

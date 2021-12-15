@@ -1,0 +1,4 @@
+/* Assume light mode by default */
+@import 'light.css' screen;
+/* Supersede dark mode when applicable */
+@import 'dark.css' screen and (prefers-color-scheme: dark);
