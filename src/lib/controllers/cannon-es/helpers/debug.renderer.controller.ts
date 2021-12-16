@@ -50,7 +50,7 @@ export class CannonDebugRenderer {
       for (let j = 0; j !== body.shapes.length; j++) {
         const shape = body.shapes[j]
 
-        this.updateMesh(meshIndex, body, shape)
+        this.updateMesh(meshIndex, shape)
 
         const mesh = meshes[meshIndex]
 
@@ -86,7 +86,7 @@ export class CannonDebugRenderer {
     meshes.length = meshIndex
   }
 
-  private updateMesh(index: number, body: CANNON.Body, shape: CANNON.Shape): void {
+  private updateMesh(index: number, shape: CANNON.Shape): void {
     let mesh = this.meshes[index]
 
     if (!this.typeMatch(mesh, shape)) {
