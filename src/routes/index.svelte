@@ -14,7 +14,7 @@
   import anime from 'animejs'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
-  import { BoxGeometry,MeshPhysicalMaterial,PCFSoftShadowMap,sRGBEncoding } from 'three'
+  import { BoxGeometry, MeshPhysicalMaterial, PCFSoftShadowMap, sRGBEncoding } from 'three'
 </script>
 
 <div class="canvas-container">
@@ -25,7 +25,7 @@
       materials: [
         new CANNON.Material('bouncy'),
         new CANNON.Material('slippery'),
-        new CANNON.Material('cube'),
+        new CANNON.Material('cube')
       ]
     }}
     createContactMaterials={(materials) => {
@@ -35,17 +35,20 @@
 
       const cubeOnBouncyContactMaterial = new CANNON.ContactMaterial(bouncyMaterial, cubeMaterial, {
         friction: 0.9,
-        restitution: 0.9,
+        restitution: 0.9
         // frictionEquationStiffness: 0.1
-
       })
 
-      const cubeOnSlipperyContactMaterial = new CANNON.ContactMaterial(slipperyMaterial, cubeMaterial, {
-        friction: 0,
-        restitution: 0.0,
-      })
+      const cubeOnSlipperyContactMaterial = new CANNON.ContactMaterial(
+        slipperyMaterial,
+        cubeMaterial,
+        {
+          friction: 0,
+          restitution: 0.0
+        }
+      )
 
-      return [ cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial  ]
+      return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
     }}
   >
     <WebGlRenderer
@@ -137,7 +140,7 @@
                 targetName: 'ball',
                 position: {
                   y: -5,
-                  z: 10 
+                  z: 10
                 },
                 shadow: {
                   castShadow: true
@@ -152,7 +155,7 @@
                 type: CANNON.Body.KINEMATIC,
                 materialName: 'bouncy',
                 shape: new CANNON.Box(new CANNON.Vec3(5, 1, 1)),
-                mass: 2,
+                mass: 2
               }}
               onMousemove={({ target, mousePosition }) => {
                 MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)

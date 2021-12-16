@@ -5,7 +5,10 @@ import type {
 } from '$lib/controllers/threejs/lights/light.controller'
 import { LightController } from '$lib/controllers/threejs/lights/light.controller'
 import { AmbientLight } from 'three'
-export type AmbientLightControllerOptions = Omit<Omit<Omit<LightControllerOptions, 'position'>,'rotation'>, 'shadow'>
+export type AmbientLightControllerOptions = Omit<
+  Omit<Omit<LightControllerOptions, 'position'>, 'rotation'>,
+  'shadow'
+>
 export type AmbientLightInitOptions = Omit<Omit<LightInitOptions, 'position'>, 'rotation'>
 export type AmbientLightUpdateOptions = Omit<
   Omit<AmbientLightControllerOptions, 'position'>,

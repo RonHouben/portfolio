@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BodyController,BodyControllerOptions } from '$lib/controllers/cannon-es/body.controller'
+  import { BodyController, BodyControllerOptions } from '$lib/controllers/cannon-es/body.controller'
   import { MouseHelper } from '$lib/utils/MouseHelper'
   import type * as CANNON from 'cannon-es'
   import { onMount } from 'svelte'

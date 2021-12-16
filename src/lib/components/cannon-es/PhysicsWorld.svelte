@@ -1,6 +1,9 @@
 <script lang="ts">
   import { CannonDebugRenderer } from '$lib/controllers/cannon-es/helpers/debug.renderer.controller'
-  import { WorldController, WorldControllerOptions } from '$lib/controllers/cannon-es/world.controller'
+  import {
+    WorldController,
+    WorldControllerOptions
+  } from '$lib/controllers/cannon-es/world.controller'
   import { sceneStore } from '$lib/stores/threejs/scene.store'
   import { onMount } from 'svelte'
 
