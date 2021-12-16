@@ -32,6 +32,14 @@
           onMousemove({ target: bodyController.cannon, mousePosition })
         }
       })
+
+      addEventListener('touchmove', () => {
+        if (onMousemove) {
+          const mousePosition = mouseHelper.getMousePositionInCanvas()
+
+          onMousemove({ target: bodyController.cannon, mousePosition })
+        }
+      })
     }
 
     if (onClick) {
