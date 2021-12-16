@@ -6,14 +6,14 @@
 }
 
 :root {
-	--theme-color-lightest: hsl(0deg, 0%, 10%);
-	--theme-color-lighter: hsl(0deg, 0%, 20%);
-	--theme-color-light: hsl(0deg, 0%, 40%);
-	--theme-color-strong: hsl(0deg, 0%, 60%);
-	--theme-color-stronger: hsl(0deg, 0%, 80%);
-	--theme-color-strongest: hsl(0deg, 0%, 100%);
+  --theme-color-lightest: hsl(0deg, 0%, 10%);
+  --theme-color-lighter: hsl(0deg, 0%, 20%);
+  --theme-color-light: hsl(0deg, 0%, 40%);
+  --theme-color-strong: hsl(0deg, 0%, 60%);
+  --theme-color-stronger: hsl(0deg, 0%, 80%);
+  --theme-color-strongest: hsl(0deg, 0%, 100%);
 
   /* fonts */
   --theme-font-family: 'Orbitron';
-	--theme-font-color: hsl(0deg, 0%, 90%);
+  --theme-font-color: hsl(0deg, 0%, 90%);
 }

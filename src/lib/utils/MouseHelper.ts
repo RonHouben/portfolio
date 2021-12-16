@@ -16,7 +16,15 @@ export class MouseHelper {
       this.clientX = clientX
       this.clientY = clientY
     })
+
+    addEventListener('touchmove', ({ touches }) => {
+      const { clientX, clientY } = touches[0]
+
+      this.clientX = clientX
+      this.clientY = clientY
+    })
   }
+
   public getMousePositionInCanvas(): { x: number; y: number; z: number } {
     const canvas = get(rendererStore).domElement
     const canvasRect = canvas.getBoundingClientRect()
