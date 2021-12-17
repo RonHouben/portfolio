@@ -9,7 +9,7 @@ import type { Camera } from 'three'
 
 export interface CameraControllerOptions extends Omit<BaseControllerOptions, 'raycaster'> {
   helpers?: {
-    enable: true
+    enable: boolean
   }
 }
 export type CameraAnimateFunction<T extends Camera> = AnimateFunction<T>

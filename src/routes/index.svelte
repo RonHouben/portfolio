@@ -21,12 +21,14 @@
   <PhysicsWorld
     options={{
       gravity: new Vec3(0, -9.82, 0), // m/s²
-      debug: false,
       materials: [
         new CANNON.Material('bouncy'),
         new CANNON.Material('slippery'),
         new CANNON.Material('cube')
-      ]
+      ],
+      helpers: {
+        enabled: true
+      }
     }}
     createContactMaterials={(materials) => {
       const bouncyMaterial = materials[0]
@@ -107,7 +109,7 @@
                 near: 2,
                 far: 1000,
                 helpers: {
-                  enable: true
+                  enable: false
                 }
               }}
             />
@@ -141,7 +143,7 @@
                   x: -10
                 },
                 shadow: {
-                  castShadow: true
+                  castShadow: true,
                 },
                 helpers: {
                   enabled: true,
@@ -157,12 +159,20 @@
                 name: 'spotlight-right',
                 targetName: 'mouse',
                 color: '#107869',
+                intensity: 4,
                 position: {
                   y: 10,
                   x: 10
                 },
                 shadow: {
                   castShadow: true
+                },
+                helpers: {
+                  enabled: true,
+                  color: 'purple',
+                  shadowCamera: {
+                    enabled: true
+                  }
                 }
               }}
             />
