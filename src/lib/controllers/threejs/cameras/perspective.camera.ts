@@ -8,6 +8,7 @@ import type {
 import { CameraController } from '$lib/controllers/threejs/cameras/camera.controller'
 import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store'
 import { PerspectiveCamera } from 'three'
+import { CameraHelperController } from '../helpers/camera.helper.controller'
 
 export interface PerspectiveCameraControllerOptions extends CameraControllerOptions {
   fov?: number
@@ -20,8 +21,8 @@ export type PerspectiveCameraInitOptions = CameraInitOptions
 export type PerspectiveCameraUpdateOptions = CameraUpdateOptions
 export class PerspectiveCameraController extends CameraController<PerspectiveCamera> {
   constructor(options: PerspectiveCameraControllerOptions) {
-    const { name, fov, aspect, near, far } = options
-    super({ name })
+    const { fov, aspect, near, far } = options
+    super(options)
 
     this.three = new PerspectiveCamera(fov, aspect, near, far)
 
@@ -36,13 +37,15 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
     name,
     position,
     rotation,
-    shadow
-  }: PerspectiveCameraInitOptions): void {
+    shadow,
+    showHelper
+  }: PerspectiveCameraControllerOptions): void {
     this.three.name = name
 
     this.setPosition(position)
     this.setRotation(rotation)
     this.setShadow(shadow)
+    this.enableHelper(showHelper)
   }
 
   public override update({ position, rotation, shadow }: PerspectiveCameraUpdateOptions): void {
@@ -57,5 +60,13 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
     requestAnimationFrame(() => this.animate(animateFunction))
 
     animateFunction(this.three, this.scene)
+  }
+
+  protected override enableHelper(
+    showHelper: PerspectiveCameraControllerOptions['showHelper']
+  ): void {
+    if (showHelper) {
+      new CameraHelperController(this.three)
+    }
   }
 }

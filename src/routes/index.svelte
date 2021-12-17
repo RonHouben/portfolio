@@ -95,6 +95,7 @@
             <PerspectiveCamera
               options={{
                 name: 'perspective',
+                showHelper: false,
                 position: {
                   x: 0,
                   y: 0,
