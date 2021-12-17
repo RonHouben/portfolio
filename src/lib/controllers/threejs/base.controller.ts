@@ -1,4 +1,7 @@
-import type { PerspectiveCameraUpdateOptions } from '$lib/controllers/threejs/cameras/perspective.camera'
+import type {
+  PerspectiveCameraInitOptions,
+  PerspectiveCameraUpdateOptions
+} from '$lib/controllers/threejs/cameras/perspective.camera'
 import type { DirectionalLightUpdateOptions } from '$lib/controllers/threejs/lights/directional.light.controller'
 import type {
   GroupInitOptions,
@@ -14,6 +17,7 @@ import { sceneStore } from '$lib/stores/threejs/scene.store'
 import { get } from 'svelte/store'
 import type { Object3D } from 'three'
 import { EventDispatcher, Scene } from 'three'
+import type { CameraInitOptions } from './cameras/camera.controller'
 
 export interface BaseControllerOptions {
   name: string
@@ -52,7 +56,14 @@ export abstract class BaseController<T extends Object3D> extends EventDispatcher
     this.interactionState = 'idle'
   }
 
-  protected abstract init(options: BaseInitOptions | PointsInitOptions | GroupInitOptions): void
+  protected abstract init(
+    options:
+      | BaseInitOptions
+      | PointsInitOptions
+      | GroupInitOptions
+      | CameraInitOptions
+      | PerspectiveCameraInitOptions
+  ): void
 
   public abstract update(
     options:
