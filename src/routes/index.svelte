@@ -67,7 +67,7 @@
           rectangleBody,
           pivot,
           mouseBody,
-          new CANNON.Vec3(0, 0, 0),
+          new CANNON.Vec3(0, 2, 0),
           0.3
         )
 
@@ -84,6 +84,21 @@
         shadowMap: {
           enabled: true,
           type: PCFSoftShadowMap
+        },
+        helpers: {
+          axes: {
+            enabled: true,
+            size: 2
+          },
+          grid: {
+            enabled: true,
+            divisions: 10,
+            size: 10
+          },
+          stats: {
+            enabled: true,
+            position: 'top-right'
+          }
         }
       }}
     >

@@ -11,6 +11,16 @@ import type {
   WebGLShadowMap
 } from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
+import type { AxesHelperControllerOptions } from '$lib/controllers/threejs/helpers/axes.helper.controller'
+import { AxesHelperController } from '$lib/controllers/threejs/helpers/axes.helper.controller'
+import type { GridHelperControllerOptions } from '$lib/controllers/threejs/helpers/grid.helper.controller'
+import { GridHelperController } from '$lib/controllers/threejs/helpers/grid.helper.controller'
+import type { StatsControllerOptions } from '$lib/controllers/statsjs/stats.controller.svelte'
+import { StatsController } from '$lib/controllers/statsjs/stats.controller.svelte'
+
+type HelperOptions<T> = T & {
+  enabled: boolean
+}
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
   domElementId: string
@@ -19,6 +29,11 @@ export interface RendererControllerOptions extends WebGLRendererParameters {
   shadowMap?: RendererShadowMapOptions
   outputEncoding?: TextureEncoding
   pixelRatio?: number
+  helpers?: {
+    axes?: HelperOptions<AxesHelperControllerOptions>
+    grid?: HelperOptions<GridHelperControllerOptions>
+    stats?: HelperOptions<Omit<StatsControllerOptions, 'domElement'>>
+  }
 }
 
 type RendererShadowMapOptions = Pick<WebGLShadowMap, 'enabled'> & Pick<WebGLShadowMap, 'type'>
@@ -57,13 +72,30 @@ export class RendererController {
     addEventListener('resize', () => this.onWindowResize(domElementId), false)
 
     this.update(options)
-
     this.attachToDOM(domElementId)
-
+    this.enableHelpers(options.helpers)
     this.render()
 
     // set Svelte store
     rendererStore.set(this.three)
+  }
+
+  private enableHelpers(options: RendererControllerOptions['helpers']): void {
+    if (options?.axes?.enabled) {
+      new AxesHelperController(options.axes)
+    }
+
+    if (options?.grid?.enabled) {
+      new GridHelperController(options.grid)
+    }
+
+    if (options?.stats?.enabled) {
+      if (!this.three.domElement.parentElement) {
+        throw new Error(`Unable to find ThreeJS renderer's parentElement`)
+      }
+
+      new StatsController({ domElement: this.three.domElement.parentElement, ...options.stats })
+    }
   }
 
   private attachToDOM(domElementId?: string): void {
@@ -121,8 +153,6 @@ export class RendererController {
       if (!parentElement) {
         throw new Error(`Couldn't find element with id ${domElementId}`)
       } else {
-        parentElement.appendChild(this.three.domElement)
-
         this.width = parentElement.offsetWidth
         this.height = parentElement.offsetHeight
 

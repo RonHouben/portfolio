@@ -12,5 +12,7 @@ export class AxesHelperController extends BaseHelperController<AxesHelper> {
     this.three = new AxesHelper(size)
 
     this.scene.add(this.three)
+
+    console.info('enabled axes helper:', { x: 'red', y: 'green', z: 'blue' })
   }
 }
