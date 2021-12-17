@@ -84,6 +84,12 @@
         shadowMap: {
           enabled: true,
           type: PCFSoftShadowMap
+        },
+        helpers: {
+          axes: {
+            enabled: true,
+            size: 2
+          }
         }
       }}
     >

@@ -11,6 +11,7 @@ import type {
   WebGLShadowMap
 } from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
+import { AxesHelperController } from '../helpers/axes.helper.controller'
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
   domElementId: string
@@ -19,6 +20,12 @@ export interface RendererControllerOptions extends WebGLRendererParameters {
   shadowMap?: RendererShadowMapOptions
   outputEncoding?: TextureEncoding
   pixelRatio?: number
+  helpers?: {
+    axes?: {
+      enabled: boolean
+      size: number
+    }
+  }
 }
 
 type RendererShadowMapOptions = Pick<WebGLShadowMap, 'enabled'> & Pick<WebGLShadowMap, 'type'>
@@ -56,14 +63,19 @@ export class RendererController {
 
     addEventListener('resize', () => this.onWindowResize(domElementId), false)
 
+    this.enableHelpers(options.helpers)
     this.update(options)
-
     this.attachToDOM(domElementId)
-
     this.render()
 
     // set Svelte store
     rendererStore.set(this.three)
+  }
+
+  private enableHelpers(options: RendererControllerOptions['helpers']): void {
+    if (options?.axes?.enabled) {
+      new AxesHelperController(options.axes.size)
+    }
   }
 
   private attachToDOM(domElementId?: string): void {
