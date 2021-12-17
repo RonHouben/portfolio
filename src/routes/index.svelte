@@ -94,6 +94,10 @@
             enabled: true,
             divisions: 10,
             size: 10
+          },
+          stats: {
+            enabled: true,
+            position: 'top-right'
           }
         }
       }}

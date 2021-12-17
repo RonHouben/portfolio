@@ -15,6 +15,12 @@ import type { AxesHelperControllerOptions } from '$lib/controllers/threejs/helpe
 import { AxesHelperController } from '$lib/controllers/threejs/helpers/axes.helper.controller'
 import type { GridHelperControllerOptions } from '$lib/controllers/threejs/helpers/grid.helper.controller'
 import { GridHelperController } from '$lib/controllers/threejs/helpers/grid.helper.controller'
+import type { StatsControllerOptions } from '$lib/controllers/statsjs/stats.controller.svelte'
+import { StatsController } from '$lib/controllers/statsjs/stats.controller.svelte'
+
+type HelperOptions<T> = T & {
+  enabled: boolean
+}
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
   domElementId: string
@@ -24,12 +30,9 @@ export interface RendererControllerOptions extends WebGLRendererParameters {
   outputEncoding?: TextureEncoding
   pixelRatio?: number
   helpers?: {
-    axes?: {
-      enabled: boolean
-    } & AxesHelperControllerOptions,
-    grid?: {
-      enabled: boolean
-    } & GridHelperControllerOptions
+    axes?: HelperOptions<AxesHelperControllerOptions>
+    grid?: HelperOptions<GridHelperControllerOptions>
+    stats?: HelperOptions<Omit<StatsControllerOptions, 'domElement'>>
   }
 }
 
@@ -68,9 +71,9 @@ export class RendererController {
 
     addEventListener('resize', () => this.onWindowResize(domElementId), false)
 
-    this.enableHelpers(options.helpers)
     this.update(options)
     this.attachToDOM(domElementId)
+    this.enableHelpers(options.helpers)
     this.render()
 
     // set Svelte store
@@ -84,6 +87,14 @@ export class RendererController {
 
     if (options?.grid?.enabled) {
       new GridHelperController(options.grid)
+    }
+
+    if (options?.stats?.enabled) {
+      if (!this.three.domElement.parentElement) {
+        throw new Error(`Unable to find ThreeJS renderer's parentElement`)
+      }
+
+      new StatsController({ domElement: this.three.domElement.parentElement, ...options.stats })
     }
   }
 
@@ -142,8 +153,6 @@ export class RendererController {
       if (!parentElement) {
         throw new Error(`Couldn't find element with id ${domElementId}`)
       } else {
-        parentElement.appendChild(this.three.domElement)
-
         this.width = parentElement.offsetWidth
         this.height = parentElement.offsetHeight
 
