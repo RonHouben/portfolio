@@ -89,6 +89,11 @@
           axes: {
             enabled: true,
             size: 2
+          },
+          grid: {
+            enabled: true,
+            divisions: 10,
+            size: 10
           }
         }
       }}

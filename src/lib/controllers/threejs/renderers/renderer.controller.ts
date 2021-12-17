@@ -11,7 +11,10 @@ import type {
   WebGLShadowMap
 } from 'three'
 import { WebGL1Renderer, WebGLRenderer } from 'three'
-import { AxesHelperController } from '../helpers/axes.helper.controller'
+import type { AxesHelperControllerOptions } from '$lib/controllers/threejs/helpers/axes.helper.controller'
+import { AxesHelperController } from '$lib/controllers/threejs/helpers/axes.helper.controller'
+import type { GridHelperControllerOptions } from '$lib/controllers/threejs/helpers/grid.helper.controller'
+import { GridHelperController } from '$lib/controllers/threejs/helpers/grid.helper.controller'
 
 export interface RendererControllerOptions extends WebGLRendererParameters {
   domElementId: string
@@ -23,8 +26,10 @@ export interface RendererControllerOptions extends WebGLRendererParameters {
   helpers?: {
     axes?: {
       enabled: boolean
-      size: number
-    }
+    } & AxesHelperControllerOptions,
+    grid?: {
+      enabled: boolean
+    } & GridHelperControllerOptions
   }
 }
 
@@ -74,7 +79,11 @@ export class RendererController {
 
   private enableHelpers(options: RendererControllerOptions['helpers']): void {
     if (options?.axes?.enabled) {
-      new AxesHelperController(options.axes.size)
+      new AxesHelperController(options.axes)
+    }
+
+    if (options?.grid?.enabled) {
+      new GridHelperController(options.grid)
     }
   }
 
