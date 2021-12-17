@@ -4,7 +4,7 @@
     MeshAnimateFunction,
     MeshController,
     MeshControllerOptions
-  } from '$lib/controllers/threejs/objects/mesh.controller'
+  } from '$lib/controllers/threejs/objects/mesh.controller.svelte'
   import type { Body } from 'cannon-es'
   import { getContext, onMount } from 'svelte'
 

@@ -2,7 +2,7 @@
   import {
     SceneController,
     SceneControllerOptions
-  } from '$lib/controllers/threejs/objects/scene.controller'
+  } from '$lib/controllers/threejs/objects/scene.controller.svelte'
 
   export let options: Omit<SceneControllerOptions, 'scene'>
 

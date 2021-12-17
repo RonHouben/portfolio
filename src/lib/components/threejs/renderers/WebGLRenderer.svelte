@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { WebGLRendererControllerOptions } from '$lib/controllers/threejs/renderers/webGL.renderer.controller'
-  import { WebGLRendererController } from '$lib/controllers/threejs/renderers/webGL.renderer.controller'
+  import type { WebGLRendererControllerOptions } from '$lib/controllers/threejs/renderers/webGL.renderer.controller.svelte'
+  import { WebGLRendererController } from '$lib/controllers/threejs/renderers/webGL.renderer.controller.svelte'
   import { onMount } from 'svelte'
 
   export let options: Omit<WebGLRendererControllerOptions, 'domElementId'>

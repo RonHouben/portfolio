@@ -2,8 +2,8 @@
   import {
     RaycasterController,
     RaycasterControllerOptions
-  } from '$lib/controllers/threejs/raycaster.controller'
-  import { rendererStore } from '$lib/stores/threejs/renderer.store'
+  } from '$lib/controllers/threejs/raycaster.controller.svelte'
+  import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
 
   export let options: RaycasterControllerOptions
 

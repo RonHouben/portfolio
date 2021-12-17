@@ -2,7 +2,7 @@
   import {
     AmbientLightController,
     AmbientLightControllerOptions
-  } from '$lib/controllers/threejs/lights/ambient.light.controller'
+  } from '$lib/controllers/threejs/lights/ambient.light.controller.svelte'
 
   export let options: AmbientLightControllerOptions
 
