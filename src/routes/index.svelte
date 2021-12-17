@@ -13,7 +13,6 @@
   import { MouseHelper } from '$lib/utils/MouseHelper'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
-import { xlink_attr } from 'svelte/internal';
   import { SphereGeometry } from 'three'
   import { BoxGeometry, MeshPhysicalMaterial, PCFSoftShadowMap, sRGBEncoding } from 'three'
 </script>
@@ -27,7 +26,7 @@ import { xlink_attr } from 'svelte/internal';
         new CANNON.Material('bouncy'),
         new CANNON.Material('slippery'),
         new CANNON.Material('cube')
-      ],
+      ]
     }}
     createContactMaterials={(materials) => {
       const bouncyMaterial = materials[0]
