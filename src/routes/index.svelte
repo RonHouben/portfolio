@@ -65,8 +65,8 @@
           rectangleBody,
           pivot,
           mouseBody,
-          new CANNON.Vec3(0, 1, 0),
-          0.5
+          new CANNON.Vec3(0, 0, 0),
+          0.3
         )
 
         return [constraint]
@@ -180,7 +180,7 @@
                 materialName: 'bouncy',
                 shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
                 position: new CANNON.Vec3(0, 0, 0),
-                mass: 1
+                mass: 1.5
               }}
             >
               <Mesh
