@@ -2,22 +2,29 @@ import * as CANNON from 'cannon-es'
 import { getContext, setContext } from 'svelte'
 
 export type BodyControllerOptions = CANNON.BodyOptions & {
+  name: string
+  materialName?: string
   rotation?: {
     x?: number
     y?: number
     z?: number
   }
-  materialName?: string
+}
+
+export interface PhysicsBody extends CANNON.Body {
+  name: string
 }
 
 export class BodyController {
-  public cannon: CANNON.Body
+  public cannon: CANNON.Body & { name?: BodyControllerOptions['name'] }
   private world: CANNON.World
 
   constructor(options: BodyControllerOptions) {
     const { materialName, rotation, ...cannonBodyOptions } = options
     this.cannon = new CANNON.Body(cannonBodyOptions)
     this.world = getContext<CANNON.World>('world')
+
+    this.cannon.name = options.name
 
     this.setRotation(rotation)
     this.setMaterial(materialName)

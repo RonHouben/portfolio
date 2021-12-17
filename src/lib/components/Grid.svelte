@@ -38,9 +38,10 @@
       {#each depthArray as depth}
         <PhysicsBody
           options={{
+            name: `x{${column}} y{${row}} z{${depth}}`,
             type: CANNON.Body.DYNAMIC,
             position: new CANNON.Vec3(column, row, depth),
-            mass: 1,
+            mass: 0.5,
             shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2)),
             materialName: 'cube'
           }}
