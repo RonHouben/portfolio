@@ -19,7 +19,7 @@ specifiers:
   svelte: ^3.44.3
   svelte-check: ^2.2.11
   svelte-preprocess: ^4.10.1
-  three: ^0.134.0
+  three: ^0.135.0
   tslib: ^2.3.1
   typescript: ^4.5.4
 
@@ -44,7 +44,7 @@ devDependencies:
   svelte: 3.44.3
   svelte-check: 2.2.11_svelte@3.44.3
   svelte-preprocess: 4.10.1_svelte@3.44.3+typescript@4.5.4
-  three: 0.134.0
+  three: 0.135.0
   tslib: 2.3.1
   typescript: 4.5.4
 
@@ -1458,8 +1458,8 @@ packages:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
     dev: true
 
-  /three/0.134.0:
-    resolution: {integrity: sha512-LbBerg7GaSPjYtTOnu41AMp7tV6efUNR3p4Wk5NzkSsNTBuA5mDGOfwwZL1jhhVMLx9V20HolIUo0+U3AXehbg==}
+  /three/0.135.0:
+    resolution: {integrity: sha512-kuEpuuxRzLv0MDsXai9huCxOSQPZ4vje6y0gn80SRmQvgz6/+rI0NAvCRAw56zYaWKMGMfqKWsxF9Qa2Z9xymQ==}
     dev: true
 
   /to-regex-range/5.0.1:
