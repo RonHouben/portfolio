@@ -15,5 +15,5 @@ export type CameraInitOptions = BaseInitOptions & CameraControllerOptions['showH
 export type CameraUpdateOptions = Omit<BaseUpdateOptions, 'raycasterIntersects'>
 
 export abstract class CameraController<T extends Camera> extends BaseController<T> {
- protected abstract enableHelper(showHelper: CameraControllerOptions['showHelper']): void
+  protected abstract enableHelper(showHelper: CameraControllerOptions['showHelper']): void
 }

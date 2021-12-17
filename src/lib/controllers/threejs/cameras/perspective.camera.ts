@@ -62,7 +62,9 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
     animateFunction(this.three, this.scene)
   }
 
-  protected override enableHelper(showHelper: PerspectiveCameraControllerOptions['showHelper']): void {
+  protected override enableHelper(
+    showHelper: PerspectiveCameraControllerOptions['showHelper']
+  ): void {
     if (showHelper) {
       new CameraHelperController(this.three)
     }
