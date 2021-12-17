@@ -3,7 +3,7 @@
     GroupAnimateFunction,
     GroupController,
     GroupControllerOptions
-  } from '$lib/controllers/threejs/objects/group.controller'
+  } from '$lib/controllers/threejs/objects/group.controller.svelte'
   import { onMount } from 'svelte'
 
   export let options: GroupControllerOptions

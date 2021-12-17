@@ -3,8 +3,8 @@
     SpotLightAnimateFunction,
     SpotLightController,
     SpotLightControllerOptions
-  } from '$lib/controllers/threejs/lights/spot.light.controller'
-  import { sceneStore } from '$lib/stores/threejs/scene.store'
+  } from '$lib/controllers/threejs/lights/spot.light.controller.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { onMount } from 'svelte'
 
   export let options: Omit<SpotLightControllerOptions, 'scene'>

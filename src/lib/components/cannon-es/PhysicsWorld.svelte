@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { CannonDebugRenderer } from '$lib/controllers/cannon-es/helpers/debug.renderer.controller'
+  import { CannonDebugRenderer } from '$lib/controllers/cannon-es/helpers/debug.renderer.controllers.svelte'
   import {
     WorldController,
     WorldControllerOptions
-  } from '$lib/controllers/cannon-es/world.controller'
-  import { sceneStore } from '$lib/stores/threejs/scene.store'
+  } from '$lib/controllers/cannon-es/world.controller.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { onMount } from 'svelte'
 
   export let options: Omit<WorldControllerOptions, 'createContactMaterials'> & { helpers?: { enabled: boolean }}

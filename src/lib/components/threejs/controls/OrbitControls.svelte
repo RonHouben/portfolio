@@ -2,8 +2,8 @@
   import {
     OrbitControlsController,
     OrbitControlsControllerOptions
-  } from '$lib/controllers/threejs/controls/orbit.controls.controller'
-  import { rendererStore } from '$lib/stores/threejs/renderer.store'
+  } from '$lib/controllers/threejs/controls/orbit.controls.controller.svelte'
+  import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
 
   export let options: Omit<OrbitControlsControllerOptions, 'domElement'>
 

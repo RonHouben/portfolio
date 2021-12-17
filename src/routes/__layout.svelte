@@ -1,6 +1,6 @@
 <script lang="ts">
   import Navbar from '$lib/components/Navbar.svelte'
-  import { theme } from '$lib/stores/theme.store'
+  import { theme } from '$lib/stores/theme.store.svelte'
 </script>
 
 <svelte:head>

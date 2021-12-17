@@ -2,7 +2,7 @@
   import {
     GLTFLoaderController,
     GLTFLoaderControllerOptions
-  } from '$lib/controllers/threejs/loaders/GLTF.loader.controller'
+  } from '$lib/controllers/threejs/loaders/GLTF.loader.controller.svelte'
 
   export let options: GLTFLoaderControllerOptions
 

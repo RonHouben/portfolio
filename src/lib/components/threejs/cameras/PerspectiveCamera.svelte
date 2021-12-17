@@ -3,8 +3,8 @@
     PerspectiveCameraAnimateFunction,
     PerspectiveCameraController,
     PerspectiveCameraControllerOptions
-  } from '$lib/controllers/threejs/cameras/perspective.camera'
-  import { sceneStore } from '$lib/stores/threejs/scene.store'
+  } from '$lib/controllers/threejs/cameras/perspective.camera.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
 
   export let options: PerspectiveCameraControllerOptions
   export let animate: PerspectiveCameraAnimateFunction | undefined = undefined

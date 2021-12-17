@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { LoadingManagerController } from '$lib/controllers/threejs/loaders/loading.manager.controller'
-  import { loadingManagerStore } from '$lib/stores/threejs/loading.manager.store'
+  import { LoadingManagerController } from '$lib/controllers/threejs/loaders/loading.manager.controller.svelte'
+  import { loadingManagerStore } from '$lib/stores/threejs/loading.manager.store.svelte'
 
   export let options: LoadingManagerOptions
 

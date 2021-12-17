@@ -2,7 +2,7 @@
   import {
     DirectionalLightController,
     DirectionalLightControllerOptions
-  } from '$lib/controllers/threejs/lights/directional.light.controller'
+  } from '$lib/controllers/threejs/lights/directional.light.controller.svelte'
   import { onMount } from 'svelte'
 
   export let options: DirectionalLightControllerOptions
