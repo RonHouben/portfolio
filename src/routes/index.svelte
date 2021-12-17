@@ -95,7 +95,6 @@
             <PerspectiveCamera
               options={{
                 name: 'perspective',
-                showHelper: false,
                 position: {
                   x: 0,
                   y: 0,
@@ -106,7 +105,10 @@
                 },
                 fov: 50,
                 near: 2,
-                far: 1000
+                far: 1000,
+                helpers: {
+                  enable: true
+                }
               }}
             />
           </svelte:fragment>
@@ -125,7 +127,7 @@
               options={{
                 name: 'ambient-light',
                 color: '#08313A',
-                intensity: 0.75
+                intensity: 0.75,
               }}
             />
             <SpotLight
@@ -140,6 +142,13 @@
                 },
                 shadow: {
                   castShadow: true
+                },
+                helpers: {
+                  enabled: true,
+                  color: 'purple',
+                  shadowCamera: {
+                    enabled: true
+                  }
                 }
               }}
             />

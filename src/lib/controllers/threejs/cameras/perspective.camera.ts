@@ -38,14 +38,14 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
     position,
     rotation,
     shadow,
-    showHelper
+    helpers
   }: PerspectiveCameraControllerOptions): void {
     this.three.name = name
 
     this.setPosition(position)
     this.setRotation(rotation)
     this.setShadow(shadow)
-    this.enableHelper(showHelper)
+    this.enableHelpers(helpers)
   }
 
   public override update({ position, rotation, shadow }: PerspectiveCameraUpdateOptions): void {
@@ -62,10 +62,10 @@ export class PerspectiveCameraController extends CameraController<PerspectiveCam
     animateFunction(this.three, this.scene)
   }
 
-  protected override enableHelper(
-    showHelper: PerspectiveCameraControllerOptions['showHelper']
+  protected override enableHelpers(
+    helpers: PerspectiveCameraControllerOptions['helpers']
   ): void {
-    if (showHelper) {
+    if (helpers?.enable) {
       new CameraHelperController(this.three)
     }
   }
