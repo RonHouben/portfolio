@@ -9,8 +9,9 @@
 
   export let options: Omit<WorldControllerOptions, 'createContactMaterials'> & { debug?: boolean }
   export let createContactMaterials: WorldControllerOptions['createContactMaterials'] = undefined
+  export let createConstraints: WorldControllerOptions['createConstraints'] = undefined
 
-  const worldController = new WorldController({ ...options, createContactMaterials })
+  const worldController = new WorldController({ ...options, createContactMaterials, createConstraints })
 
   onMount(() => {
     worldController.renderLoop()

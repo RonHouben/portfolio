@@ -11,9 +11,10 @@
   import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '$lib/components/threejs/scenes/Scene.svelte'
   import { MouseHelper } from '$lib/utils/MouseHelper'
-  import anime from 'animejs'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
+import { xlink_attr } from 'svelte/internal';
+  import { SphereGeometry } from 'three'
   import { BoxGeometry, MeshPhysicalMaterial, PCFSoftShadowMap, sRGBEncoding } from 'three'
 </script>
 
@@ -26,7 +27,7 @@
         new CANNON.Material('bouncy'),
         new CANNON.Material('slippery'),
         new CANNON.Material('cube')
-      ]
+      ],
     }}
     createContactMaterials={(materials) => {
       const bouncyMaterial = materials[0]
@@ -36,7 +37,6 @@
       const cubeOnBouncyContactMaterial = new CANNON.ContactMaterial(bouncyMaterial, cubeMaterial, {
         friction: 0.9,
         restitution: 0.9
-        // frictionEquationStiffness: 0.1
       })
 
       const cubeOnSlipperyContactMaterial = new CANNON.ContactMaterial(
@@ -49,6 +49,30 @@
       )
 
       return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
+    }}
+    createConstraints={(bodies) => {
+      const mouseBody = bodies.find(({ name }) => name === 'mouse')
+      const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
+
+      if (mouseBody && rectangleBody) {
+        // Vector that goes from the body to the clicked point
+        const vector = new CANNON.Vec3().copy(mouseBody.position).vsub(rectangleBody.position)
+
+        // Apply anti-quaternion to vector to tranform it into the local body coordinate system
+        const antiRotation = rectangleBody.quaternion.inverse()
+        const pivot = antiRotation.vmult(vector) // pivot is not in local body coordinates
+
+        const constraint = new CANNON.PointToPointConstraint(
+          rectangleBody,
+          pivot,
+          mouseBody,
+          new CANNON.Vec3(0, 1, 0),
+          0.5
+        )
+
+        return [constraint]
+      }
+      return []
     }}
   >
     <WebGlRenderer
@@ -107,7 +131,7 @@
             <SpotLight
               options={{
                 name: 'spotlight-left',
-                targetName: 'ball',
+                targetName: 'mouse',
                 color: '#5CD85A',
                 intensity: 4,
                 position: {
@@ -122,7 +146,7 @@
             <SpotLight
               options={{
                 name: 'spotlight-right',
-                targetName: 'ball',
+                targetName: 'mouse',
                 color: '#107869',
                 position: {
                   y: 10,
@@ -137,7 +161,7 @@
               options={{
                 name: 'directional-light-bottom',
                 color: '#055F66',
-                targetName: 'ball',
+                targetName: 'mouse',
                 position: {
                   y: -5,
                   z: 10
@@ -152,25 +176,18 @@
           <svelte:fragment slot="meshes">
             <PhysicsBody
               options={{
-                type: CANNON.Body.KINEMATIC,
+                name: 'rectangle',
+                type: CANNON.Body.DYNAMIC,
                 materialName: 'bouncy',
-                shape: new CANNON.Box(new CANNON.Vec3(5, 1, 1)),
-                mass: 2
-              }}
-              onMousemove={({ target, mousePosition }) => {
-                MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
-              }}
-              onClick={({ target }) => {
-                anime({
-                  targets: target.quaternion,
-                  y: Math.round(target.quaternion.y) === 1 ? Math.random() * -1 : Math.random() * 1,
-                  duration: 3000
-                })
+                shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
+                position: new CANNON.Vec3(0, 0, 0),
+                mass: 1
               }}
             >
               <Mesh
                 options={{
-                  geometry: new BoxGeometry(10, 2, 2),
+                  name: 'rectangle',
+                  geometry: new BoxGeometry(2, 2, 2),
                   material: new MeshPhysicalMaterial({
                     // opacity: 0.5,
                     // transparent: true,
@@ -178,12 +195,39 @@
                     metalness: 1,
                     roughness: 0.5
                   }),
-                  name: 'ball',
-                  position: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                  },
+                  shadow: {
+                    castShadow: true,
+                    receiveShadow: true
+                  }
+                }}
+              />
+            </PhysicsBody>
+
+            <PhysicsBody
+              options={{
+                name: 'mouse',
+                type: CANNON.Body.KINEMATIC,
+                materialName: 'bouncy',
+                shape: new CANNON.Sphere(1),
+                position: new CANNON.Vec3(0, 0, 0),
+                mass: 1
+              }}
+              onMousemove={({ target, mousePosition }) => {
+                MouseHelper.followMouse(mousePosition.x, mousePosition.y, target)
+              }}
+            >
+              <Mesh
+                options={{
+                  name: 'mouse',
+                  geometry: new SphereGeometry(1),
+                  material: new MeshPhysicalMaterial({
+                    color: 'purple',
+                    // opacity: 0.5,
+                    // transparent: true,
+                    clearcoat: 1,
+                    metalness: 1,
+                    roughness: 0.5
+                  }),
                   shadow: {
                     castShadow: true,
                     receiveShadow: true
@@ -207,6 +251,7 @@
 
             <PhysicsBody
               options={{
+                name: 'floor',
                 type: CANNON.Body.STATIC,
                 shape: new CANNON.Box(new CANNON.Vec3(5, 5, 0.25)),
                 materialName: 'slippery',
@@ -218,7 +263,7 @@
             >
               <Mesh
                 options={{
-                  name: 'plane',
+                  name: 'floor',
                   geometry: new BoxGeometry(10, 10, 0.5),
                   material: new MeshPhysicalMaterial({
                     // opacity: 0.3,

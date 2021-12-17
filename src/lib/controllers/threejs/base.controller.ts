@@ -17,7 +17,7 @@ import { EventDispatcher, Scene } from 'three'
 
 export interface BaseControllerOptions {
   name: string
-  position: Vector3
+  position?: Vector3
   rotation?: Vector3
   shadow?: ShadowOptions
 }
