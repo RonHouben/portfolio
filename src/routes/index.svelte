@@ -67,7 +67,7 @@
           rectangleBody,
           pivot,
           mouseBody,
-          new CANNON.Vec3(0, 0, 0),
+          new CANNON.Vec3(0, 2, 0),
           0.3
         )
 
