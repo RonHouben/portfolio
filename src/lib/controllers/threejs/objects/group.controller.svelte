@@ -7,7 +7,7 @@
   import { Group } from 'three'
 
   export interface GroupControllerOptions
-    extends Modify<BaseControllerOptions, { position?: BaseControllerOptions['position'] }> {
+    extends Modify<BaseControllerOptions<Group>, { position?: BaseControllerOptions<Group>['position'] }> {
     childrenNames: string[]
   }
   export type GroupInitOptions = GroupControllerOptions

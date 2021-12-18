@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { BodyController, BodyControllerOptions } from '$lib/controllers/cannon-es/body.controller.svelte'
+  import { browser } from '$app/env'
+
+  import {
+    BodyController,
+    BodyControllerOptions
+  } from '$lib/controllers/cannon-es/body.controller.svelte'
+import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte';
   import { MouseHelper } from '$lib/utils/MouseHelper.svelte'
   import type * as CANNON from 'cannon-es'
   import { onMount } from 'svelte'
@@ -22,34 +28,36 @@
   const bodyController = new BodyController(options)
 
   onMount(() => {
-    const mouseHelper = new MouseHelper()
+    if ($rendererStore && browser) {
+      const mouseHelper = new MouseHelper()
 
-    if (onMousemove) {
-      addEventListener('mousemove', () => {
-        if (onMousemove) {
-          const mousePosition = mouseHelper.getMousePositionInCanvas()
+      if (onMousemove) {
+        addEventListener('mousemove', () => {
+          if (onMousemove) {
+            const mousePosition = mouseHelper.getMousePositionInCanvas()
 
-          onMousemove({ target: bodyController.cannon, mousePosition })
-        }
-      })
+            onMousemove({ target: bodyController.cannon, mousePosition })
+          }
+        })
 
-      addEventListener('touchmove', () => {
-        if (onMousemove) {
-          const mousePosition = mouseHelper.getMousePositionInCanvas()
+        addEventListener('touchmove', () => {
+          if (onMousemove) {
+            const mousePosition = mouseHelper.getMousePositionInCanvas()
 
-          onMousemove({ target: bodyController.cannon, mousePosition })
-        }
-      })
-    }
+            onMousemove({ target: bodyController.cannon, mousePosition })
+          }
+        })
+      }
 
-    if (onClick) {
-      addEventListener('click', () => {
-        if (onClick) {
-          const mousePosition = mouseHelper.getMousePositionInCanvas()
+      if (onClick) {
+        addEventListener('click', () => {
+          if (onClick) {
+            const mousePosition = mouseHelper.getMousePositionInCanvas()
 
-          onClick({ target: bodyController.cannon, mousePosition })
-        }
-      })
+            onClick({ target: bodyController.cannon, mousePosition })
+          }
+        })
+      }
     }
   })
 </script>

@@ -1,4 +1,6 @@
 <script lang="ts" context="module">
+import { browser } from '$app/env';
+
   import type { StatsControllerOptions } from '$lib/controllers/statsjs/stats.controller.svelte'
   import { StatsController } from '$lib/controllers/statsjs/stats.controller.svelte'
   import type { AxesHelperControllerOptions } from '$lib/controllers/threejs/helpers/axes.helper.controller.svelte'
@@ -70,15 +72,16 @@
           throw new Error(`Unknown rendererType of ${rendererType}`)
       }
 
-      addEventListener('resize', () => this.onWindowResize(domElementId), false)
-
-      this.update(options)
       this.attachToDOM(domElementId)
-      this.enableHelpers(options.helpers)
-      this.render()
+      this.renderLoop()
 
       // set Svelte store
       rendererStore.set(this.three)
+
+      this.enableHelpers(options.helpers)
+      addEventListener('resize', () => this.onWindowResize(domElementId), false)
+
+      this.update(options)
     }
 
     private enableHelpers(options: RendererControllerOptions['helpers']): void {
@@ -91,11 +94,11 @@
       }
 
       if (options?.stats?.enabled) {
-        if (!this.three.domElement.parentElement) {
+        if (!this.three.domElement) {
           throw new Error(`Unable to find ThreeJS renderer's parentElement`)
         }
 
-        new StatsController({ domElement: this.three.domElement.parentElement, ...options.stats })
+        new StatsController({ domElement: this.three.domElement, ...options.stats })
       }
     }
 
@@ -110,7 +113,7 @@
         return
       }
 
-      if (document && domElementId) {
+      if (this.camera && domElementId) {
         const parentElement = document.getElementById(domElementId)
 
         if (!parentElement) {
@@ -141,14 +144,19 @@
       rendererStore.update(() => this.three)
     }
 
-    private render(): void {
-      requestAnimationFrame(this.render.bind(this))
+    private renderLoop(): void {
+      requestAnimationFrame(this.renderLoop.bind(this))
 
-      this.three.render(this.scene, this.camera)
+      this.scene = get(sceneStore)
+      this.camera = get(cameraStore)
+
+      if (this.scene && this.camera) {
+        this.three.render(this.scene, this.camera)
+      }
     }
 
     private onWindowResize(domElementId?: string): void {
-      if (document && domElementId) {
+      if (this.camera && domElementId) {
         const parentElement = document.getElementById(domElementId)
 
         if (!parentElement) {

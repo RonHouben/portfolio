@@ -10,6 +10,8 @@
   import Raycaster from '$lib/components/threejs/Raycaster.svelte'
   import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '$lib/components/threejs/scenes/Scene.svelte'
+import { OrbitControlsController } from '$lib/controllers/threejs/controls/orbit.controls.controller.svelte';
+import { sceneStore } from '$lib/stores/threejs/scene.store.svelte';
   import { MouseHelper } from '$lib/utils/MouseHelper.svelte'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
@@ -232,7 +234,7 @@
                   shadow: {
                     castShadow: true,
                     receiveShadow: true
-                  }
+                  },
                 }}
               />
             </PhysicsBody>
@@ -265,6 +267,11 @@
                   shadow: {
                     castShadow: true,
                     receiveShadow: true
+                  },
+                  interactions: {
+                    onClick: () => {
+                      console.log('Clicked mouse')
+                    }
                   }
                 }}
               />
@@ -318,6 +325,11 @@
                   },
                   rotation: {
                     x: -(Math.PI / 2)
+                  },
+                  interactions: {
+                    onClick: () => {
+                      console.log('Clicked floor')
+                    }
                   }
                 }}
               />
@@ -342,6 +354,6 @@
     position: fixed;
     height: 100%;
     width: 100%;
-    cursor: none;
+    /* cursor: none; */
   }
 </style>

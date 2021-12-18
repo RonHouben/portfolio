@@ -61,6 +61,11 @@
               shadow: {
                 castShadow: true,
                 receiveShadow: true
+              },
+              interactions: {
+                onClick: () => {
+                  console.log('Clicked falling block')
+                }
               }
             }}
           />

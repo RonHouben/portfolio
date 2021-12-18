@@ -3,6 +3,7 @@
     DirectionalLightController,
     DirectionalLightControllerOptions
   } from '$lib/controllers/threejs/lights/directional.light.controller.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { onMount } from 'svelte'
 
   export let options: DirectionalLightControllerOptions
@@ -10,7 +11,9 @@
   let directionalLightController: DirectionalLightController | undefined
 
   onMount(() => {
-    directionalLightController = new DirectionalLightController(options)
+    if ($sceneStore) {
+      directionalLightController = new DirectionalLightController(options)
+    }
   })
 
   $: if (directionalLightController) {

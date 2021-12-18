@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from '$app/env';
   import {
     SceneController,
     SceneControllerOptions
@@ -6,9 +7,15 @@
 
   export let options: Omit<SceneControllerOptions, 'scene'>
 
-  const sceneController = new SceneController(options)
+  let sceneController: SceneController
 
-  $: sceneController.update(options)
+  if (browser) {
+    sceneController = new SceneController(options)
+  }
+
+  $: if (sceneController) {
+    sceneController.update(options)
+  } 
 </script>
 
 <slot name="meshes" />

@@ -13,18 +13,18 @@
     PointsInitOptions,
     PointsUpdateOptions
   } from '$lib/controllers/threejs/objects/points.controller.svelte'
-  import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { get } from 'svelte/store'
-  import type { Object3D } from 'three'
-  import { EventDispatcher, Scene } from 'three'
+  import type { Object3D, Scene } from 'three'
+  import { Interactable, InteractionOptions } from '../interactable.controller.svelte'
   import type { CameraInitOptions } from './cameras/camera.controller.svelte'
 
-  export interface BaseControllerOptions {
+  export interface BaseControllerOptions<T> {
     name: string
     position?: Vector3
     rotation?: Vector3
     shadow?: ShadowOptions
+    interactions?: InteractionOptions<T>
   }
 
   interface Vector3 {
@@ -34,32 +34,25 @@
   }
 
   export type AnimateFunction<T> = (obj: T, scene: Scene) => void
-  export type ObjectInteractionFunction<E> = (event: E) => void
   export interface ShadowOptions {
     castShadow?: boolean
     receiveShadow?: boolean
   }
-  export type BaseInitOptions = BaseControllerOptions
-  export type BaseUpdateOptions = BaseControllerOptions
+  export type BaseInitOptions<T> = BaseControllerOptions<T>
+  export type BaseUpdateOptions<T> = BaseControllerOptions<T>
 
-  type InteractionState = 'idle' | 'entering' | 'interacting'
+  export abstract class BaseController<T extends Object3D> extends Interactable<T> {
+    public name: BaseControllerOptions<T>['name']
 
-  export abstract class BaseController<T extends Object3D> extends EventDispatcher {
-    public three!: T
-    public name: BaseControllerOptions['name']
-    protected scene: Scene
-    protected interactionState: InteractionState
-
-    constructor({ name }: Pick<BaseControllerOptions, 'name'>) {
-      super()
+    constructor({ name, interactions }: BaseControllerOptions<T>) {
+      super(interactions)
       this.name = name
       this.scene = get(sceneStore)
-      this.interactionState = 'idle'
     }
 
     protected abstract init(
       options:
-        | BaseInitOptions
+        | BaseInitOptions<T>
         | PointsInitOptions
         | GroupInitOptions
         | CameraInitOptions
@@ -68,7 +61,7 @@
 
     public abstract update(
       options:
-        | BaseUpdateOptions
+        | BaseUpdateOptions<T>
         | MeshUpdateOptions
         | DirectionalLightUpdateOptions
         | PerspectiveCameraUpdateOptions
@@ -78,21 +71,14 @@
 
     public abstract animate(animateFunction: AnimateFunction<T>): void
 
-    protected isIntersected(): boolean {
-      const { intersects } = get(raycasterStore)
 
-      const intersected = intersects.find(({ object }) => object.uuid === this.three.uuid)
-
-      return !!intersected
-    }
-
-    protected setPosition(options?: BaseControllerOptions['position']): void {
+    protected setPosition(options?: BaseControllerOptions<T>['position']): void {
       this.three.position.x = options?.x || this.three.position.x
       this.three.position.y = options?.y || this.three.position.y
       this.three.position.z = options?.z || this.three.position.z
     }
 
-    protected setRotation(options: BaseControllerOptions['rotation']): void {
+    protected setRotation(options: BaseControllerOptions<T>['rotation']): void {
       if (options) {
         this.three.rotation.z = options.x || this.three.rotation.x
         this.three.rotation.y = options.y || this.three.rotation.y
@@ -100,7 +86,7 @@
       }
     }
 
-    protected setShadow(options: BaseControllerOptions['shadow']): void {
+    protected setShadow(options: BaseControllerOptions<T>['shadow']): void {
       if (options) {
         this.three.castShadow = options.castShadow || this.three.castShadow
         this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow

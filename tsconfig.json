@@ -26,7 +26,8 @@
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"]
-    }
+    },
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*.d.ts",

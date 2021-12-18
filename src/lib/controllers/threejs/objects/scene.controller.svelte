@@ -8,7 +8,7 @@
   import type { Color, Fog, Material, Texture } from 'three'
   import { Scene } from 'three'
 
-  export interface SceneControllerOptions extends Pick<BaseControllerOptions, 'name'> {
+  export interface SceneControllerOptions extends Pick<BaseControllerOptions<Scene>, 'name'> {
     autoUpdate?: boolean
     background?: Color | Texture
     environment?: Texture

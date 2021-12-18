@@ -8,14 +8,14 @@
   import { LightController } from '$lib/controllers/threejs/lights/light.controller.svelte'
   import { DirectionalLight, DirectionalLightHelper } from 'three'
 
-  export interface DirectionalLightControllerOptions extends LightControllerOptions {
+  export interface DirectionalLightControllerOptions extends LightControllerOptions<DirectionalLight> {
     targetName: string
     helpers?: DirectionalLightHelperOptions
   }
 
   type DirectionalLightHelperOptions = LightHelperOptions
 
-  export interface DirectionalLightInitOptions extends LightInitOptions {
+  export interface DirectionalLightInitOptions extends LightInitOptions<DirectionalLight> {
     targetName: DirectionalLightControllerOptions['targetName']
     helpers?: DirectionalLightControllerOptions['helpers']
   }

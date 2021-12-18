@@ -13,6 +13,7 @@
   let spotLightController: SpotLightController
 
   onMount(() => {
+    if ($sceneStore)
     spotLightController = new SpotLightController(options)
   })
 

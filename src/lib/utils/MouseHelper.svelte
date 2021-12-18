@@ -8,6 +8,13 @@
   import { get } from 'svelte/store'
   import { Object3D, Vector3 } from 'three'
 
+
+  export interface MousePositionInCanvas {
+    x: number
+    y: number
+    z: number
+  }
+
   export class MouseHelper {
     private clientX!: number
     private clientY!: number
@@ -26,7 +33,7 @@
       })
     }
 
-    public getMousePositionInCanvas(): { x: number; y: number; z: number } {
+    public getMousePositionInCanvas(): MousePositionInCanvas {
       const canvas = get(rendererStore).domElement
       const canvasRect = canvas.getBoundingClientRect()
 
