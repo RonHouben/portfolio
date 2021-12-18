@@ -55,10 +55,12 @@
       this.addOnMouseLeaveEventListener(this.onMouseLeave)
     }
 
-    private addOnMouseEnterEventListener(onMouseEnter: InteractionOptions<T>['onMouseEnter']): void {
-      addEventListener('mousemove', () => {
-        const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+    private addOnMouseEnterEventListener(
+      onMouseEnter: InteractionOptions<T>['onMouseEnter']
+    ): void {
+      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
 
+      const handleEvent = (): void => {
         if (this.isIntersected() && this.interactionState === 'idle') {
           this.setInteractionState('interacting')
 
@@ -66,13 +68,16 @@
             onMouseEnter(this.three, this.scene, mousePosition)
           }
         }
-      })
+      }
+
+      addEventListener('mousemove', handleEvent)
+      addEventListener('touchmove', handleEvent)
     }
 
     private addOnClickEventListener(onClick: InteractionOptions<T>['onClick']): void {
-      addEventListener('click', () => {
-        const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
 
+      const handleEvent = (): void => {
         if (this.isIntersected()) {
           this.setInteractionState('interacting')
 
@@ -80,23 +85,29 @@
             onClick(this.three, this.scene, mousePosition)
           }
         }
-      })
+      }
+
+      addEventListener('click', handleEvent)
+      addEventListener('touchstart', handleEvent)
     }
 
     private addOnMouseMoveEventListener(onMouseMove: InteractionOptions<T>['onMouseMove']): void {
-      addEventListener('mousemove', () => {
-        const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
 
+      const handleEvent = (): void => {
         if (onMouseMove) {
           onMouseMove(this.three, this.scene, mousePosition)
         }
-      })
+      }
+
+      addEventListener('mousemove', handleEvent)
+      addEventListener('touchmove', handleEvent)
     }
 
     private addOnMouseOverEventListener(onMouseOver: InteractionOptions<T>['onMouseOver']): void {
-      addEventListener('mousemove', () => {
-        const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
 
+      const handleEvent = (): void => {
         if (this.isIntersected()) {
           this.setInteractionState('interacting')
 
@@ -104,15 +115,17 @@
             onMouseOver(this.three, this.scene, mousePosition)
           }
         }
-      })
+      }
+
+      addEventListener('mousemove', handleEvent)
+      addEventListener('touchmove', handleEvent)
     }
 
     private addOnMouseLeaveEventListener(
       onMouseLeave: InteractionOptions<T>['onMouseLeave']
     ): void {
-      addEventListener('mousemove', () => {
-        const mousePosition = this.mouseHelper.getMousePositionInCanvas()
-
+      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      const handleEvent = (): void => {
         if (!this.isIntersected() && this.interactionState === 'interacting') {
           this.setInteractionState('idle')
 
@@ -120,7 +133,11 @@
             onMouseLeave(this.three, this.scene, mousePosition)
           }
         }
-      })
+      }
+
+      addEventListener('mousemove', handleEvent)
+      addEventListener('touchmove', handleEvent)
+      addEventListener('touchend', handleEvent)
     }
 
     private setInteractionState(newState: InteractionState): void {
