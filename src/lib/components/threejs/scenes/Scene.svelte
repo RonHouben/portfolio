@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { browser } from '$app/env';
   import {
     SceneController,
     SceneControllerOptions
   } from '$lib/controllers/threejs/objects/scene.controller.svelte'
+  import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
 
   export let options: Omit<SceneControllerOptions, 'scene'>
 
   let sceneController: SceneController
 
-  if (browser) {
-    sceneController = new SceneController(options)
+  $: if ($rendererStore && !sceneController) {
+    sceneController = new SceneController($rendererStore, options)
   }
 
-  $: if (sceneController) {
+  $: if ($rendererStore && sceneController) {
     sceneController.update(options)
-  } 
+  }
 </script>
 
+<slot name="physics" />
 <slot name="meshes" />
 <slot name="lights" />
-<slot name="helpers" />
 <slot name="cameras">
   <!-- TODO: Create errorMessage component -->
   <p>

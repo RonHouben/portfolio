@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
-  import * as CANNON from 'cannon-es'
-  import { getContext, setContext } from 'svelte'
+  import type { BodyOptions, World } from 'cannon-es'
+  import { Body } from 'cannon-es'
+  import { Interactable, InteractionOptions } from '$lib/controllers/interactable.controller.svelte'
+  import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
 
-  export type BodyControllerOptions = CANNON.BodyOptions & {
+  export type PhysicsBodyControllerOptions = BodyOptions & {
     name: string
     materialName?: string
     rotation?: {
@@ -10,33 +12,43 @@
       y?: number
       z?: number
     }
+    interactions?: InteractionOptions<PhysicsBody>
   }
 
-  export interface PhysicsBody extends CANNON.Body {
+  export interface PhysicsBody extends Body {
     name: string
   }
 
-  export class BodyController {
-    public cannon: CANNON.Body & { name?: BodyControllerOptions['name'] }
-    private world: CANNON.World
+  export class PhysicsBodyController extends Interactable<PhysicsBody> {
+    public cannon: PhysicsBody
+    private world: World
 
-    constructor(options: BodyControllerOptions) {
-      const { materialName, rotation, ...cannonBodyOptions } = options
-      this.cannon = new CANNON.Body(cannonBodyOptions)
-      this.world = getContext<CANNON.World>('world')
+    constructor(world: World, options: PhysicsBodyControllerOptions) {
+      const { name, materialName, rotation, interactions, ...cannonBodyOptions } = options
+      super(interactions)
+      this.cannon = new Body(cannonBodyOptions) as PhysicsBody
+      this.cannon.name = name
 
-      this.cannon.name = options.name
+      this.world = world
 
       this.setRotation(rotation)
       this.setMaterial(materialName)
 
-      this.world.addBody(this.cannon)
+      world.addBody(this.cannon)
 
-      setContext<CANNON.Body>('body', this.cannon)
+      physicsBodyStore.set(this.cannon)
+
+      this.renderLoop()
     }
 
-    private setMaterial(name: BodyControllerOptions['materialName']): void {
-      if (name) {
+    private renderLoop(): void {
+      requestAnimationFrame(this.renderLoop.bind(this))
+
+      physicsBodyStore.update(() => this.cannon)
+    }
+
+    private setMaterial(name: PhysicsBodyControllerOptions['materialName']): void {
+      if (name && this.world) {
         const material = this.world.materials.find((m) => m.name === name)
 
         if (!material) {
@@ -44,13 +56,12 @@
             `Couldn't find material with name: "${name}". Are you sure it added to PhysicsWorld.options.materials?`
           )
         } else {
-          // console.log(material)
           this.cannon.material = material
         }
       }
     }
 
-    private setRotation(options: BodyControllerOptions['rotation']): void {
+    private setRotation(options: PhysicsBodyControllerOptions['rotation']): void {
       if (options) {
         const { x, y, z } = options
 

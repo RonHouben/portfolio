@@ -6,7 +6,7 @@
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
   import { BufferGeometry, Material, Points, Vector3 } from 'three'
 
-  export interface PointsControllerOptions extends Omit<BaseControllerOptions, 'position'> {
+  export interface PointsControllerOptions extends Omit<BaseControllerOptions<Points>, 'position'> {
     geometry: BufferGeometry
     material: Material
   }

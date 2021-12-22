@@ -1,4 +1,10 @@
 <script lang="ts" context="module">
+  import {
+    Interactable,
+    InteractionOptions,
+    ThreeJSObject
+  } from '$lib/controllers/interactable.controller.svelte'
+  import type { CameraInitOptions } from '$lib/controllers/threejs/cameras/camera.controller.svelte'
   import type {
     PerspectiveCameraInitOptions,
     PerspectiveCameraUpdateOptions
@@ -15,9 +21,7 @@
   } from '$lib/controllers/threejs/objects/points.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { get } from 'svelte/store'
-  import type { Object3D, Scene } from 'three'
-  import { Interactable, InteractionOptions } from '../interactable.controller.svelte'
-  import type { CameraInitOptions } from './cameras/camera.controller.svelte'
+  import type { Scene } from 'three'
 
   export interface BaseControllerOptions<T> {
     name: string
@@ -41,7 +45,7 @@
   export type BaseInitOptions<T> = BaseControllerOptions<T>
   export type BaseUpdateOptions<T> = BaseControllerOptions<T>
 
-  export abstract class BaseController<T extends Object3D> extends Interactable<T> {
+  export abstract class BaseController<T extends ThreeJSObject> extends Interactable<T> {
     public name: BaseControllerOptions<T>['name']
 
     constructor({ name, interactions }: BaseControllerOptions<T>) {
@@ -70,7 +74,6 @@
     ): void
 
     public abstract animate(animateFunction: AnimateFunction<T>): void
-
 
     protected setPosition(options?: BaseControllerOptions<T>['position']): void {
       this.three.position.x = options?.x || this.three.position.x

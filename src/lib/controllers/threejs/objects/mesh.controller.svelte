@@ -2,10 +2,11 @@
   import type {
     AnimateFunction,
     BaseControllerOptions,
-    BaseInitOptions,
+    BaseInitOptions
   } from '$lib/controllers/threejs/base.controller.svelte'
-  import type { Body } from 'cannon-es'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
+  import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
+  import { get } from 'svelte/store'
   import type {
     BoxGeometry,
     BufferGeometry,
@@ -19,10 +20,8 @@
     MeshStandardMaterial,
     PlaneBufferGeometry,
     PlaneGeometry,
-    Quaternion,
     Scene,
-    SphereGeometry,
-    Vector3
+    SphereGeometry
   } from 'three'
   import { Mesh as ThreeMesh } from 'three'
 
@@ -65,12 +64,12 @@
   export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 
   export class MeshController extends BaseController<Mesh> {
-
     constructor(options: MeshControllerOptions) {
-      const { name,  interactions } = options
+      const { name, interactions } = options
       super({ name, interactions })
 
       this.init(options)
+      this.renderLoop()
     }
 
     protected override init(options: MeshInitOptions): void {
@@ -84,6 +83,16 @@
       this.setShadow(options.shadow)
 
       this.scene.add(this.three)
+
+      this.renderLoop()
+    }
+
+    private renderLoop(): void {
+      {
+        requestAnimationFrame(this.renderLoop.bind(this))
+
+        this.setPositionFromPhysicsBody()
+      }
     }
 
     public override update(options: MeshUpdateOptions): void {
@@ -106,11 +115,20 @@
       this.three.material = material
     }
 
-    public setPositionFromPhysicsBody(body: Body): void {
-      requestAnimationFrame(() => this.setPositionFromPhysicsBody(body))
+    private setPositionFromPhysicsBody(): void {
+      const physicsBody = get(physicsBodyStore)
 
-      this.three.position.copy(body.position as unknown as Vector3)
-      this.three.quaternion.copy(body.quaternion as unknown as Quaternion)
+      this.three.position.set(
+        physicsBody.position.x,
+        physicsBody.position.y,
+        physicsBody.position.z
+      )
+      this.three.quaternion.set(
+        physicsBody.quaternion.x,
+        physicsBody.quaternion.y,
+        physicsBody.quaternion.z,
+        physicsBody.quaternion.w
+      )
     }
   }
 </script>

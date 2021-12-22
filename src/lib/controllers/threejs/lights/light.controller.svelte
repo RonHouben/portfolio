@@ -10,7 +10,8 @@
   import type { ColorRepresentation, Light } from 'three'
   import { Color } from 'three'
 
-  export interface LightControllerOptions<T extends Light> extends Omit<BaseControllerOptions<T>, 'onClick'> {
+  export interface LightControllerOptions<T extends Light>
+    extends Omit<BaseControllerOptions<T>, 'onClick'> {
     color?: ColorRepresentation
     intensity?: number
   }
@@ -33,7 +34,8 @@
     intensity?: LightControllerOptions<T>['intensity']
   }
 
-  export interface LightUpdateOptions<T extends Light> extends Omit<BaseUpdateOptions<T>, 'raycasterIntersects'> {
+  export interface LightUpdateOptions<T extends Light>
+    extends Omit<BaseUpdateOptions<T>, 'raycasterIntersects'> {
     color?: LightControllerOptions<T>['color']
     intensity?: LightControllerOptions<T>['intensity']
   }

@@ -8,12 +8,13 @@
   import type { Color } from 'three'
   import { HemisphereLight } from 'three'
 
-  export interface HemisphereLightControllerOptions extends Omit<LightControllerOptions, 'shadow'> {
+  export interface HemisphereLightControllerOptions
+    extends Omit<LightControllerOptions<HemisphereLight>, 'shadow'> {
     skyColor?: Color
     groundColor?: Color
   }
 
-  export interface HemisphereLightInitOptions extends LightInitOptions {
+  export interface HemisphereLightInitOptions extends LightInitOptions<HemisphereLight> {
     skyColor?: HemisphereLightControllerOptions['skyColor']
     groundColor?: HemisphereLightControllerOptions['groundColor']
   }

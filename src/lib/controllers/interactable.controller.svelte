@@ -3,7 +3,8 @@
   import { MouseHelper, MousePositionInCanvas } from '$lib/utils/MouseHelper.svelte'
   import { get } from 'svelte/store'
   import type { Event, Scene } from 'three'
-  import type { Object3D } from 'three'
+  import { Object3D } from 'three'
+  import type { PhysicsBody } from './cannon-es/body.controller.svelte'
 
   export type InteractionFunction<T> = (
     target: T,
@@ -21,8 +22,12 @@
     onMouseLeave?: InteractionFunction<T>
   }
 
-  export class Interactable<T extends Object3D<Event>> {
+  export interface ThreeJSObject extends Object3D<Event> {}
+  export interface CannonJSBody extends PhysicsBody {}
+
+  export class Interactable<T extends ThreeJSObject | CannonJSBody> {
     public three!: T
+    public cannon!: T
     protected scene!: Scene
 
     private mouseHelper: MouseHelper
@@ -47,7 +52,6 @@
     }
 
     private addEventListeners(): void {
-      // TODO: also implement touch events
       this.addOnClickEventListener(this.onClick)
       this.addOnMouseEnterEventListener(this.onMouseEnter)
       this.addOnMouseMoveEventListener(this.onMouseMove)
@@ -58,86 +62,94 @@
     private addOnMouseEnterEventListener(
       onMouseEnter: InteractionOptions<T>['onMouseEnter']
     ): void {
-      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      if (onMouseEnter) {
+        const handleEvent = (): void => {
+          if (this.isIntersected() && this.interactionState === 'idle') {
+            const { x, y, z } = this.mouseHelper
 
-      const handleEvent = (): void => {
-        if (this.isIntersected() && this.interactionState === 'idle') {
-          this.setInteractionState('interacting')
+            this.setInteractionState('interacting')
 
-          if (onMouseEnter) {
-            onMouseEnter(this.three, this.scene, mousePosition)
+            onMouseEnter(this.three, this.scene, { x, y, z })
           }
         }
-      }
 
-      addEventListener('mousemove', handleEvent)
-      addEventListener('touchmove', handleEvent)
+        addEventListener('mousemove', handleEvent)
+        addEventListener('touchmove', handleEvent)
+      }
     }
 
     private addOnClickEventListener(onClick: InteractionOptions<T>['onClick']): void {
-      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      if (onClick) {
+        const handleEvent = (): void => {
+          if (this.isIntersected()) {
+            const { x, y, z } = this.mouseHelper
 
-      const handleEvent = (): void => {
-        if (this.isIntersected()) {
-          this.setInteractionState('interacting')
+            this.setInteractionState('interacting')
 
-          if (onClick) {
-            onClick(this.three, this.scene, mousePosition)
+            onClick(this.three, this.scene, { x, y, z })
           }
         }
-      }
 
-      addEventListener('click', handleEvent)
-      addEventListener('touchstart', handleEvent)
+        addEventListener('click', handleEvent)
+        addEventListener('touchstart', handleEvent)
+      }
     }
 
     private addOnMouseMoveEventListener(onMouseMove: InteractionOptions<T>['onMouseMove']): void {
-      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      if (onMouseMove) {
+        const handleEvent = (): void => {
+          const { x, y, z } = this.mouseHelper
 
-      const handleEvent = (): void => {
-        if (onMouseMove) {
-          onMouseMove(this.three, this.scene, mousePosition)
+          if (this.three) {
+            onMouseMove(this.three, this.scene, { x, y, z })
+          }
+          if (this.cannon) {
+            onMouseMove(this.cannon, this.scene, { x, y, z })
+          }
         }
-      }
 
-      addEventListener('mousemove', handleEvent)
-      addEventListener('touchmove', handleEvent)
+        addEventListener('mousemove', handleEvent)
+        addEventListener('touchmove', handleEvent)
+      }
     }
 
     private addOnMouseOverEventListener(onMouseOver: InteractionOptions<T>['onMouseOver']): void {
-      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
+      if (onMouseOver) {
+        const handleEvent = (): void => {
+          if (this.isIntersected()) {
+            const { x, y, z } = this.mouseHelper
 
-      const handleEvent = (): void => {
-        if (this.isIntersected()) {
-          this.setInteractionState('interacting')
+            this.setInteractionState('interacting')
 
-          if (onMouseOver) {
-            onMouseOver(this.three, this.scene, mousePosition)
+            onMouseOver(this.three, this.scene, { x, y, z })
           }
         }
-      }
 
-      addEventListener('mousemove', handleEvent)
-      addEventListener('touchmove', handleEvent)
+        addEventListener('mousemove', handleEvent)
+        addEventListener('touchmove', handleEvent)
+      }
     }
 
     private addOnMouseLeaveEventListener(
       onMouseLeave: InteractionOptions<T>['onMouseLeave']
     ): void {
-      const mousePosition = this.mouseHelper.getMousePositionInCanvas()
-      const handleEvent = (): void => {
-        if (!this.isIntersected() && this.interactionState === 'interacting') {
-          this.setInteractionState('idle')
+      if (onMouseLeave) {
+        const handleEvent = (): void => {
+          if (!this.isIntersected() && this.interactionState === 'interacting') {
+            const { x, y, z } = this.mouseHelper
 
-          if (onMouseLeave) {
-            onMouseLeave(this.three, this.scene, mousePosition)
+            this.setInteractionState('idle')
+
+            if (onMouseLeave) {
+              onMouseLeave(this.three, this.scene, { x, y, z })
+            }
           }
         }
-      }
 
-      addEventListener('mousemove', handleEvent)
-      addEventListener('touchmove', handleEvent)
-      addEventListener('touchend', handleEvent)
+        addEventListener('mousemove', handleEvent)
+        addEventListener('touchmove', handleEvent)
+        addEventListener('touchend', handleEvent)
+      }
     }
 
     private setInteractionState(newState: InteractionState): void {
@@ -145,9 +157,15 @@
     }
 
     private isIntersected(): boolean {
-      const { intersects } = get(raycasterStore)
+      if (this.three instanceof Object3D) {
+        const raycaster = get(raycasterStore)
+        const threeObject = this.three as Object3D
 
-      return !!intersects.find(({ object }) => object.uuid === this.three.uuid)
+        if (raycaster && raycaster.intersects) {
+          return !!raycaster.intersects.find(({ object }) => object.uuid === threeObject.uuid)
+        }
+      }
+      return false
     }
   }
 </script>

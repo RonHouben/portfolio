@@ -1,8 +1,5 @@
 <script lang="ts" context="module">
   import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
-  import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
-  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import { get } from 'svelte/store'
   import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
   import { Raycaster, Vector2 } from 'three'
 
@@ -18,9 +15,9 @@
     public three: Raycaster
     public intersects: Intersection<Object3D<Event>>[] = []
 
-    constructor({ cameraName }: RaycasterControllerOptions) {
-      this.renderer = get(rendererStore)
-      this.scene = get(sceneStore)
+    constructor(renderer: Renderer, scene: Scene, { cameraName }: RaycasterControllerOptions) {
+      this.renderer = renderer
+      this.scene = scene
       this.mouse = new Vector2()
       this.three = new Raycaster()
       this.intersects = []

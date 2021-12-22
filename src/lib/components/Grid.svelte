@@ -53,11 +53,6 @@
               material: new MeshNormalMaterial({
                 opacity: 1
               }),
-              position: {
-                x: column,
-                y: row,
-                z: depth
-              },
               shadow: {
                 castShadow: true,
                 receiveShadow: true

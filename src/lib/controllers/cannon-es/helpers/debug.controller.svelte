@@ -1,34 +1,50 @@
 <script lang="ts" context="module">
-  import * as CANNON from 'cannon-es'
-  import type { ColorRepresentation, Mesh } from 'three'
-  import * as THREE from 'three'
+  import {
+    Box,
+    ConvexPolyhedron,
+    Heightfield,
+    Plane,
+    Quaternion,
+    Shape,
+    Sphere,
+    Trimesh,
+    Vec3,
+    World
+  } from 'cannon-es'
+  import { SphereGeometry } from 'three'
+  import { PlaneGeometry } from 'three'
+  import { BoxGeometry } from 'three'
+  import { MeshBasicMaterial } from 'three'
+  import type { Scene } from 'three'
+  import type { ColorRepresentation } from 'three'
+  import { Mesh } from 'three'
 
-  interface CannonDebugRendererOptions {
+  interface PhysicsDebugControllerOptions {
     color: ColorRepresentation
   }
 
-  export class CannonDebugRenderer {
-    private scene: THREE.Scene
-    private world: CANNON.World
+  export class PhysicsDebugController {
+    private scene: Scene
+    private world: World
 
-    private meshes: THREE.Mesh[] = []
-    private material: THREE.MeshBasicMaterial
-    private sphereGeometry: THREE.SphereGeometry
-    private boxGeometry: THREE.BoxGeometry
-    private planeGeometry: THREE.PlaneGeometry
+    private meshes: Mesh[] = []
+    private material: MeshBasicMaterial
+    private sphereGeometry: SphereGeometry
+    private boxGeometry: BoxGeometry
+    private planeGeometry: PlaneGeometry
 
     // for updating positions
-    private tmpVec0 = new CANNON.Vec3()
-    private tmpQuat0 = new CANNON.Quaternion()
+    private tmpVec0 = new Vec3()
+    private tmpQuat0 = new Quaternion()
 
-    constructor(scene: THREE.Scene, world: CANNON.World, options: CannonDebugRendererOptions) {
+    constructor(scene: Scene, world: World, options: PhysicsDebugControllerOptions) {
       this.scene = scene
       this.world = world
 
-      this.material = new THREE.MeshBasicMaterial({ color: options.color, wireframe: true })
-      this.sphereGeometry = new THREE.SphereGeometry(1)
-      this.boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-      this.planeGeometry = new THREE.PlaneGeometry(10, 10, 10, 10)
+      this.material = new MeshBasicMaterial({ color: options.color, wireframe: true })
+      this.sphereGeometry = new SphereGeometry(1)
+      this.boxGeometry = new BoxGeometry(1, 1, 1)
+      this.planeGeometry = new PlaneGeometry(10, 10, 10, 10)
     }
 
     public renderLoop(): void {
@@ -87,7 +103,7 @@
       meshes.length = meshIndex
     }
 
-    private updateMesh(index: number, shape: CANNON.Shape): void {
+    private updateMesh(index: number, shape: Shape): void {
       let mesh = this.meshes[index]
 
       if (!this.typeMatch(mesh, shape)) {
@@ -100,8 +116,8 @@
     }
 
     private typeMatch(
-      mesh: THREE.Mesh,
-      shape: CANNON.Shape | CANNON.ConvexPolyhedron | CANNON.Trimesh | CANNON.Heightfield
+      mesh: Mesh,
+      shape: Shape | ConvexPolyhedron | Trimesh | Heightfield
     ): boolean {
       if (!mesh) {
         return false
@@ -110,28 +126,28 @@
       const geo = mesh.geometry
 
       return (
-        (geo instanceof THREE.SphereGeometry && shape instanceof CANNON.Sphere) ||
-        (geo instanceof THREE.BoxGeometry && shape instanceof CANNON.Box) ||
-        (geo instanceof THREE.PlaneGeometry && shape instanceof CANNON.Plane) ||
-        (geo.id === shape.id && shape instanceof CANNON.ConvexPolyhedron) ||
-        (geo.id === shape.id && shape instanceof CANNON.Trimesh) ||
-        (geo.id === shape.id && shape instanceof CANNON.Heightfield)
+        (geo instanceof SphereGeometry && shape instanceof Sphere) ||
+        (geo instanceof BoxGeometry && shape instanceof Box) ||
+        (geo instanceof PlaneGeometry && shape instanceof Plane) ||
+        (geo.id === shape.id && shape instanceof ConvexPolyhedron) ||
+        (geo.id === shape.id && shape instanceof Trimesh) ||
+        (geo.id === shape.id && shape instanceof Heightfield)
       )
     }
 
-    private createMesh(shape: CANNON.Shape): Mesh {
+    private createMesh(shape: Shape): Mesh {
       const material = this.material
       let mesh: THREE.Mesh | undefined = undefined
 
       switch (shape.type) {
-        case CANNON.Shape.types.SPHERE:
-          mesh = new THREE.Mesh(this.sphereGeometry, material)
+        case Shape.types.SPHERE:
+          mesh = new Mesh(this.sphereGeometry, material)
           break
-        case CANNON.Shape.types.BOX:
-          mesh = new THREE.Mesh(this.boxGeometry, material)
+        case Shape.types.BOX:
+          mesh = new Mesh(this.boxGeometry, material)
           break
-        case CANNON.Shape.types.PLANE:
-          mesh = new THREE.Mesh(this.planeGeometry, material)
+        case Shape.types.PLANE:
+          mesh = new Mesh(this.planeGeometry, material)
           break
         default:
           throw new Error(
@@ -146,30 +162,30 @@
       return mesh
     }
 
-    private scaleMesh(mesh: Mesh, shape: CANNON.Shape) {
-      const sphere = shape as CANNON.Sphere
-      const box = shape as CANNON.Box
-      const trimesh = shape as CANNON.Trimesh
+    private scaleMesh(mesh: Mesh, shape: Shape) {
+      const sphere = shape as Sphere
+      const box = shape as Box
+      const trimesh = shape as Trimesh
 
       switch (shape.type) {
-        case CANNON.Shape.types.SPHERE:
+        case Shape.types.SPHERE:
           mesh.scale.set(sphere.radius, sphere.radius, sphere.radius)
           break
 
-        case CANNON.Shape.types.BOX:
+        case Shape.types.BOX:
           mesh.scale.set(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z)
           mesh.scale.multiplyScalar(2)
           break
 
-        case CANNON.Shape.types.CONVEXPOLYHEDRON:
+        case Shape.types.CONVEXPOLYHEDRON:
           mesh.scale.set(1, 1, 1)
           break
 
-        case CANNON.Shape.types.TRIMESH:
+        case Shape.types.TRIMESH:
           mesh.scale.set(trimesh.scale.x, trimesh.scale.y, trimesh.scale.z)
           break
 
-        case CANNON.Shape.types.HEIGHTFIELD:
+        case Shape.types.HEIGHTFIELD:
           mesh.scale.set(1, 1, 1)
           break
       }

@@ -9,6 +9,7 @@
   import { CameraController } from '$lib/controllers/threejs/cameras/camera.controller.svelte'
   import { CameraHelperController } from '$lib/controllers/threejs/helpers/camera.helper.controller.svelte'
   import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
+  import type { Scene } from 'three'
   import { PerspectiveCamera } from 'three'
 
   export interface PerspectiveCameraControllerOptions extends CameraControllerOptions {
@@ -21,9 +22,9 @@
   export type PerspectiveCameraInitOptions = CameraInitOptions
   export type PerspectiveCameraUpdateOptions = CameraUpdateOptions
   export class PerspectiveCameraController extends CameraController<PerspectiveCamera> {
-    constructor(options: PerspectiveCameraControllerOptions) {
+    constructor(scene: Scene, options: PerspectiveCameraControllerOptions) {
       const { fov, aspect, near, far } = options
-      super(options)
+      super(scene, options)
 
       this.three = new PerspectiveCamera(fov, aspect, near, far)
 
@@ -47,6 +48,7 @@
       this.setRotation(rotation)
       this.setShadow(shadow)
       this.enableHelpers(helpers)
+      this.setCamera()
     }
 
     public override update({ position, rotation, shadow }: PerspectiveCameraUpdateOptions): void {
@@ -65,7 +67,7 @@
 
     protected override enableHelpers(helpers: PerspectiveCameraControllerOptions['helpers']): void {
       if (helpers?.enable) {
-        new CameraHelperController(this.three)
+        new CameraHelperController(this.scene, this.three)
       }
     }
   }
