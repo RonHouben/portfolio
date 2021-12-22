@@ -3,14 +3,14 @@
     OrbitControlsController,
     OrbitControlsControllerOptions
   } from '$lib/controllers/threejs/controls/orbit.controls.controller.svelte'
-  import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
 
   export let options: Omit<OrbitControlsControllerOptions, 'domElement'>
 
   let orbitControlsController: OrbitControlsController
 
-  $: if ($rendererStore) {
-    orbitControlsController = new OrbitControlsController(options)
+  $: if ($sceneStore) {
+    orbitControlsController = new OrbitControlsController($sceneStore, options)
   }
 
   $: if (orbitControlsController) {

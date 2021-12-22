@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
   import { BaseHelperController } from '$lib/controllers/threejs/helpers/base.helper.controller.svelte'
+  import type { Scene } from 'three'
   import { GridHelper } from 'three'
 
   export interface GridHelperControllerOptions {
@@ -8,12 +9,12 @@
   }
 
   export class GridHelperController extends BaseHelperController<GridHelper> {
-    constructor({ size, divisions }: GridHelperControllerOptions) {
+    constructor(scene: Scene, { size, divisions }: GridHelperControllerOptions) {
       super()
 
-      this.three = new GridHelper(size, divisions)
+      this.helper = new GridHelper(size, divisions)
 
-      this.scene.add(this.three)
+      scene.add(this.helper)
     }
   }
 </script>

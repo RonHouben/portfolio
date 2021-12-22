@@ -3,10 +3,15 @@
     AmbientLightController,
     AmbientLightControllerOptions
   } from '$lib/controllers/threejs/lights/ambient.light.controller.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
 
   export let options: AmbientLightControllerOptions
 
-  const ambientLightController = new AmbientLightController(options)
+  let ambientLightController: AmbientLightController
 
-  $: ambientLightController.update(options)
+  $: if ($sceneStore && !ambientLightController) {
+    ambientLightController = new AmbientLightController(options)
+  }
+
+  $: ambientLightController && ambientLightController.update(options)
 </script>

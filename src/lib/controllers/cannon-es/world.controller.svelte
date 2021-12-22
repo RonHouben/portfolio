@@ -1,29 +1,31 @@
 <script lang="ts" context="module">
-  import * as CANNON from 'cannon-es'
-  import { setContext } from 'svelte'
+  import { worldStore } from '$lib/stores/cannon-es/world.store.svelte'
+  import { Constraint, ContactMaterial, Material, World, WorldOptions } from 'cannon-es'
   import type { PhysicsBody } from './body.controller.svelte'
 
-  export type WorldControllerOptions = CANNON.WorldOptions & {
-    materials?: CANNON.Material[]
-    createContactMaterials?: (materials: CANNON.Material[]) => CANNON.ContactMaterial[]
-    createConstraints?: (bodies: PhysicsBody[]) => CANNON.Constraint[]
+  export type PhysicsWorldControllerOptions = WorldOptions & {
+    materials?: Material[]
+    createContactMaterials?: (materials: Material[]) => ContactMaterial[]
+    createConstraints?: (bodies: PhysicsBody[]) => Constraint[]
   }
-  export class WorldController {
-    public cannon: CANNON.World
+  export class PhysicsWorldController {
+    public cannon: World
     private lastCallTime?: number
     private timeStep: number = 1 / 60 // seconds
 
-    constructor(options: WorldControllerOptions) {
-      this.cannon = new CANNON.World(options)
+    constructor(options: PhysicsWorldControllerOptions) {
+      this.cannon = new World(options)
 
       this.setMaterials(options.materials)
       this.createContactMaterials(options.createContactMaterials)
       this.createConstraints(options.createConstraints)
 
-      setContext<CANNON.World>('world', this.cannon)
+      worldStore.set(this.cannon)
+
+      this.renderLoop()
     }
 
-    private createConstraints(func: WorldControllerOptions['createConstraints']): void {
+    private createConstraints(func: PhysicsWorldControllerOptions['createConstraints']): void {
       setTimeout(() => {
         if (func) {
           const constraints = func(this.cannon.bodies as PhysicsBody[])
@@ -37,7 +39,7 @@
       })
     }
 
-    private setMaterials(materials: WorldControllerOptions['materials']): void {
+    private setMaterials(materials: PhysicsWorldControllerOptions['materials']): void {
       if (materials) {
         for (const material of materials) {
           this.cannon.addMaterial(material)
@@ -45,7 +47,9 @@
       }
     }
 
-    private createContactMaterials(func: WorldControllerOptions['createContactMaterials']): void {
+    private createContactMaterials(
+      func: PhysicsWorldControllerOptions['createContactMaterials']
+    ): void {
       if (func) {
         const contactMaterials = func(this.cannon.materials)
 
@@ -57,7 +61,7 @@
       }
     }
 
-    public renderLoop(): void {
+    private renderLoop(): void {
       requestAnimationFrame(this.renderLoop.bind(this))
 
       const time = performance.now() / 1000 // seconds
@@ -66,6 +70,7 @@
         this.cannon.step(this.timeStep)
       } else {
         const dt = time - this.lastCallTime
+
         this.cannon.step(this.timeStep, dt)
       }
       this.lastCallTime = time

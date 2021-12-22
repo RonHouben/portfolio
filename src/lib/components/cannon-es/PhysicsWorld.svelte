@@ -1,33 +1,39 @@
 <script lang="ts">
-  import { CannonDebugRenderer } from '$lib/controllers/cannon-es/helpers/debug.renderer.controllers.svelte'
+  import { PhysicsDebugController } from '$lib/controllers/cannon-es/helpers/debug.controller.svelte'
   import {
-    WorldController,
-    WorldControllerOptions
+    PhysicsWorldController,
+    PhysicsWorldControllerOptions
   } from '$lib/controllers/cannon-es/world.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import { onMount } from 'svelte'
 
-  export let options: Omit<WorldControllerOptions, 'createContactMaterials'> & { helpers?: { enabled: boolean }}
-  export let createContactMaterials: WorldControllerOptions['createContactMaterials'] = undefined
-  export let createConstraints: WorldControllerOptions['createConstraints'] = undefined
+  export let options: Omit<PhysicsWorldControllerOptions, 'createContactMaterials'> & {
+    helpers?: { enabled: boolean }
+  }
+  export let createContactMaterials: PhysicsWorldControllerOptions['createContactMaterials'] =
+    undefined
+  export let createConstraints: PhysicsWorldControllerOptions['createConstraints'] = undefined
 
-  const worldController = new WorldController({
-    ...options,
-    createContactMaterials,
-    createConstraints
-  })
+  let physicsWorldController: PhysicsWorldController
+  let cannonDebugController: PhysicsDebugController
 
-  onMount(() => {
-    worldController.renderLoop()
+  $: if ($sceneStore && !physicsWorldController) {
+    physicsWorldController = new PhysicsWorldController({
+      ...options,
+      createContactMaterials,
+      createConstraints
+    })
+  }
 
-    if (options.helpers?.enabled) {
-      const cannonDebugRenderer = new CannonDebugRenderer($sceneStore, worldController.cannon, {
-        color: 'green'
-      })
+  $: if (
+    options.helpers?.enabled &&
+    $sceneStore &&
+    physicsWorldController &&
+    !cannonDebugController
+  ) {
+    cannonDebugController = new PhysicsDebugController($sceneStore, physicsWorldController.cannon, {
+      color: 'green'
+    })
 
-      cannonDebugRenderer.renderLoop()
-    }
-  })
+    cannonDebugController.renderLoop()
+  }
 </script>
-
-<slot />

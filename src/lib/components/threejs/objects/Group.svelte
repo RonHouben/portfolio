@@ -4,23 +4,22 @@
     GroupController,
     GroupControllerOptions
   } from '$lib/controllers/threejs/objects/group.controller.svelte'
-  import { onMount } from 'svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
 
   export let options: GroupControllerOptions
   export let animate: GroupAnimateFunction | undefined = undefined
-  // export let onClick: GroupOnClickFunction | undefined = undefined
 
   let groupController: GroupController
 
-  onMount(() => {
+  $: if ($sceneStore && !groupController) {
     groupController = new GroupController(options)
-  })
+  }
 
   $: if (animate && groupController) {
     groupController.animate(animate)
   }
 
-  $: if (groupController) {
+  $: if (groupController && options) {
     groupController.update(options)
   }
 </script>

@@ -1,25 +1,48 @@
 <script lang="ts" context="module">
+  import {
+    StatsControllerOptions,
+    StatsHelperController
+  } from '$lib/controllers/statsjs/stats.controller.svelte'
   import type {
     AnimateFunction,
     BaseControllerOptions
   } from '$lib/controllers/threejs/base.controller.svelte'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import type { Color, Fog, Material, Texture } from 'three'
+  import type { Color, Fog, Material, Renderer, Texture } from 'three'
   import { Scene } from 'three'
+  import {
+    AxesHelperController,
+    AxesHelperControllerOptions
+  } from '../helpers/axes.helper.controller.svelte'
+  import {
+    GridHelperController,
+    GridHelperControllerOptions
+  } from '../helpers/grid.helper.controller.svelte'
 
-  export interface SceneControllerOptions extends Pick<BaseControllerOptions, 'name'> {
+  type HelperOptions<T> = T & {
+    enabled: boolean
+  }
+  export interface SceneControllerOptions extends Pick<BaseControllerOptions<Scene>, 'name'> {
     autoUpdate?: boolean
     background?: Color | Texture
     environment?: Texture
     fog?: Fog
     overrideMaterial?: Material
+    helpers?: {
+      axes?: HelperOptions<AxesHelperControllerOptions>
+      grid?: HelperOptions<GridHelperControllerOptions>
+      stats?: HelperOptions<Omit<StatsControllerOptions, 'domElement'>>
+    }
   }
 
-  type SceneInitOptions = SceneControllerOptions
   export class SceneController extends BaseController<Scene> {
-    constructor(options: SceneControllerOptions) {
+    private renderer: Renderer
+
+    constructor(renderer: Renderer, options: SceneControllerOptions) {
       super(options)
+
+      this.renderer = renderer
 
       this.init(options)
 
@@ -27,7 +50,7 @@
       sceneStore.set(this.three)
     }
 
-    protected override init(options: SceneInitOptions): void {
+    protected override init(options: SceneControllerOptions): void {
       this.scene = new Scene()
       this.three = this.scene
       this.three.name = options.name
@@ -36,6 +59,25 @@
       this.setEnvironment(options.environment)
       this.setFog(options.fog)
       this.setOverrideMaterial(options.overrideMaterial)
+      this.enableHelpers(options.helpers)
+    }
+
+    private enableHelpers(options: SceneControllerOptions['helpers']): void {
+      if (options?.axes?.enabled) {
+        new AxesHelperController(this.scene, options.axes)
+      }
+
+      if (options?.grid?.enabled) {
+        new GridHelperController(this.scene, options.grid)
+      }
+
+      if (options?.stats?.enabled) {
+        if (!this.renderer.domElement) {
+          throw new Error(`Unable to find ThreeJS renderer's parentElement`)
+        }
+
+        new StatsHelperController(this.renderer, options.stats)
+      }
     }
 
     public override update(options: SceneControllerOptions): void {

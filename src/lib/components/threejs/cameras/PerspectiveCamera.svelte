@@ -9,11 +9,15 @@
   export let options: PerspectiveCameraControllerOptions
   export let animate: PerspectiveCameraAnimateFunction | undefined = undefined
 
-  const cameraController = new PerspectiveCameraController(options)
+  let cameraController: PerspectiveCameraController
 
-  if (animate) {
+  $: if ($sceneStore && !cameraController) {
+    cameraController = new PerspectiveCameraController($sceneStore, options)
+  }
+
+  $: if (animate && cameraController) {
     animate(cameraController.three, $sceneStore)
   }
 
-  $: cameraController.update(options)
+  $: cameraController && cameraController.update(options)
 </script>

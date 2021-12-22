@@ -1,27 +1,11 @@
 <script lang="ts" context="module">
-  import type { StatsControllerOptions } from '$lib/controllers/statsjs/stats.controller.svelte'
-  import { StatsController } from '$lib/controllers/statsjs/stats.controller.svelte'
-  import type { AxesHelperControllerOptions } from '$lib/controllers/threejs/helpers/axes.helper.controller.svelte'
-  import { AxesHelperController } from '$lib/controllers/threejs/helpers/axes.helper.controller.svelte'
-  import type { GridHelperControllerOptions } from '$lib/controllers/threejs/helpers/grid.helper.controller.svelte'
-  import { GridHelperController } from '$lib/controllers/threejs/helpers/grid.helper.controller.svelte'
   import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
+  import { RendererType } from '$lib/utils/types'
   import { get } from 'svelte/store'
-  import type {
-    Camera,
-    PerspectiveCamera,
-    Scene,
-    TextureEncoding,
-    WebGLRendererParameters,
-    WebGLShadowMap
-  } from 'three'
-  import { WebGL1Renderer, WebGLRenderer } from 'three'
-
-  type HelperOptions<T> = T & {
-    enabled: boolean
-  }
+  import type { TextureEncoding,WebGLRendererParameters,WebGLShadowMap } from 'three'
+  import { WebGL1Renderer,WebGLRenderer } from 'three'
 
   export interface RendererControllerOptions extends WebGLRendererParameters {
     domElementId: string
@@ -30,23 +14,11 @@
     shadowMap?: RendererShadowMapOptions
     outputEncoding?: TextureEncoding
     pixelRatio?: number
-    helpers?: {
-      axes?: HelperOptions<AxesHelperControllerOptions>
-      grid?: HelperOptions<GridHelperControllerOptions>
-      stats?: HelperOptions<Omit<StatsControllerOptions, 'domElement'>>
-    }
   }
 
   type RendererShadowMapOptions = Pick<WebGLShadowMap, 'enabled'> & Pick<WebGLShadowMap, 'type'>
 
-  export enum RendererType {
-    webGL,
-    webGL1
-  }
-
   export class RendererController {
-    private scene: Scene
-    private camera: Camera
     private width: RendererControllerOptions['width']
     private height: RendererControllerOptions['height']
     public three: WebGLRenderer | WebGL1Renderer
@@ -54,8 +26,6 @@
     constructor(options: RendererControllerOptions, rendererType: RendererType) {
       const { width, height, domElementId } = options
 
-      this.scene = get(sceneStore)
-      this.camera = get(cameraStore)
       this.width = width || 0
       this.height = height || 0
 
@@ -70,47 +40,24 @@
           throw new Error(`Unknown rendererType of ${rendererType}`)
       }
 
-      addEventListener('resize', () => this.onWindowResize(domElementId), false)
-
-      this.update(options)
       this.attachToDOM(domElementId)
-      this.enableHelpers(options.helpers)
-      this.render()
-
+      this.addEventListeners(domElementId)
       // set Svelte store
       rendererStore.set(this.three)
+
+      this.renderLoop(options)
     }
 
-    private enableHelpers(options: RendererControllerOptions['helpers']): void {
-      if (options?.axes?.enabled) {
-        new AxesHelperController(options.axes)
-      }
-
-      if (options?.grid?.enabled) {
-        new GridHelperController(options.grid)
-      }
-
-      if (options?.stats?.enabled) {
-        if (!this.three.domElement.parentElement) {
-          throw new Error(`Unable to find ThreeJS renderer's parentElement`)
-        }
-
-        new StatsController({ domElement: this.three.domElement.parentElement, ...options.stats })
-      }
+    private addEventListeners(domElementId: RendererControllerOptions['domElementId']): void {
+      addEventListener('resize', () => this.onWindowResize(domElementId), false)
     }
 
-    private attachToDOM(domElementId?: string): void {
+    private attachToDOM(domElementId: RendererControllerOptions['domElementId']): void {
       if (this.width && this.height) {
         this.three.setSize(this.width, this.height)
 
-        if (this.camera.type === 'PerspectiveCamera') {
-          this.setPerspectiveCamera()
-        }
-
         return
-      }
-
-      if (document && domElementId) {
+      } else {
         const parentElement = document.getElementById(domElementId)
 
         if (!parentElement) {
@@ -123,16 +70,25 @@
 
           this.three.setSize(this.width, this.height)
 
-          if (this.camera.type === 'PerspectiveCamera') {
-            this.setPerspectiveCamera()
-          }
-
           return
         }
       }
     }
 
-    public update(options: RendererControllerOptions): void {
+    private renderLoop(options: RendererControllerOptions): void {
+      requestAnimationFrame(() => this.renderLoop(options))
+
+      this.update(options)
+
+      const scene = get(sceneStore)
+      const camera = get(cameraStore)
+
+      if (scene && camera) {
+        this.three.render(scene, camera)
+      }
+    }
+
+    private update(options: RendererControllerOptions): void {
       this.shadowMap(options.shadowMap)
       this.setPixelRatio(options.pixelRatio)
       this.setOutputEncoding(options.outputEncoding)
@@ -141,28 +97,18 @@
       rendererStore.update(() => this.three)
     }
 
-    private render(): void {
-      requestAnimationFrame(this.render.bind(this))
+    private onWindowResize(domElementId: RendererControllerOptions['domElementId']): void {
+      const parentElement = document.getElementById(domElementId)
 
-      this.three.render(this.scene, this.camera)
-    }
+      if (!parentElement) {
+        throw new Error(`Couldn't find element with id ${domElementId}`)
+      } else {
+        this.width = parentElement.offsetWidth
+        this.height = parentElement.offsetHeight
 
-    private onWindowResize(domElementId?: string): void {
-      if (document && domElementId) {
-        const parentElement = document.getElementById(domElementId)
+        this.three.setSize(this.width, this.height)
 
-        if (!parentElement) {
-          throw new Error(`Couldn't find element with id ${domElementId}`)
-        } else {
-          this.width = parentElement.offsetWidth
-          this.height = parentElement.offsetHeight
-
-          this.three.setSize(this.width, this.height)
-
-          if (this.camera.type === 'PerspectiveCamera') {
-            this.setPerspectiveCamera()
-          }
-        }
+        // this.setCamera()
       }
     }
 
@@ -177,13 +123,6 @@
 
     private setOutputEncoding(encoding: RendererControllerOptions['outputEncoding']): void {
       this.three.outputEncoding = encoding || this.three.outputEncoding
-    }
-
-    private setPerspectiveCamera(): void {
-      const camera = this.camera as PerspectiveCamera
-
-      camera.aspect = (this.width || 0) / (this.height || 0)
-      camera.updateProjectionMatrix()
     }
   }
 </script>

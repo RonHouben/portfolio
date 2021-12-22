@@ -3,31 +3,68 @@
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import type { AnimeParams } from 'animejs'
   import anime from 'animejs'
-  import type { Vec3 } from 'cannon-es'
   import { Body } from 'cannon-es'
   import { get } from 'svelte/store'
   import { Object3D, Vector3 } from 'three'
 
+  export interface MousePositionInCanvas {
+    x: number
+    y: number
+    z: number
+  }
+
   export class MouseHelper {
+    private static instance: MouseHelper
     private clientX!: number
     private clientY!: number
+    public x!: number
+    public y!: number
+    public z!: number
 
     constructor() {
-      addEventListener('mousemove', ({ clientX, clientY }) => {
-        this.clientX = clientX
-        this.clientY = clientY
-      })
+      if (MouseHelper.instance) {
+        return MouseHelper.instance
+      }
 
-      addEventListener('touchmove', ({ touches }) => {
-        const { clientX, clientY } = touches[0]
+      MouseHelper.instance = this
 
-        this.clientX = clientX
-        this.clientY = clientY
-      })
+      this.addEventListeners()
     }
 
-    public getMousePositionInCanvas(): { x: number; y: number; z: number } {
-      const canvas = get(rendererStore).domElement
+    private addEventListeners(): void {
+      addEventListener('mousemove', this.updateMousePosition.bind(this))
+      addEventListener('touchmove', this.updateMousePosition.bind(this))
+    }
+
+    private updateMousePosition(this: MouseHelper, event: MouseEvent | TouchEvent): void {
+      if (event instanceof MouseEvent) {
+        this.clientX = event.clientX
+        this.clientY = event.clientY
+
+        const { x, y, z } = this.getMousePositionInCanvas()
+
+        this.x = x
+        this.y = y
+        this.z = z
+      }
+
+      if (event instanceof TouchEvent) {
+        const { clientX, clientY } = event.touches[0]
+
+        this.clientX = clientX
+        this.clientY = clientY
+
+        const { x, y, z } = this.getMousePositionInCanvas()
+
+        this.x = x
+        this.y = y
+        this.z = z
+      }
+    }
+
+    private getMousePositionInCanvas(): MousePositionInCanvas {
+      const renderer = get(rendererStore)
+      const canvas = renderer.domElement
       const canvasRect = canvas.getBoundingClientRect()
 
       return {
@@ -37,15 +74,10 @@
       }
     }
 
-    public static followMouse(
-      mouseX: number,
-      mouseY: number,
-      target: Object3D | Body,
-      animeOptions?: Omit<AnimeParams, 'targets'>
-    ): void {
+    public followMouse(target: Object3D | Body, animeOptions?: Omit<AnimeParams, 'targets'>): void {
       const camera = get(cameraStore)
       // Make the sphere follow the mouse
-      const vector = new Vector3(mouseX, mouseY, target.position.z)
+      const vector = new Vector3(this.x, this.y, this.z)
 
       vector.unproject(camera)
 
@@ -59,7 +91,7 @@
 
       if (target instanceof Object3D) {
         if (!animeOptions) {
-          target.position.copy(newPosition as Vector3 & Vec3)
+          target.position.set(newPosition.x, newPosition.y, newPosition.z)
         } else {
           anime({
             ...animeOptions,

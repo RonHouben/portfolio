@@ -1,9 +1,8 @@
 <script lang="ts" context="module">
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
-  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { get } from 'svelte/store'
   import type { Camera, Scene } from 'three'
-  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
   export interface OrbitControlsControllerOptions {
     cameraName: string
@@ -39,8 +38,8 @@
     private camera: Camera
     public three: OrbitControls
 
-    constructor(options: OrbitControlsControllerOptions) {
-      this.scene = get(sceneStore)
+    constructor(scene: Scene, options: OrbitControlsControllerOptions) {
+      this.scene = scene
       this.camera = this.getCamera(options.cameraName)
 
       const renderer = get(rendererStore)

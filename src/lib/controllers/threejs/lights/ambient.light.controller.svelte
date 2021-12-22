@@ -8,10 +8,13 @@
   import { AmbientLight } from 'three'
 
   export type AmbientLightControllerOptions = Omit<
-    Omit<Omit<LightControllerOptions, 'position'>, 'rotation'>,
+    Omit<Omit<LightControllerOptions<AmbientLight>, 'position'>, 'rotation'>,
     'shadow'
   >
-  export type AmbientLightInitOptions = Omit<Omit<LightInitOptions, 'position'>, 'rotation'>
+  export type AmbientLightInitOptions = Omit<
+    Omit<LightInitOptions<AmbientLight>, 'position'>,
+    'rotation'
+  >
   export type AmbientLightUpdateOptions = Omit<
     Omit<AmbientLightControllerOptions, 'position'>,
     'rotation'

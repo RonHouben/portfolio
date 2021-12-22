@@ -1,14 +1,15 @@
 <script lang="ts" context="module">
   import { BaseHelperController } from '$lib/controllers/threejs/helpers/base.helper.controller.svelte'
+  import type { Scene } from 'three'
   import { Camera, CameraHelper } from 'three'
 
   export class CameraHelperController extends BaseHelperController<CameraHelper> {
-    constructor(camera: Camera) {
+    constructor(scene: Scene, camera: Camera) {
       super()
 
       const helper = new CameraHelper(camera)
 
-      this.scene.add(helper)
+      scene.add(helper)
     }
   }
 </script>

@@ -11,7 +11,7 @@
   import type { ColorRepresentation } from 'three'
   import { CameraHelper, SpotLight, SpotLightHelper } from 'three'
 
-  export interface SpotLightControllerOptions extends LightControllerOptions {
+  export interface SpotLightControllerOptions extends LightControllerOptions<SpotLight> {
     targetName?: string
     distance?: number
     angle?: number
@@ -31,7 +31,7 @@
     }
   }
 
-  export interface SpotLightInitOptions extends LightInitOptions {
+  export interface SpotLightInitOptions extends LightInitOptions<SpotLight> {
     targetName?: SpotLightControllerOptions['targetName']
     distance?: SpotLightControllerOptions['distance']
     angle?: SpotLightControllerOptions['angle']
