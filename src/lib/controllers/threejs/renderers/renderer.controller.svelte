@@ -2,9 +2,10 @@
   import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
+  import { RendererType } from '$lib/utils/types'
   import { get } from 'svelte/store'
-  import type { TextureEncoding, WebGLRendererParameters, WebGLShadowMap } from 'three'
-  import { WebGL1Renderer, WebGLRenderer } from 'three'
+  import type { TextureEncoding,WebGLRendererParameters,WebGLShadowMap } from 'three'
+  import { WebGL1Renderer,WebGLRenderer } from 'three'
 
   export interface RendererControllerOptions extends WebGLRendererParameters {
     domElementId: string
@@ -16,11 +17,6 @@
   }
 
   type RendererShadowMapOptions = Pick<WebGLShadowMap, 'enabled'> & Pick<WebGLShadowMap, 'type'>
-
-  export enum RendererType {
-    webGL,
-    webGL1
-  }
 
   export class RendererController {
     private width: RendererControllerOptions['width']
