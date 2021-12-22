@@ -2,7 +2,7 @@
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import { get } from 'svelte/store'
   import type { Camera, Scene } from 'three'
-  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
   export interface OrbitControlsControllerOptions {
     cameraName: string
