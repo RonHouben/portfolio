@@ -28,8 +28,8 @@
   }
 
   export class DirectionalLightController extends LightController<DirectionalLight> {
-    public three: DirectionalLight;
-    protected interactable: DirectionalLight;
+    public three: DirectionalLight
+    protected interactable: DirectionalLight
 
     constructor(options: DirectionalLightControllerOptions) {
       const { name, color, intensity } = options

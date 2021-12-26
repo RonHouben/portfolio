@@ -15,7 +15,7 @@
   export type CreatePointsFunction = () => Vector3[]
 
   export class PointsController extends BaseController<Points> {
-    protected interactable: Points<BufferGeometry,Material|Material[]>;
+    protected interactable: Points<BufferGeometry, Material | Material[]>
     public three: Points
 
     constructor(options: PointsControllerOptions) {

@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import type { Vector3 } from '$lib/utils/math/vector3.svelte';
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
   import { get } from 'svelte/store'
-  import type { Mesh } from '../threejs/objects/mesh.controller.svelte';
+  import type { Mesh } from '../threejs/objects/mesh.controller.svelte'
 
   type State = 'idle' | 'moving' | 'hiding'
   type Event = 'move' | 'hide' | 'show'

@@ -53,9 +53,8 @@
   }
 
   export class SpotLightController extends LightController<SpotLight> {
-    public three: SpotLight;
-    protected interactable: SpotLight;
-
+    public three: SpotLight
+    protected interactable: SpotLight
 
     constructor(options: SpotLightControllerOptions) {
       const { name, color, intensity, distance, angle, penumbra, decay } = options

@@ -26,8 +26,8 @@
   }
 
   export class HemisphereLightController extends LightController<HemisphereLight> {
-    public three: HemisphereLight;
-    protected interactable: HemisphereLight;
+    public three: HemisphereLight
+    protected interactable: HemisphereLight
 
     constructor(options: HemisphereLightControllerOptions) {
       const { skyColor, groundColor, intensity } = options

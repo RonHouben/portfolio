@@ -18,7 +18,6 @@
   import { MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, sRGBEncoding } from 'three'
 
   let gameController: GameController | undefined = undefined
-
 </script>
 
 <div class="canvas-container">
