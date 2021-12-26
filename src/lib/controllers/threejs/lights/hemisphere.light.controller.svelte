@@ -26,24 +26,28 @@
   }
 
   export class HemisphereLightController extends LightController<HemisphereLight> {
+    public three: HemisphereLight;
+    protected interactable: HemisphereLight;
+
     constructor(options: HemisphereLightControllerOptions) {
       const { skyColor, groundColor, intensity } = options
       super(options)
 
       this.three = new HemisphereLight(skyColor, groundColor, intensity)
+      this.interactable = this.three
 
       this.init(options)
 
       this.scene.add(this.three)
     }
 
-    protected override init(options: HemisphereLightInitOptions): void {
+    protected init(options: HemisphereLightInitOptions): void {
       this.setColor(options.color)
       this.setGroundColor(options.groundColor)
       this.setIntensity(options.intensity)
     }
 
-    public override update(options: HemisphereLightUpdateOptions): void {
+    public updateOptions(options: HemisphereLightUpdateOptions): void {
       this.setColor(options.color)
       this.setGroundColor(options.groundColor)
       this.setIntensity(options.intensity)

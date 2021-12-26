@@ -16,6 +16,9 @@
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
   import { MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, sRGBEncoding } from 'three'
+
+  let gameController: GameController | undefined = undefined
+
 </script>
 
 <div class="canvas-container">
@@ -90,7 +93,7 @@
 
               return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
             }}
-            createConstraints={(bodies) => {
+            createConstraints={(_bodies) => {
               // const mouseBody = bodies.find(({ name }) => name === 'mouse')
               // const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
 
@@ -264,9 +267,12 @@
                   castShadow: true
                 },
                 interactions: {
-                  onClick: async ({ target, intersection, physicsBody, physicsWorld, scene }) => {
+                  onClick: async ({ intersection }) => {
+                    if (!gameController) {
+                      gameController = new GameController()
+                    }
+
                     if (intersection) {
-                      const gameController = new GameController()
                       // first cancel previous action
                       gameController.send('cancel-move-player')
                       gameController.send('move-player', intersection.point)

@@ -1,6 +1,5 @@
 <script lang="ts" context="module">
   import { isVector3 } from '$lib/utils/math/vector3.svelte'
-  import { Singleton } from '$lib/utils/Singleton.svelte'
   import { CameraController } from './camera.controller.svelte'
   import { CursorController } from './cursor.controller.svelte'
   import { PlayerController } from './player.controller.svelte'
@@ -8,8 +7,8 @@
   type State = 'idle' | 'moving-player'
   type Event = 'move-player' | 'cancel-move-player'
 
-  @Singleton
   export class GameController {
+    static instance: GameController
     private state: State
     private readonly playerController: PlayerController
     private readonly cursorController: CursorController
@@ -20,7 +19,7 @@
 
       this.playerController = new PlayerController('player')
       this.cursorController = new CursorController('cursor')
-      this.cameraController = new CameraController('perspective')
+      this.cameraController = new CameraController()
     }
 
     public async send<T>(event: T | Event, data?: T): Promise<void> {

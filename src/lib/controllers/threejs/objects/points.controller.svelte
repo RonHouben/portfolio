@@ -15,6 +15,7 @@
   export type CreatePointsFunction = () => Vector3[]
 
   export class PointsController extends BaseController<Points> {
+    protected interactable: Points<BufferGeometry,Material|Material[]>;
     public three: Points
 
     constructor(options: PointsControllerOptions) {
@@ -22,8 +23,9 @@
       super(options)
 
       this.three = new Points(geometry, material)
+      this.interactable = this.three
+
       this.init(options)
-      this.update(options)
     }
 
     protected override init(options: PointsInitOptions): void {
@@ -33,10 +35,10 @@
       this.scene.add(this.three)
     }
 
-    public override update(options: PointsUpdateOptions): void {
-      this.three.name = options.name
+    public override updateOptions(options: PointsUpdateOptions): void {
       this.three.geometry = options.geometry
       this.three.material = options.material
+      this.setShadow(options.shadow)
     }
 
     public override animate(animateFunction: AnimateFunction<Points>): void {

@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
-  import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
+  import { perspectiveCameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
   import { isVector3, Vector3 } from '$lib/utils/math/vector3.svelte'
-  import { Singleton } from '$lib/utils/Singleton.svelte'
   import anime from 'animejs'
   import { get } from 'svelte/store'
   import type { PerspectiveCamera } from 'three'
@@ -9,16 +8,13 @@
   type State = 'idle' | 'moving'
   type Event = 'move'
 
-  @Singleton
   export class CameraController {
     private state: State
-    private name: string
     private camera: PerspectiveCamera
     private originalPosition: { x: number; y: number; z: number }
 
-    constructor(name: string) {
+    constructor() {
       this.state = 'idle'
-      this.name = name
 
       this.camera = this.getCamera()
 
@@ -27,7 +23,7 @@
     }
 
     private getCamera(): PerspectiveCamera {
-      return get(cameraStore)
+      return get(perspectiveCameraStore)
     }
 
     private async move({ x, y, z }: Vector3): Promise<void> {

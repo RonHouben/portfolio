@@ -2,7 +2,6 @@
   import type { Mesh } from '$lib/controllers/threejs/objects/mesh.controller.svelte'
   import type { PhysicsBody } from '$lib/controllers/cannon-es/body.controller.svelte'
   import { physicsWorldStore } from '$lib/stores/cannon-es/world.store.svelte'
-  import { Singleton } from '$lib/utils/Singleton.svelte'
   import { get } from 'svelte/store'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import anime from 'animejs'
@@ -11,7 +10,6 @@
   type State = 'idle' | 'moving'
   type Event = 'move' | 'cancel-move'
 
-  @Singleton
   export class PlayerController {
     private state: State
     private name: string

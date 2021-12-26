@@ -2,5 +2,5 @@
   import { writable } from 'svelte/store'
   import type { PerspectiveCamera } from 'three'
 
-  export const cameraStore = writable<PerspectiveCamera>()
+  export const perspectiveCameraStore = writable<PerspectiveCamera>()
 </script>

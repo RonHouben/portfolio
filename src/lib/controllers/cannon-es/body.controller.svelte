@@ -2,7 +2,6 @@
   import type { BodyOptions, World } from 'cannon-es'
   import { Body } from 'cannon-es'
   import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
-  import { setContext } from 'svelte'
   import type { Writable } from 'svelte/store'
 
   export type PhysicsBodyControllerOptions = BodyOptions & {

@@ -19,24 +19,27 @@
   export type GroupAnimateFunction = AnimateFunction<Group>
 
   export class GroupController extends BaseController<Group> {
+    public three: Group
+    protected interactable: Group
+
     constructor(options: GroupControllerOptions) {
       super(options)
+
+      this.three = new Group()
+      this.three.name = options.name
+      this.interactable = this.three
+
+      this.scene.add(this.three)
 
       this.init(options)
     }
 
     protected override init(options: GroupInitOptions): void {
-      this.three = new Group()
-      this.three.name = options.name
-      this.scene.add(this.three)
-
       this.setPosition(options.position)
 
       setInterval(() => {
         this.addChildren(options.childrenNames)
       })
-
-      this.update(options)
     }
 
     private addChildren(childrenNames: GroupInitOptions['childrenNames']): void {
@@ -63,8 +66,6 @@
       }
     }
 
-    public override update(options: GroupUpdateOptions): void {
-      requestAnimationFrame(() => this.update(options))
-    }
+    public override updateOptions(_options: GroupUpdateOptions): void {}
   }
 </script>

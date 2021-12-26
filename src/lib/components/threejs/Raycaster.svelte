@@ -3,7 +3,7 @@
     RaycasterController,
     RaycasterControllerOptions
   } from '$lib/controllers/threejs/raycaster.controller.svelte'
-  import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
+  import { perspectiveCameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
 
@@ -11,7 +11,7 @@
 
   let raycasterController: RaycasterController
 
-  $: if ($rendererStore && $sceneStore && $cameraStore && !raycasterController) {
+  $: if ($rendererStore && $sceneStore && $perspectiveCameraStore && !raycasterController) {
     raycasterController = new RaycasterController($rendererStore, $sceneStore, options)
   }
 </script>

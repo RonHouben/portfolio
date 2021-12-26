@@ -1,15 +1,12 @@
 <script lang="ts" context="module">
-  import type { Vector3 } from '$lib/controllers/threejs/base.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import { Singleton } from '$lib/utils/Singleton.svelte'
-  import anime from 'animejs'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte';
   import { get } from 'svelte/store'
-  import type { Mesh } from 'three'
+  import type { Mesh } from '../threejs/objects/mesh.controller.svelte';
 
   type State = 'idle' | 'moving' | 'hiding'
   type Event = 'move' | 'hide' | 'show'
 
-  @Singleton
   export class CursorController {
     private name: string
     private cursorMesh: Mesh
@@ -20,8 +17,6 @@
       this.state = 'hiding'
 
       this.cursorMesh = this.getCursorMesh()
-
-      // this.send('hide')
     }
 
     private getCursorMesh(): Mesh {
@@ -49,15 +44,12 @@
 
     private show(): void {
       this.cursorMesh.material.visible = true
-      // this.cursorMesh.material.opacity = 1
 
       this.state = 'idle'
     }
 
     private hide(): void {
       this.cursorMesh.material.visible = false
-      // this.cursorMesh.material.transparent = true
-      // this.cursorMesh.material.opacity = 0
 
       this.state = 'hiding'
     }
