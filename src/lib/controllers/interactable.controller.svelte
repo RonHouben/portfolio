@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
   import type { PhysicsBody } from '$lib/controllers/cannon-es/body.controller.svelte'
   import type { ThreeJSObject } from '$lib/controllers/threejs/base.controller.svelte'
-import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte';
+  import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
   import { physicsWorldStore } from '$lib/stores/cannon-es/world.store.svelte'
   import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
@@ -196,7 +196,7 @@ import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte';
 
     private getIntersection(): Intersection<T> | undefined {
       const raycaster = get(raycasterStore)
-      return raycaster && raycaster.intersects[0] as unknown as Intersection<T>
+      return raycaster && (raycaster.intersects[0] as unknown as Intersection<T>)
     }
 
     private getIntersectionById(id: string): Intersection<T> | undefined {

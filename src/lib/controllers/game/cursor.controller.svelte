@@ -51,7 +51,7 @@
       this.cursorMesh.material.visible = true
       // this.cursorMesh.material.opacity = 1
 
-      this.state ='idle'
+      this.state = 'idle'
     }
 
     private hide(): void {
@@ -81,7 +81,6 @@
         this.move(data)
         return
       }
-
     }
   }
 </script>

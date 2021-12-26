@@ -136,6 +136,5 @@
 
       animateFunction(this.three, this.scene)
     }
-
   }
 </script>

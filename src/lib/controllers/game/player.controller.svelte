@@ -6,7 +6,7 @@
   import { get } from 'svelte/store'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import anime from 'animejs'
-  import { isVector3, Vector3 } from '$lib/utils/math/vector3.svelte';
+  import { isVector3, Vector3 } from '$lib/utils/math/vector3.svelte'
 
   type State = 'idle' | 'moving'
   type Event = 'move' | 'cancel-move'
@@ -76,7 +76,7 @@
     public async send<T>(event: Event, data?: T): Promise<void> {
       const canMove = this.state === 'idle' && isVector3(data)
       const canCancelMove = this.state === 'moving' && this.anime
-      
+
       if (event === 'move' && canMove) {
         await this.move(data)
         return

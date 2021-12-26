@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { isVector3 } from '$lib/utils/math/vector3.svelte';
+  import { isVector3 } from '$lib/utils/math/vector3.svelte'
   import { Singleton } from '$lib/utils/Singleton.svelte'
   import { CameraController } from './camera.controller.svelte'
   import { CursorController } from './cursor.controller.svelte'
@@ -24,9 +24,9 @@
     }
 
     public async send<T>(event: T | Event, data?: T): Promise<void> {
-			const canMovePlayer = this.state === 'idle' && isVector3(data)
-			const canCancelMovePlayer = this.state === 'moving-player'
-			
+      const canMovePlayer = this.state === 'idle' && isVector3(data)
+      const canCancelMovePlayer = this.state === 'moving-player'
+
       if (event === 'move-player' && canMovePlayer) {
         this.state = 'moving-player'
 
@@ -40,8 +40,8 @@
       }
 
       if (event === 'cancel-move-player' && canCancelMovePlayer) {
-				this.playerController.send('cancel-move')
-				this.state = 'idle'
+        this.playerController.send('cancel-move')
+        this.state = 'idle'
       }
     }
   }

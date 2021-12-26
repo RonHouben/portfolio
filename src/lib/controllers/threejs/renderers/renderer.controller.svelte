@@ -4,8 +4,8 @@
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { RendererType } from '$lib/utils/types'
   import { get } from 'svelte/store'
-  import type { TextureEncoding,WebGLRendererParameters,WebGLShadowMap } from 'three'
-  import { WebGL1Renderer,WebGLRenderer } from 'three'
+  import type { TextureEncoding, WebGLRendererParameters, WebGLShadowMap } from 'three'
+  import { WebGL1Renderer, WebGLRenderer } from 'three'
 
   export interface RendererControllerOptions extends WebGLRendererParameters {
     domElementId: string

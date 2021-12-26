@@ -5,7 +5,7 @@
   import type { GroupInitOptions } from '$lib/controllers/threejs/objects/group.controller.svelte'
   import type { PointsInitOptions } from '$lib/controllers/threejs/objects/points.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import type { Vector3 } from '$lib/utils/math/vector3.svelte';
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
   import { get } from 'svelte/store'
   import type { Object3D } from 'three'
   import type { Scene, Event } from 'three'
@@ -20,7 +20,6 @@
   }
 
   export interface ThreeJSObject extends Object3D<Event> {}
-
 
   export type AnimateFunction<T> = (obj: T, scene: Scene) => void
   export interface ShadowOptions {
@@ -76,6 +75,6 @@
       this.physicsBody = physicsBody
     }
 
-    abstract updateOptions(options: BaseControllerOptions<T>): void 
+    abstract updateOptions(options: BaseControllerOptions<T>): void
   }
 </script>
