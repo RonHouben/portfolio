@@ -92,7 +92,7 @@
 
               return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
             }}
-            createConstraints={(_bodies) => {
+            createConstraints={() => {
               // const mouseBody = bodies.find(({ name }) => name === 'mouse')
               // const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
 
