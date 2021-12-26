@@ -1,20 +1,27 @@
 <script lang="ts" context="module">
+  import type { PhysicsBody } from '$lib/controllers/cannon-es/body.controller.svelte'
+  import type { ThreeJSObject } from '$lib/controllers/threejs/base.controller.svelte'
+import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte';
+  import { physicsWorldStore } from '$lib/stores/cannon-es/world.store.svelte'
   import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
-  import { MouseHelper, MousePositionInCanvas } from '$lib/utils/MouseHelper.svelte'
+  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
+  import type { World } from 'cannon-es'
   import { get } from 'svelte/store'
-  import type { Event, Scene } from 'three'
-  import { Object3D } from 'three'
-  import type { PhysicsBody } from './cannon-es/body.controller.svelte'
+  import type { Intersection, Scene } from 'three'
+  import type { PhysicsWorld } from './cannon-es/world.controller.svelte'
+  import type { ThreeJSScene } from './threejs/objects/scene.controller.svelte'
 
-  export type InteractionFunction<T> = (
-    target: T,
-    scene: Scene,
-    mousePosition: MousePositionInCanvas
-  ) => void
+  export type InteractionFunction<T extends ThreeJSObject> = (options: {
+    target: T
+    intersection?: Intersection<T>
+    physicsBody?: PhysicsBody
+    scene?: Scene
+    physicsWorld?: PhysicsWorld
+  }) => void
 
   type InteractionState = 'idle' | 'entering' | 'interacting'
 
-  export interface InteractionOptions<T> {
+  export interface InteractionOptions<T extends ThreeJSObject> {
     onClick?: InteractionFunction<T>
     onMouseEnter?: InteractionFunction<T>
     onMouseMove?: InteractionFunction<T>
@@ -22,15 +29,12 @@
     onMouseLeave?: InteractionFunction<T>
   }
 
-  export interface ThreeJSObject extends Object3D<Event> {}
+  export interface CannonJSWorld extends World {}
   export interface CannonJSBody extends PhysicsBody {}
 
-  export class Interactable<T extends ThreeJSObject | CannonJSBody> {
-    public three!: T
-    public cannon!: T
-    protected scene!: Scene
+  export abstract class Interactable<T extends ThreeJSObject> {
+    protected abstract interactable: T
 
-    private mouseHelper: MouseHelper
     private onClick: InteractionOptions<T>['onClick']
     private onMouseEnter: InteractionOptions<T>['onMouseEnter']
     private onMouseMove: InteractionOptions<T>['onMouseMove']
@@ -40,7 +44,6 @@
 
     constructor(options?: InteractionOptions<T>) {
       this.interactionState = 'idle'
-      this.mouseHelper = new MouseHelper()
 
       this.onClick = options?.onClick
       this.onMouseEnter = options?.onMouseEnter
@@ -64,12 +67,18 @@
     ): void {
       if (onMouseEnter) {
         const handleEvent = (): void => {
-          if (this.isIntersected() && this.interactionState === 'idle') {
-            const { x, y, z } = this.mouseHelper
+          const intersection = this.getIntersectionById(this.interactable.uuid)
 
+          if (intersection && this.interactionState === 'idle') {
             this.setInteractionState('interacting')
 
-            onMouseEnter(this.three, this.scene, { x, y, z })
+            onMouseEnter({
+              target: this.interactable,
+              intersection,
+              physicsBody: this.getPhysicsBody(),
+              physicsWorld: this.getPhysicsWorld(),
+              scene: this.getScene()
+            })
           }
         }
 
@@ -81,12 +90,18 @@
     private addOnClickEventListener(onClick: InteractionOptions<T>['onClick']): void {
       if (onClick) {
         const handleEvent = (): void => {
-          if (this.isIntersected()) {
-            const { x, y, z } = this.mouseHelper
+          const intersection = this.getIntersectionById(this.interactable.uuid)
 
+          if (intersection) {
             this.setInteractionState('interacting')
 
-            onClick(this.three, this.scene, { x, y, z })
+            onClick({
+              target: this.interactable,
+              intersection,
+              physicsBody: this.getPhysicsBody(),
+              physicsWorld: this.getPhysicsWorld(),
+              scene: this.getScene()
+            })
           }
         }
 
@@ -98,14 +113,15 @@
     private addOnMouseMoveEventListener(onMouseMove: InteractionOptions<T>['onMouseMove']): void {
       if (onMouseMove) {
         const handleEvent = (): void => {
-          const { x, y, z } = this.mouseHelper
+          const intersection = this.getIntersection()
 
-          if (this.three) {
-            onMouseMove(this.three, this.scene, { x, y, z })
-          }
-          if (this.cannon) {
-            onMouseMove(this.cannon, this.scene, { x, y, z })
-          }
+          onMouseMove({
+            target: this.interactable,
+            intersection,
+            scene: this.getScene(),
+            physicsBody: this.getPhysicsBody(),
+            physicsWorld: this.getPhysicsWorld()
+          })
         }
 
         addEventListener('mousemove', handleEvent)
@@ -116,12 +132,18 @@
     private addOnMouseOverEventListener(onMouseOver: InteractionOptions<T>['onMouseOver']): void {
       if (onMouseOver) {
         const handleEvent = (): void => {
-          if (this.isIntersected()) {
-            const { x, y, z } = this.mouseHelper
+          const intersection = this.getIntersectionById(this.interactable.uuid)
 
+          if (intersection) {
             this.setInteractionState('interacting')
 
-            onMouseOver(this.three, this.scene, { x, y, z })
+            onMouseOver({
+              target: this.interactable,
+              intersection,
+              physicsBody: this.getPhysicsBody(),
+              physicsWorld: this.getPhysicsWorld(),
+              scene: this.getScene()
+            })
           }
         }
 
@@ -135,14 +157,18 @@
     ): void {
       if (onMouseLeave) {
         const handleEvent = (): void => {
-          if (!this.isIntersected() && this.interactionState === 'interacting') {
-            const { x, y, z } = this.mouseHelper
+          const intersection = this.getIntersectionById(this.interactable.uuid)
 
+          if (!intersection && this.interactionState === 'interacting') {
             this.setInteractionState('idle')
 
-            if (onMouseLeave) {
-              onMouseLeave(this.three, this.scene, { x, y, z })
-            }
+            onMouseLeave({
+              target: this.interactable,
+              intersection,
+              physicsBody: this.getPhysicsBody(),
+              physicsWorld: this.getPhysicsWorld(),
+              scene: this.getScene()
+            })
           }
         }
 
@@ -152,20 +178,35 @@
       }
     }
 
+    private getScene(): ThreeJSScene | undefined {
+      return get(sceneStore)
+    }
+
+    protected getPhysicsBody(): PhysicsBody | undefined {
+      return get(physicsBodyStore)
+    }
+
+    private getPhysicsWorld(): PhysicsWorld {
+      return get(physicsWorldStore)
+    }
+
     private setInteractionState(newState: InteractionState): void {
       this.interactionState = newState
     }
 
-    private isIntersected(): boolean {
-      if (this.three instanceof Object3D) {
-        const raycaster = get(raycasterStore)
-        const threeObject = this.three as Object3D
+    private getIntersection(): Intersection<T> | undefined {
+      const raycaster = get(raycasterStore)
+      return raycaster && raycaster.intersects[0] as unknown as Intersection<T>
+    }
 
-        if (raycaster && raycaster.intersects) {
-          return !!raycaster.intersects.find(({ object }) => object.uuid === threeObject.uuid)
-        }
+    private getIntersectionById(id: string): Intersection<T> | undefined {
+      const raycaster = get(raycasterStore)
+
+      if (raycaster && raycaster.intersects) {
+        return raycaster.intersects.find(({ object }) => object.uuid === id) as
+          | Intersection<T>
+          | undefined
       }
-      return false
     }
   }
 </script>

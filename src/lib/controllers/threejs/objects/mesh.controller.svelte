@@ -1,12 +1,12 @@
 <script lang="ts" context="module">
+  import type { PhysicsBody } from '$lib/controllers/cannon-es/body.controller.svelte'
   import type {
     AnimateFunction,
     BaseControllerOptions,
-    BaseInitOptions
+    BaseInitOptions,
+    ThreeJSObject
   } from '$lib/controllers/threejs/base.controller.svelte'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
-  import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
-  import { get } from 'svelte/store'
   import type {
     BoxGeometry,
     BufferGeometry,
@@ -25,7 +25,7 @@
   } from 'three'
   import { Mesh as ThreeMesh } from 'three'
 
-  type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
+  export interface Mesh extends ThreeMesh<MeshGeometry, MeshMaterial>, ThreeJSObject {}
 
   export interface MouseEvent {
     mousePosition: {
@@ -64,18 +64,22 @@
   export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 
   export class MeshController extends BaseController<Mesh> {
+    public three: Mesh
+    protected interactable: Mesh
+
     constructor(options: MeshControllerOptions) {
-      const { name, interactions } = options
+      const { name, interactions, geometry, material } = options
       super({ name, interactions })
+
+      this.three = new ThreeMesh(geometry, material)
+      this.three.name = name
+      this.interactable = this.three
 
       this.init(options)
       this.renderLoop()
     }
 
     protected override init(options: MeshInitOptions): void {
-      this.three = new ThreeMesh(options.geometry, options.material)
-      this.three.name = options.name
-
       this.setGeometry(options.geometry)
       this.setMaterial(options.material)
       this.setPosition(options.position)
@@ -91,20 +95,10 @@
       {
         requestAnimationFrame(this.renderLoop.bind(this))
 
-        this.setPositionFromPhysicsBody()
+        if (this.physicsBody) {
+          this.setPositionFromPhysicsBody(this.physicsBody)
+        }
       }
-    }
-
-    public override update(options: MeshUpdateOptions): void {
-      this.setShadow(options.shadow)
-      this.setMaterial(options.material)
-      this.setGeometry(options.geometry)
-    }
-
-    public override animate(animateFunction: AnimateFunction<Mesh>): void {
-      requestAnimationFrame(() => this.animate(animateFunction))
-
-      animateFunction(this.three, this.scene)
     }
 
     private setGeometry(geometry: MeshGeometry): void {
@@ -115,9 +109,7 @@
       this.three.material = material
     }
 
-    private setPositionFromPhysicsBody(): void {
-      const physicsBody = get(physicsBodyStore)
-
+    private setPositionFromPhysicsBody(physicsBody: PhysicsBody): void {
       this.three.position.set(
         physicsBody.position.x,
         physicsBody.position.y,
@@ -130,5 +122,20 @@
         physicsBody.quaternion.w
       )
     }
+
+    public updateOptions(options: MeshControllerOptions): void {
+      this.setGeometry(options.geometry)
+      this.setMaterial(options.material)
+      this.setPosition(options.position)
+      this.setRotation(options.rotation)
+      this.setShadow(options.shadow)
+    }
+
+    public override animate(animateFunction: AnimateFunction<Mesh>): void {
+      requestAnimationFrame(() => this.animate(animateFunction))
+
+      animateFunction(this.three, this.scene)
+    }
+
   }
 </script>

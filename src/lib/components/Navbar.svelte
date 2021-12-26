@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { theme } from '$lib/stores/theme.store.svelte'
+  import { themeStore } from '$lib/stores/theme.store.svelte'
 </script>
 
 <nav>
   <div id="logo">Ron Houben</div>
-  <select bind:value={$theme}>
+  <select bind:value={$themeStore}>
     <option value="system">System</option>
     <option value="light">Light</option>
     <option value="dark">Dark</option>

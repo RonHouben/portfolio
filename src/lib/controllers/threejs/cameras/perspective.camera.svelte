@@ -17,6 +17,8 @@
     aspect?: number
     near?: number
     far?: number
+    focus?: number
+    lookAt?: string
   }
   export type PerspectiveCameraAnimateFunction = CameraAnimateFunction<PerspectiveCamera>
   export type PerspectiveCameraInitOptions = CameraInitOptions
@@ -33,6 +35,8 @@
       this.scene.add(this.three)
 
       cameraStore.set(this.three)
+
+      this.renderLoop(options)
     }
 
     protected override init({
@@ -40,7 +44,8 @@
       position,
       rotation,
       shadow,
-      helpers
+      helpers,
+      lookAt
     }: PerspectiveCameraControllerOptions): void {
       this.three.name = name
 
@@ -49,14 +54,18 @@
       this.setShadow(shadow)
       this.enableHelpers(helpers)
       this.setCamera()
-    }
-
-    public override update({ position, rotation, shadow }: PerspectiveCameraUpdateOptions): void {
-      this.setPosition(position)
-      this.setRotation(rotation)
-      this.setShadow(shadow)
+      this.setLookAt(lookAt)
 
       this.three.updateProjectionMatrix()
+    }
+
+    private renderLoop(options: PerspectiveCameraControllerOptions): void {
+      requestAnimationFrame(() => this.renderLoop(options))
+
+      this.setLookAt(options.lookAt)
+      this.three.updateProjectionMatrix()
+
+      cameraStore.update(() => this.three)
     }
 
     public override animate(animateFunction: AnimateFunction<PerspectiveCamera>): void {
@@ -68,6 +77,18 @@
     protected override enableHelpers(helpers: PerspectiveCameraControllerOptions['helpers']): void {
       if (helpers?.enable) {
         new CameraHelperController(this.scene, this.three)
+      }
+    }
+
+    private setLookAt(lookAt: PerspectiveCameraControllerOptions['lookAt']): void {
+      if (lookAt) {
+        const target = this.scene.getObjectByName(lookAt)
+
+        if (!target) {
+          throw new Error(`Unabled to find lookAt target with name: "${lookAt}"`)
+        }
+
+        this.three.lookAt(target.position)
       }
     }
   }

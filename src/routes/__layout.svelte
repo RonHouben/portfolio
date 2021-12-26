@@ -1,13 +1,13 @@
 <script lang="ts">
   import Navbar from '$lib/components/Navbar.svelte'
-  import { theme } from '$lib/stores/theme.store.svelte'
+  import { themeStore } from '$lib/stores/theme.store.svelte'
 </script>
 
 <svelte:head>
-  <meta name="color-scheme" content={$theme === 'system' ? 'light dark' : $theme} />
+  <meta name="color-scheme" content={$themeStore === 'system' ? 'light dark' : $themeStore} />
   <link rel="stylesheet" href="styles/global.css" />
 
-  {#if $theme === 'system'}
+  {#if $themeStore === 'system'}
     <link
       rel="stylesheet"
       href="styles/themes/light.css"
@@ -18,9 +18,9 @@
       href="styles/themes/dark.css"
       media="screen and (prefers-color-scheme: dark)"
     />
-  {:else if $theme === 'light'}
+  {:else if $themeStore === 'light'}
     <link rel="stylesheet" href="styles/themes/light.css" />
-  {:else if $theme === 'dark'}
+  {:else if $themeStore === 'dark'}
     <link rel="stylesheet" href="styles/themes/dark.css" />
   {/if}
 

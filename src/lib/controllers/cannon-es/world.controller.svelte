@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  import { worldStore } from '$lib/stores/cannon-es/world.store.svelte'
+  import { physicsWorldStore } from '$lib/stores/cannon-es/world.store.svelte'
   import { Constraint, ContactMaterial, Material, World, WorldOptions } from 'cannon-es'
   import type { PhysicsBody } from './body.controller.svelte'
 
@@ -8,6 +8,8 @@
     createContactMaterials?: (materials: Material[]) => ContactMaterial[]
     createConstraints?: (bodies: PhysicsBody[]) => Constraint[]
   }
+  export type PhysicsWorld = World
+
   export class PhysicsWorldController {
     public cannon: World
     private lastCallTime?: number
@@ -20,7 +22,7 @@
       this.createContactMaterials(options.createContactMaterials)
       this.createConstraints(options.createConstraints)
 
-      worldStore.set(this.cannon)
+      physicsWorldStore.set(this.cannon)
 
       this.renderLoop()
     }

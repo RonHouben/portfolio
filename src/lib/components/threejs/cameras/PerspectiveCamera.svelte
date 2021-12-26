@@ -18,6 +18,4 @@
   $: if (animate && cameraController) {
     animate(cameraController.three, $sceneStore)
   }
-
-  $: cameraController && cameraController.update(options)
 </script>
