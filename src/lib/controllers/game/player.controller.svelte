@@ -6,15 +6,21 @@
   import { get } from 'svelte/store'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import anime from 'animejs'
-  import type { Vector3 } from '$lib/controllers/threejs/base.controller.svelte'
+  import { isVector3, Vector3 } from '$lib/utils/math/vector3.svelte';
+
+  type State = 'idle' | 'moving'
+  type Event = 'move' | 'cancel-move'
 
   @Singleton
   export class PlayerController {
+    private state: State
     private name: string
     private physicsBody: PhysicsBody
     private playerMesh: Mesh
+    private anime?: anime.AnimeInstance
 
     constructor(name: string) {
+      this.state = 'idle'
       this.name = name
       this.physicsBody = this.getPhysicalBody()
       this.playerMesh = this.getPlayerMesh()
@@ -44,27 +50,43 @@
       return playerMesh
     }
 
-    public async move({ x, y, z }: Vector3): Promise<void> {
+    private async move({ x, y, z }: Vector3): Promise<void> {
+      this.state = 'moving'
+
       return new Promise((resolve) => {
         // TODO: find a way to get the height when a BufferGeometry is used
         // @ts-ignore
         const playerHeight = this.playerMesh.geometry.parameters.height
 
-        anime({
+        this.anime = anime({
           targets: this.physicsBody.position,
           x,
           y: y ? y + playerHeight / 2 : undefined,
           z,
           easing: 'linear',
-          complete: () => resolve()
+          complete: () => {
+            this.state = 'idle'
+
+            resolve()
+          }
         })
       })
     }
 
-    public lookAt({ x, y, z }: Vector3): void {
-      this.physicsBody.quaternion.x = x || 0
-      this.physicsBody.quaternion.y = y || 0
-      this.physicsBody.quaternion.z = z || 0
+    public async send<T>(event: Event, data?: T): Promise<void> {
+      const canMove = this.state === 'idle' && isVector3(data)
+      const canCancelMove = this.state === 'moving' && this.anime
+      
+      if (event === 'move' && canMove) {
+        await this.move(data)
+        return
+      }
+
+      if (event === 'cancel-move' && canCancelMove) {
+        this.anime!.pause()
+        this.state = 'idle'
+        return
+      }
     }
   }
 </script>

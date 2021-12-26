@@ -17,7 +17,7 @@ import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte';
     physicsBody?: PhysicsBody
     scene?: Scene
     physicsWorld?: PhysicsWorld
-  }) => void
+  }) => void | Promise<void>
 
   type InteractionState = 'idle' | 'entering' | 'interacting'
 

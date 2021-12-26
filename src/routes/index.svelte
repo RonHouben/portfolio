@@ -12,9 +12,7 @@
   import Raycaster from '$lib/components/threejs/Raycaster.svelte'
   import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '$lib/components/threejs/scenes/Scene.svelte'
-  import { CursorController } from '$lib/controllers/game/cursor.controller.svelte'
-  import { PlayerController } from '$lib/controllers/game/player.controller.svelte'
-  import { CameraController } from '$lib/controllers/game/camera.controller.svelte';
+  import { GameController } from '$lib/controllers/game/game.controller.svelte'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
   import { MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, sRGBEncoding } from 'three'
@@ -138,7 +136,7 @@
               near: 2,
               far: 1000,
               helpers: {
-                enable: true
+                enable: false
               }
             }}
           />
@@ -255,7 +253,7 @@
                 geometry: new PlaneGeometry(50, 50),
                 material: new MeshPhongMaterial({
                   // opacity: 0.3,
-                  color: 'purple' 
+                  color: 'purple'
                   // transparent: true,
                   // clearcoat: 0.9,
                   // metalness: 0.9,
@@ -267,19 +265,11 @@
                 },
                 interactions: {
                   onClick: async ({ target, intersection, physicsBody, physicsWorld, scene }) => {
-                    const playerController = new PlayerController('player')
-                    const cursorController = new CursorController('cursor')
-
-                    // TODO create cameraController
-                    const cameraController = new CameraController('perspective')
-
-                    cursorController.show()
-
                     if (intersection) {
-                      cursorController.move(intersection.point)
-                      cameraController.move(intersection.point)
-                      await playerController.move(intersection.point)
-                      cursorController.hide()
+                      const gameController = new GameController()
+                      // first cancel previous action
+                      gameController.send('cancel-move-player')
+                      gameController.send('move-player', intersection.point)
                     }
                   }
                 }

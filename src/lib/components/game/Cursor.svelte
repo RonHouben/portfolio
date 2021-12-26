@@ -1,6 +1,6 @@
 <script lang="ts">
   import Mesh from '$lib/components/threejs/objects/Mesh.svelte'
-  import { BoxGeometry, DoubleSide, MeshPhongMaterial } from 'three'
+  import { BoxGeometry, MeshPhongMaterial } from 'three'
 
 </script>
 
@@ -10,12 +10,12 @@
     geometry: new BoxGeometry(1, 1),
     material: new MeshPhongMaterial({
       color: 'green',
-      side: DoubleSide
+      visible: false
     }),
-    position: {
-      x: 2,
-      y: 0,
-      z: 0
-    }
+    // position: {
+    //   x: 0,
+    //   y: 0,
+    //   z: 0
+    // }
   }}
 />
