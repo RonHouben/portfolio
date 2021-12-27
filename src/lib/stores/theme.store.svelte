@@ -4,5 +4,5 @@
   export type ThemeStore = Theme
   export type Theme = 'system' | 'light' | 'dark'
 
-  export const theme = writable<ThemeStore>('system')
+  export const themeStore = writable<ThemeStore>('system')
 </script>

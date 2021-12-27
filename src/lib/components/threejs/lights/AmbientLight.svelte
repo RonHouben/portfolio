@@ -13,5 +13,7 @@
     ambientLightController = new AmbientLightController(options)
   }
 
-  $: ambientLightController && ambientLightController.update(options)
+  $: if (ambientLightController) {
+    ambientLightController.updateOptions(options)
+  }
 </script>

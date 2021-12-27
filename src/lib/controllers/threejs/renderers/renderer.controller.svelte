@@ -1,11 +1,11 @@
 <script lang="ts" context="module">
-  import { cameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
+  import { perspectiveCameraStore } from '$lib/stores/threejs/cameras/perspective.camera.store.svelte'
   import { rendererStore } from '$lib/stores/threejs/renderer.store.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
   import { RendererType } from '$lib/utils/types'
   import { get } from 'svelte/store'
-  import type { TextureEncoding,WebGLRendererParameters,WebGLShadowMap } from 'three'
-  import { WebGL1Renderer,WebGLRenderer } from 'three'
+  import type { TextureEncoding, WebGLRendererParameters, WebGLShadowMap } from 'three'
+  import { WebGL1Renderer, WebGLRenderer } from 'three'
 
   export interface RendererControllerOptions extends WebGLRendererParameters {
     domElementId: string
@@ -81,7 +81,7 @@
       this.update(options)
 
       const scene = get(sceneStore)
-      const camera = get(cameraStore)
+      const camera = get(perspectiveCameraStore)
 
       if (scene && camera) {
         this.three.render(scene, camera)

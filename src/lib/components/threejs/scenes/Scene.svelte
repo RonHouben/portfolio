@@ -12,10 +12,6 @@
   $: if ($rendererStore && !sceneController) {
     sceneController = new SceneController($rendererStore, options)
   }
-
-  $: if ($rendererStore && sceneController) {
-    sceneController.update(options)
-  }
 </script>
 
 <slot name="physics" />

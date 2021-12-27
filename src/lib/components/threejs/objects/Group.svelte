@@ -20,7 +20,7 @@
   }
 
   $: if (groupController && options) {
-    groupController.update(options)
+    groupController.updateOptions(options)
   }
 </script>
 

@@ -6,5 +6,7 @@
 
   const lightController = new HemisphereLightController(options)
 
-  $: lightController.update(options)
+  $: if (options) {
+    lightController.updateOptions(options)
+  }
 </script>

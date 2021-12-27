@@ -17,7 +17,11 @@
     }
 
     private init(renderer: Renderer, options: StatsControllerOptions): void {
-      renderer.domElement.parentElement!.appendChild(this.helper.dom)
+      const { parentElement } = renderer.domElement
+
+      if (parentElement) {
+        parentElement.appendChild(this.helper.dom)
+      }
 
       this.setPosition(options.position)
     }

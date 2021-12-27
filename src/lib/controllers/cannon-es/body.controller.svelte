@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
   import type { BodyOptions, World } from 'cannon-es'
   import { Body } from 'cannon-es'
-  import { Interactable, InteractionOptions } from '$lib/controllers/interactable.controller.svelte'
   import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
+  import type { Writable } from 'svelte/store'
 
   export type PhysicsBodyControllerOptions = BodyOptions & {
     name: string
@@ -11,23 +11,26 @@
       x?: number
       y?: number
       z?: number
-    }
-    interactions?: InteractionOptions<PhysicsBody>
+    },
+    appendMeshPosition?: boolean
   }
 
   export interface PhysicsBody extends Body {
     name: string
+    appendMeshPosition: boolean
   }
 
-  export class PhysicsBodyController extends Interactable<PhysicsBody> {
+  export type PhysicsBodyStore = Writable<PhysicsBody>
+
+  export class PhysicsBodyController {
     public cannon: PhysicsBody
     private world: World
 
     constructor(world: World, options: PhysicsBodyControllerOptions) {
-      const { name, materialName, rotation, interactions, ...cannonBodyOptions } = options
-      super(interactions)
+      const { name, materialName, rotation, appendMeshPosition, ...cannonBodyOptions } = options
       this.cannon = new Body(cannonBodyOptions) as PhysicsBody
       this.cannon.name = name
+      this.cannon.appendMeshPosition = appendMeshPosition || false
 
       this.world = world
 

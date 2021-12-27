@@ -22,5 +22,5 @@
     pointsController.createPoints(createPoints)
   })
 
-  $: pointsController.update(options)
+  $: pointsController.updateOptions(options)
 </script>

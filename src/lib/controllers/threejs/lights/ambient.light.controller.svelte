@@ -21,9 +21,13 @@
   >
 
   export class AmbientLightController extends LightController<AmbientLight> {
+    public three: AmbientLight
+    protected interactable: AmbientLight
+
     constructor(options: AmbientLightControllerOptions) {
       super(options)
       this.three = new AmbientLight(options.color, options.intensity)
+      this.interactable = this.three
 
       this.init(options)
 
@@ -37,7 +41,7 @@
       this.setShadow(options.shadow)
     }
 
-    public override update(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
+    public override updateOptions(options: Omit<AmbientLightControllerOptions, 'scene'>): void {
       this.setColor(options.color)
     }
 

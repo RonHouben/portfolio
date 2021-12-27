@@ -28,11 +28,15 @@
   }
 
   export class DirectionalLightController extends LightController<DirectionalLight> {
+    public three: DirectionalLight
+    protected interactable: DirectionalLight
+
     constructor(options: DirectionalLightControllerOptions) {
       const { name, color, intensity } = options
       super({ name })
 
       this.three = new DirectionalLight(color, intensity)
+      this.interactable = this.three
 
       this.init(options)
 
@@ -54,7 +58,7 @@
       this.setRotation(options.rotation)
     }
 
-    public override update(options: DirectionalLightUpdateOptions): void {
+    public override updateOptions(options: DirectionalLightUpdateOptions): void {
       this.setTarget(options.targetName)
 
       if (options.helpers) {

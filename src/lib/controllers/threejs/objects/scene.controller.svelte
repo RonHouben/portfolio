@@ -36,13 +36,21 @@
     }
   }
 
+  export type ThreeJSScene = Scene
+
   export class SceneController extends BaseController<Scene> {
+    protected interactable: Scene
     private renderer: Renderer
+    public three: Scene
 
     constructor(renderer: Renderer, options: SceneControllerOptions) {
       super(options)
 
       this.renderer = renderer
+      this.scene = new Scene()
+      this.three = this.scene
+      this.three.name = options.name
+      this.interactable = this.three
 
       this.init(options)
 
@@ -51,9 +59,6 @@
     }
 
     protected override init(options: SceneControllerOptions): void {
-      this.scene = new Scene()
-      this.three = this.scene
-      this.three.name = options.name
       this.setAutoUpdate(options.autoUpdate)
       this.setBackground(options.background)
       this.setEnvironment(options.environment)
@@ -78,17 +83,6 @@
 
         new StatsHelperController(this.renderer, options.stats)
       }
-    }
-
-    public override update(options: SceneControllerOptions): void {
-      this.setAutoUpdate(options.autoUpdate)
-      this.setBackground(options.background)
-      this.setEnvironment(options.environment)
-      this.setFog(options.fog)
-      this.setOverrideMaterial(options.overrideMaterial)
-
-      // update Svelte store
-      sceneStore.update(() => this.three)
     }
 
     public override animate(animateFunction: AnimateFunction<Scene>): void {
@@ -117,6 +111,15 @@
       overrideMaterial: SceneControllerOptions['overrideMaterial']
     ): void {
       this.three.overrideMaterial = overrideMaterial || this.three.overrideMaterial
+    }
+
+    public updateOptions(options: SceneControllerOptions): void {
+      this.setAutoUpdate(options.autoUpdate)
+      this.setBackground(options.background)
+      this.setEnvironment(options.environment)
+      this.setFog(options.fog)
+      this.setOverrideMaterial(options.overrideMaterial)
+      this.enableHelpers(options.helpers)
     }
   }
 </script>

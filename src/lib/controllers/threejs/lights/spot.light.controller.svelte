@@ -53,11 +53,15 @@
   }
 
   export class SpotLightController extends LightController<SpotLight> {
+    public three: SpotLight
+    protected interactable: SpotLight
+
     constructor(options: SpotLightControllerOptions) {
       const { name, color, intensity, distance, angle, penumbra, decay } = options
       super({ name })
 
       this.three = new SpotLight(color, intensity, distance, angle, penumbra, decay)
+      this.interactable = this.three
 
       this.init(options)
 
@@ -76,7 +80,7 @@
       this.setTarget(options.targetName)
     }
 
-    public override update(options: SpotLightUpdateOptions): void {
+    public override updateOptions(options: SpotLightUpdateOptions): void {
       this.setColor(options.color)
       this.setHelpers(options.helpers)
       this.setIntensity(options.intensity)

@@ -1,7 +1,8 @@
 <script lang="ts">
   import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
-  import Grid from '$lib/components/Grid.svelte'
+  import Cursor from '$lib/components/game/Cursor.svelte'
+  import Player from '$lib/components/game/Player.svelte'
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
   import OrbitControls from '$lib/components/threejs/controls/OrbitControls.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
@@ -11,19 +12,16 @@
   import Raycaster from '$lib/components/threejs/Raycaster.svelte'
   import WebGlRenderer from '$lib/components/threejs/renderers/WebGLRenderer.svelte'
   import Scene from '$lib/components/threejs/scenes/Scene.svelte'
-  import { MouseHelper } from '$lib/utils/MouseHelper.svelte'
+  import { GameController } from '$lib/controllers/game/game.controller.svelte'
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
-  import {
-    BoxGeometry,
-    MeshPhysicalMaterial,
-    PCFSoftShadowMap,
-    SphereGeometry,
-    sRGBEncoding
-  } from 'three'
+  import { MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, sRGBEncoding } from 'three'
+
+  let gameController: GameController | undefined = undefined
 </script>
 
 <div class="canvas-container">
+  <!-- svelte-ignore missing-declaration -->
   <WebGlRenderer
     options={{
       alpha: true,
@@ -41,7 +39,7 @@
           name: 'scene',
           helpers: {
             axes: {
-              enabled: false,
+              enabled: true,
               size: 15
             },
             grid: {
@@ -94,30 +92,30 @@
 
               return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
             }}
-            createConstraints={(bodies) => {
-              const mouseBody = bodies.find(({ name }) => name === 'mouse')
-              const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
+            createConstraints={() => {
+              // const mouseBody = bodies.find(({ name }) => name === 'mouse')
+              // const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
 
-              if (mouseBody && rectangleBody) {
-                // Vector that goes from the body to the clicked point
-                const vector = new CANNON.Vec3()
-                  .copy(mouseBody.position)
-                  .vsub(rectangleBody.position)
+              // if (mouseBody && rectangleBody) {
+              //   // Vector that goes from the body to the clicked point
+              //   const vector = new CANNON.Vec3()
+              //     .copy(mouseBody.position)
+              //     .vsub(rectangleBody.position)
 
-                // Apply anti-quaternion to vector to tranform it into the local body coordinate system
-                const antiRotation = rectangleBody.quaternion.inverse()
-                const pivot = antiRotation.vmult(vector) // pivot is not in local body coordinates
+              //   // Apply anti-quaternion to vector to tranform it into the local body coordinate system
+              //   const antiRotation = rectangleBody.quaternion.inverse()
+              //   const pivot = antiRotation.vmult(vector) // pivot is not in local body coordinates
 
-                const constraint = new CANNON.PointToPointConstraint(
-                  rectangleBody,
-                  pivot,
-                  mouseBody,
-                  new CANNON.Vec3(0, 2, 0),
-                  0.3
-                )
+              //   const constraint = new CANNON.PointToPointConstraint(
+              //     rectangleBody,
+              //     pivot,
+              //     mouseBody,
+              //     new CANNON.Vec3(0, 3, 0),
+              //     0.5
+              //   )
 
-                return [constraint]
-              }
+              //   return [constraint]
+              // }
               return []
             }}
           />
@@ -126,14 +124,16 @@
           <PerspectiveCamera
             options={{
               name: 'perspective',
+              // lookAt: 'player',
               position: {
                 x: 0,
-                y: 0,
+                y: 15,
                 z: 15
               },
               rotation: {
-                // x: 0.5
+                x: -0.75
               },
+              focus: 0.5,
               fov: 50,
               near: 2,
               far: 1000,
@@ -143,22 +143,22 @@
             }}
           />
         </svelte:fragment>
+        <!-- Raycaster -->
+        <Raycaster slot="raycaster" options={{ cameraName: 'perspective' }} />
+
         <svelte:fragment slot="controls">
           <OrbitControls
             options={{
               cameraName: 'perspective',
+              targetName: 'player',
+              enableRotate: false,
+              enablePan: false,
+              enableZoom: false,
               enableDamping: true,
-              dampingFactor: 0.05,
-              rotateSpeed: 0.05,
-              panSpeed: 0.05,
-              zoomSpeed: 0.005,
-              maxDistance: 100,
-              maxZoom: 20
+              dampingFactor: 0.9
             }}
           />
         </svelte:fragment>
-        <!-- Raycaster -->
-        <Raycaster slot="raycaster" options={{ cameraName: 'perspective' }} />
 
         <!-- Lights -->
         <svelte:fragment slot="lights">
@@ -172,9 +172,9 @@
           <SpotLight
             options={{
               name: 'spotlight-left',
-              targetName: 'mouse',
+              targetName: 'player',
               color: '#5CD85A',
-              intensity: 4,
+              intensity: 0,
               position: {
                 y: 10,
                 x: -10
@@ -194,9 +194,9 @@
           <SpotLight
             options={{
               name: 'spotlight-right',
-              targetName: 'mouse',
+              targetName: 'player',
               color: '#107869',
-              intensity: 4,
+              intensity: 2,
               position: {
                 y: 10,
                 x: 10
@@ -217,98 +217,33 @@
             options={{
               name: 'directional-light-bottom',
               color: '#055F66',
-              targetName: 'mouse',
+              targetName: 'player',
               position: {
-                y: -5,
+                y: 5,
                 z: 10
               },
               shadow: {
                 castShadow: true
+              },
+              helpers: {
+                enabled: false
               }
             }}
           />
         </svelte:fragment>
         <!-- Meshes -->
         <svelte:fragment slot="meshes">
-          <PhysicsBody
-            options={{
-              name: 'rectangle',
-              type: CANNON.Body.DYNAMIC,
-              materialName: 'bouncy',
-              shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
-              position: new CANNON.Vec3(0, 0, 0),
-              mass: 1,
-              interactions: {
-                onClick: (target) => {
-                  console.log('clicked phsyics', target.name)
-                }
-              }
-            }}
-          >
-            <Mesh
-              options={{
-                name: 'rectangle',
-                geometry: new BoxGeometry(2, 2, 2),
-                material: new MeshPhysicalMaterial({
-                  // opacity: 0.5,
-                  // transparent: true,
-                  clearcoat: 1,
-                  metalness: 1,
-                  roughness: 0.5
-                }),
-                shadow: {
-                  castShadow: true,
-                  receiveShadow: true
-                }
-              }}
-            />
-          </PhysicsBody>
-
-          <PhysicsBody
-            options={{
-              name: 'mouse',
-              type: CANNON.Body.KINEMATIC,
-              materialName: 'bouncy',
-              shape: new CANNON.Sphere(1),
-              position: new CANNON.Vec3(0, 0, 0),
-              mass: 1.5,
-              interactions: {
-                onMouseMove: (target) => {
-                  const mouseHelper = new MouseHelper()
-                  mouseHelper.followMouse(target)
-                }
-              }
-            }}
-          >
-            <Mesh
-              options={{
-                name: 'mouse',
-                geometry: new SphereGeometry(1),
-                material: new MeshPhysicalMaterial({
-                  color: 'purple',
-                  // opacity: 0.5,
-                  // transparent: true,
-                  clearcoat: 1,
-                  metalness: 1,
-                  roughness: 0.5
-                }),
-                shadow: {
-                  castShadow: true,
-                  receiveShadow: true
-                }
-              }}
-            />
-          </PhysicsBody>
-
-          <Grid name="grid" rows={10} columns={10} depth={2} cellDistance={0.5} cellSize={0.25} />
+          <Cursor />
+          <Player />
 
           <PhysicsBody
             options={{
               name: 'floor',
               type: CANNON.Body.STATIC,
-              shape: new CANNON.Box(new CANNON.Vec3(5, 5, 0.25)),
+              // shape: new CANNON.Box(new CANNON.Vec3(50, 50, 0.25)),
+              shape: new CANNON.Plane(),
               materialName: 'slippery',
-              position: new CANNON.Vec3(0, -4, 0),
+              position: new CANNON.Vec3(0, 0, 0),
               rotation: {
                 x: -(Math.PI / 2)
               }
@@ -317,22 +252,30 @@
             <Mesh
               options={{
                 name: 'floor',
-                geometry: new BoxGeometry(10, 10, 0.5),
-                material: new MeshPhysicalMaterial({
+                geometry: new PlaneGeometry(50, 50),
+                material: new MeshPhongMaterial({
                   // opacity: 0.3,
-                  color: 'purple',
+                  color: 'purple'
                   // transparent: true,
                   // clearcoat: 0.9,
-                  metalness: 0.9,
-                  roughness: 0.5
+                  // metalness: 0.9,
+                  // roughness: 0.5
                 }),
                 shadow: {
                   receiveShadow: true,
                   castShadow: true
                 },
                 interactions: {
-                  onClick: () => {
-                    console.log('Clicked floor')
+                  onClick: async ({ intersection }) => {
+                    if (!gameController) {
+                      gameController = new GameController()
+                    }
+
+                    if (intersection) {
+                      // first cancel previous action
+                      gameController.send('cancel-move-player')
+                      gameController.send('move-player', intersection.point) 
+                    }
                   }
                 }
               }}
@@ -350,6 +293,7 @@
 
 <style>
   section {
+    position: fixed;
     padding-left: var(--theme-padding-sm);
     padding-right: var(--theme-padding-sm);
   }

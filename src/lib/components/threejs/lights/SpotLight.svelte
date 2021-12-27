@@ -17,7 +17,9 @@
 
   $: if (spotLightController && animate) {
     animate(spotLightController.three, $sceneStore)
+  }
 
-    spotLightController.update(options)
+  $: if (spotLightController && options) {
+    spotLightController.updateOptions(options)
   }
 </script>

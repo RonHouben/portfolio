@@ -14,6 +14,6 @@
   }
 
   $: if (directionalLightController) {
-    directionalLightController.update(options)
+    directionalLightController.updateOptions(options)
   }
 </script>

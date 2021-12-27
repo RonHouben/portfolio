@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
   import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
   import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
+import { ArrowHelper } from 'three';
   import { Raycaster, Vector2 } from 'three'
 
   export interface RaycasterControllerOptions {
@@ -27,7 +28,7 @@
       addEventListener('mousemove', this.updateMouse.bind(this), false)
       addEventListener('touchmove', this.updateMouse.bind(this), false)
 
-      this.render()
+      this.renderLoop()
 
       // set Svelte store
       raycasterStore.set({
@@ -74,12 +75,10 @@
       }))
     }
 
-    private render(): void {
-      requestAnimationFrame(this.render.bind(this))
-
+    private renderLoop(): void {
+      requestAnimationFrame(this.renderLoop.bind(this))
       // update the picking ray with the camera and mouse position
       this.three.setFromCamera(this.mouse, this.camera)
-
       this.update()
     }
   }

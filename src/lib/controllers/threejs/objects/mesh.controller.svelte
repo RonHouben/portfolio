@@ -1,12 +1,13 @@
 <script lang="ts" context="module">
+  import type { PhysicsBody } from '$lib/controllers/cannon-es/body.controller.svelte'
   import type {
     AnimateFunction,
     BaseControllerOptions,
-    BaseInitOptions
+    BaseInitOptions,
+    ThreeJSObject
   } from '$lib/controllers/threejs/base.controller.svelte'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
-  import { physicsBodyStore } from '$lib/stores/cannon-es/body.store.svelte'
-  import { get } from 'svelte/store'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
   import type {
     BoxGeometry,
     BufferGeometry,
@@ -25,7 +26,7 @@
   } from 'three'
   import { Mesh as ThreeMesh } from 'three'
 
-  type Mesh = ThreeMesh<MeshGeometry, MeshMaterial>
+  export interface Mesh extends ThreeMesh<MeshGeometry, MeshMaterial>, ThreeJSObject {}
 
   export interface MouseEvent {
     mousePosition: {
@@ -64,18 +65,27 @@
   export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 
   export class MeshController extends BaseController<Mesh> {
+    public readonly three: Mesh
+    private readonly originalPosition: Mesh['position']
+    protected readonly interactable: Mesh
+
     constructor(options: MeshControllerOptions) {
-      const { name, interactions } = options
+      const { name, interactions, geometry, material } = options
       super({ name, interactions })
 
+      this.three = new ThreeMesh(geometry, material)
+      this.three.name = name
+     
+      this.interactable = this.three
+
       this.init(options)
+
+      this.originalPosition = this.three.position.clone()
+
       this.renderLoop()
     }
 
     protected override init(options: MeshInitOptions): void {
-      this.three = new ThreeMesh(options.geometry, options.material)
-      this.three.name = options.name
-
       this.setGeometry(options.geometry)
       this.setMaterial(options.material)
       this.setPosition(options.position)
@@ -83,28 +93,16 @@
       this.setShadow(options.shadow)
 
       this.scene.add(this.three)
-
-      this.renderLoop()
     }
 
     private renderLoop(): void {
       {
         requestAnimationFrame(this.renderLoop.bind(this))
 
-        this.setPositionFromPhysicsBody()
+        if (this.physicsBody) {
+          this.setPositionFromPhysicsBody(this.physicsBody, this.physicsBody.appendMeshPosition)
+        }
       }
-    }
-
-    public override update(options: MeshUpdateOptions): void {
-      this.setShadow(options.shadow)
-      this.setMaterial(options.material)
-      this.setGeometry(options.geometry)
-    }
-
-    public override animate(animateFunction: AnimateFunction<Mesh>): void {
-      requestAnimationFrame(() => this.animate(animateFunction))
-
-      animateFunction(this.three, this.scene)
     }
 
     private setGeometry(geometry: MeshGeometry): void {
@@ -115,13 +113,15 @@
       this.three.material = material
     }
 
-    private setPositionFromPhysicsBody(): void {
-      const physicsBody = get(physicsBodyStore)
+    private setPositionFromPhysicsBody(physicsBody: PhysicsBody, appendMeshPosition: boolean): void {
+      const positionX = appendMeshPosition ? physicsBody.position.x + this.originalPosition.x : physicsBody.position.x
+      const positionY = appendMeshPosition ? physicsBody.position.y + this.originalPosition.y : physicsBody.position.y
+      const positionZ = appendMeshPosition ? physicsBody.position.z + this.originalPosition.z : physicsBody.position.z
 
       this.three.position.set(
-        physicsBody.position.x,
-        physicsBody.position.y,
-        physicsBody.position.z
+        positionX,
+        positionY,
+        positionZ
       )
       this.three.quaternion.set(
         physicsBody.quaternion.x,
@@ -129,6 +129,20 @@
         physicsBody.quaternion.z,
         physicsBody.quaternion.w
       )
+    }
+
+    public updateOptions(options: MeshControllerOptions): void {
+      this.setGeometry(options.geometry)
+      this.setMaterial(options.material)
+      this.setPosition(options.position)
+      this.setRotation(options.rotation)
+      this.setShadow(options.shadow)
+    }
+
+    public override animate(animateFunction: AnimateFunction<Mesh>): void {
+      requestAnimationFrame(() => this.animate(animateFunction))
+
+      animateFunction(this.three, this.scene)
     }
   }
 </script>

@@ -1,29 +1,17 @@
 <script lang="ts" context="module">
-  import {
-    Interactable,
-    InteractionOptions,
-    ThreeJSObject
-  } from '$lib/controllers/interactable.controller.svelte'
+  import { Interactable, InteractionOptions } from '$lib/controllers/interactable.controller.svelte'
   import type { CameraInitOptions } from '$lib/controllers/threejs/cameras/camera.controller.svelte'
-  import type {
-    PerspectiveCameraInitOptions,
-    PerspectiveCameraUpdateOptions
-  } from '$lib/controllers/threejs/cameras/perspective.camera.svelte'
-  import type { DirectionalLightUpdateOptions } from '$lib/controllers/threejs/lights/directional.light.controller.svelte'
-  import type {
-    GroupInitOptions,
-    GroupUpdateOptions
-  } from '$lib/controllers/threejs/objects/group.controller.svelte'
-  import type { MeshUpdateOptions } from '$lib/controllers/threejs/objects/mesh.controller.svelte'
-  import type {
-    PointsInitOptions,
-    PointsUpdateOptions
-  } from '$lib/controllers/threejs/objects/points.controller.svelte'
+  import type { PerspectiveCameraInitOptions } from '$lib/controllers/threejs/cameras/perspective.camera.svelte'
+  import type { GroupInitOptions } from '$lib/controllers/threejs/objects/group.controller.svelte'
+  import type { PointsInitOptions } from '$lib/controllers/threejs/objects/points.controller.svelte'
   import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
   import { get } from 'svelte/store'
-  import type { Scene } from 'three'
+  import type { Object3D } from 'three'
+  import type { Scene, Event } from 'three'
+  import type { PhysicsBody } from '../cannon-es/body.controller.svelte'
 
-  export interface BaseControllerOptions<T> {
+  export interface BaseControllerOptions<T extends ThreeJSObject> {
     name: string
     position?: Vector3
     rotation?: Vector3
@@ -31,26 +19,23 @@
     interactions?: InteractionOptions<T>
   }
 
-  interface Vector3 {
-    x?: number
-    y?: number
-    z?: number
-  }
+  export interface ThreeJSObject extends Object3D<Event> {}
 
   export type AnimateFunction<T> = (obj: T, scene: Scene) => void
   export interface ShadowOptions {
     castShadow?: boolean
     receiveShadow?: boolean
   }
-  export type BaseInitOptions<T> = BaseControllerOptions<T>
-  export type BaseUpdateOptions<T> = BaseControllerOptions<T>
+  export type BaseInitOptions<T extends ThreeJSObject> = BaseControllerOptions<T>
+  export type BaseUpdateOptions<T extends ThreeJSObject> = BaseControllerOptions<T>
 
   export abstract class BaseController<T extends ThreeJSObject> extends Interactable<T> {
-    public name: BaseControllerOptions<T>['name']
+    public abstract three: T
+    protected scene: Scene
+    protected physicsBody?: PhysicsBody
 
-    constructor({ name, interactions }: BaseControllerOptions<T>) {
+    constructor({ interactions }: BaseControllerOptions<T>) {
       super(interactions)
-      this.name = name
       this.scene = get(sceneStore)
     }
 
@@ -63,16 +48,6 @@
         | PerspectiveCameraInitOptions
     ): void
 
-    public abstract update(
-      options:
-        | BaseUpdateOptions<T>
-        | MeshUpdateOptions
-        | DirectionalLightUpdateOptions
-        | PerspectiveCameraUpdateOptions
-        | PointsUpdateOptions
-        | GroupUpdateOptions
-    ): void
-
     public abstract animate(animateFunction: AnimateFunction<T>): void
 
     protected setPosition(options?: BaseControllerOptions<T>['position']): void {
@@ -83,9 +58,9 @@
 
     protected setRotation(options: BaseControllerOptions<T>['rotation']): void {
       if (options) {
-        this.three.rotation.z = options.x || this.three.rotation.x
-        this.three.rotation.y = options.y || this.three.rotation.y
-        this.three.rotation.z = options.z || this.three.rotation.z
+        this.three.rotateX(options.x || 0)
+        this.three.rotateY(options.y || 0)
+        this.three.rotateZ(options.z || 0)
       }
     }
 
@@ -95,5 +70,11 @@
         this.three.receiveShadow = options.receiveShadow || this.three.receiveShadow
       }
     }
+
+    public setPhysicsBody(physicsBody: PhysicsBody): void {
+      this.physicsBody = physicsBody
+    }
+
+    abstract updateOptions(options: BaseControllerOptions<T>): void
   }
 </script>

@@ -41,7 +41,7 @@
             name: `x{${column}} y{${row}} z{${depth}}`,
             type: CANNON.Body.DYNAMIC,
             position: new CANNON.Vec3(column, row, depth),
-            mass: 0.5,
+            mass: 0.25,
             shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2)),
             materialName: 'cube'
           }}
