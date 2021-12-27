@@ -39,7 +39,7 @@
           name: 'scene',
           helpers: {
             axes: {
-              enabled: false,
+              enabled: true,
               size: 15
             },
             grid: {
@@ -146,7 +146,7 @@
         <!-- Raycaster -->
         <Raycaster slot="raycaster" options={{ cameraName: 'perspective' }} />
 
-        <svelte:fragment slot="controls-disabled">
+        <svelte:fragment slot="controls">
           <OrbitControls
             options={{
               cameraName: 'perspective',
@@ -274,7 +274,7 @@
                     if (intersection) {
                       // first cancel previous action
                       gameController.send('cancel-move-player')
-                      gameController.send('move-player', intersection.point)
+                      gameController.send('move-player', intersection.point) 
                     }
                   }
                 }

@@ -11,11 +11,13 @@
       x?: number
       y?: number
       z?: number
-    }
+    },
+    appendMeshPosition?: boolean
   }
 
   export interface PhysicsBody extends Body {
     name: string
+    appendMeshPosition: boolean
   }
 
   export type PhysicsBodyStore = Writable<PhysicsBody>
@@ -25,9 +27,10 @@
     private world: World
 
     constructor(world: World, options: PhysicsBodyControllerOptions) {
-      const { name, materialName, rotation, ...cannonBodyOptions } = options
+      const { name, materialName, rotation, appendMeshPosition, ...cannonBodyOptions } = options
       this.cannon = new Body(cannonBodyOptions) as PhysicsBody
       this.cannon.name = name
+      this.cannon.appendMeshPosition = appendMeshPosition || false
 
       this.world = world
 

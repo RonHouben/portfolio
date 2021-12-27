@@ -10,7 +10,11 @@
     material: new MeshPhongMaterial({
       color: 'green',
       visible: false
-    })
+    }),
+    shadow: {
+      castShadow: true,
+      receiveShadow: true
+    }
     // position: {
     //   x: 0,
     //   y: 0,

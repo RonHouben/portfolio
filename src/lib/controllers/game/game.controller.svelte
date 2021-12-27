@@ -1,4 +1,7 @@
 <script lang="ts" context="module">
+  import Player from '$lib/components/game/Player.svelte'
+  import { isVector2 } from '$lib/utils/math/vector2.svelte'
+
   import { isVector3 } from '$lib/utils/math/vector3.svelte'
   import { CameraController } from './camera.controller.svelte'
   import { CursorController } from './cursor.controller.svelte'
@@ -22,11 +25,11 @@
       this.cameraController = new CameraController()
     }
 
-    public async send<T>(event: T | Event, data?: T): Promise<void> {
-      const canMovePlayer = this.state === 'idle' && isVector3(data)
-      const canCancelMovePlayer = this.state === 'moving-player'
+    public async send<T>(event: Event, data?: T): Promise<void> {
+      const canPlayerMove = this.state === 'idle' && isVector3(data)
+      const canPlayerCancelMove = this.state === 'moving-player'
 
-      if (event === 'move-player' && canMovePlayer) {
+      if (event === 'move-player' && canPlayerMove) {
         this.state = 'moving-player'
 
         this.cursorController.send('show')
@@ -38,7 +41,7 @@
         this.state = 'idle'
       }
 
-      if (event === 'cancel-move-player' && canCancelMovePlayer) {
+      if (event === 'cancel-move-player' && canPlayerCancelMove) {
         this.playerController.send('cancel-move')
         this.state = 'idle'
       }

@@ -10,12 +10,20 @@
   type State = 'idle' | 'moving'
   type Event = 'move' | 'cancel-move'
 
+  interface Animations {
+    move?: anime.AnimeInstance
+    rotate?: anime.AnimeInstance
+  }
+
   export class PlayerController {
     private state: State
     private name: string
     private physicsBody: PhysicsBody
     private playerMesh: Mesh
-    private anime?: anime.AnimeInstance
+    private animation: Animations = {
+      move: undefined,
+      rotate: undefined
+    }
 
     constructor(name: string) {
       this.state = 'idle'
@@ -48,7 +56,7 @@
       return playerMesh
     }
 
-    private async move({ x, y, z }: Vector3): Promise<void> {
+    private async move(position: Vector3): Promise<void> {
       this.state = 'moving'
 
       return new Promise((resolve) => {
@@ -56,11 +64,11 @@
         // @ts-ignore
         const playerHeight = this.playerMesh.geometry.parameters.height
 
-        this.anime = anime({
+        this.animation.move = anime({
           targets: this.physicsBody.position,
-          x,
-          y: y ? y + playerHeight / 2 : undefined,
-          z,
+          x: position.x,
+          y: position.y ? position.y + playerHeight / 2 : undefined,
+          z: position.z,
           easing: 'linear',
           complete: () => {
             this.state = 'idle'
@@ -68,22 +76,23 @@
             resolve()
           }
         })
+
+        // TODO: find a way to rotate the place based on the mouse position (Raycaster)
       })
     }
 
     public async send<T>(event: Event, data?: T): Promise<void> {
       const canMove = this.state === 'idle' && isVector3(data)
-      const canCancelMove = this.state === 'moving' && this.anime
+      const canCancelMove = this.state === 'moving' && this.animation.move
 
       if (event === 'move' && canMove) {
         await this.move(data)
-        return
       }
 
       if (event === 'cancel-move' && canCancelMove) {
-        this.anime!.pause()
-        this.state = 'idle'
-        return
+          this.animation.move!.pause()
+          this.state = 'idle'
+          return
       }
     }
   }

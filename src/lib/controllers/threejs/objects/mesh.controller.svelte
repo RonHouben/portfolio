@@ -7,6 +7,7 @@
     ThreeJSObject
   } from '$lib/controllers/threejs/base.controller.svelte'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
   import type {
     BoxGeometry,
     BufferGeometry,
@@ -64,8 +65,9 @@
   export type MeshUpdateOptions = Omit<Omit<MeshControllerOptions, 'position'>, 'rotation'>
 
   export class MeshController extends BaseController<Mesh> {
-    public three: Mesh
-    protected interactable: Mesh
+    public readonly three: Mesh
+    private readonly originalPosition: Mesh['position']
+    protected readonly interactable: Mesh
 
     constructor(options: MeshControllerOptions) {
       const { name, interactions, geometry, material } = options
@@ -73,9 +75,13 @@
 
       this.three = new ThreeMesh(geometry, material)
       this.three.name = name
+     
       this.interactable = this.three
 
       this.init(options)
+
+      this.originalPosition = this.three.position.clone()
+
       this.renderLoop()
     }
 
@@ -87,8 +93,6 @@
       this.setShadow(options.shadow)
 
       this.scene.add(this.three)
-
-      this.renderLoop()
     }
 
     private renderLoop(): void {
@@ -96,7 +100,7 @@
         requestAnimationFrame(this.renderLoop.bind(this))
 
         if (this.physicsBody) {
-          this.setPositionFromPhysicsBody(this.physicsBody)
+          this.setPositionFromPhysicsBody(this.physicsBody, this.physicsBody.appendMeshPosition)
         }
       }
     }
@@ -109,11 +113,15 @@
       this.three.material = material
     }
 
-    private setPositionFromPhysicsBody(physicsBody: PhysicsBody): void {
+    private setPositionFromPhysicsBody(physicsBody: PhysicsBody, appendMeshPosition: boolean): void {
+      const positionX = appendMeshPosition ? physicsBody.position.x + this.originalPosition.x : physicsBody.position.x
+      const positionY = appendMeshPosition ? physicsBody.position.y + this.originalPosition.y : physicsBody.position.y
+      const positionZ = appendMeshPosition ? physicsBody.position.z + this.originalPosition.z : physicsBody.position.z
+
       this.three.position.set(
-        physicsBody.position.x,
-        physicsBody.position.y,
-        physicsBody.position.z
+        positionX,
+        positionY,
+        positionZ
       )
       this.three.quaternion.set(
         physicsBody.quaternion.x,
