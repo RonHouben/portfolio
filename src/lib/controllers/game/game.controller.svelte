@@ -1,7 +1,4 @@
 <script lang="ts" context="module">
-  import Player from '$lib/components/game/Player.svelte'
-  import { isVector2 } from '$lib/utils/math/vector2.svelte'
-
   import { isVector3 } from '$lib/utils/math/vector3.svelte'
   import { CameraController } from './camera.controller.svelte'
   import { CursorController } from './cursor.controller.svelte'
@@ -34,6 +31,7 @@
 
         this.cursorController.send('show')
         this.cursorController.send('move', data)
+        await this.playerController.send('rotate', data)
         this.cameraController.send('move', data)
         await this.playerController.send('move', data)
         this.cursorController.send('hide')
@@ -42,6 +40,7 @@
       }
 
       if (event === 'cancel-move-player' && canPlayerCancelMove) {
+        this.playerController.send('cancel-rotate')
         this.playerController.send('cancel-move')
         this.state = 'idle'
       }
