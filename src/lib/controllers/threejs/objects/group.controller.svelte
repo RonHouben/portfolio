@@ -4,13 +4,14 @@
     BaseControllerOptions
   } from '$lib/controllers/threejs/base.controller.svelte'
   import { BaseController } from '$lib/controllers/threejs/base.controller.svelte'
+import type { Vector3 } from '$lib/utils/math/vector3.svelte';
   import type { Modify } from '$lib/utils/types'
   import { Group } from 'three'
 
   export interface GroupControllerOptions
     extends Modify<
       BaseControllerOptions<Group>,
-      { position?: BaseControllerOptions<Group>['position'] }
+      { position?: Vector3 }
     > {
     childrenNames: string[]
   }
@@ -35,6 +36,7 @@
     }
 
     protected override init(options: GroupInitOptions): void {
+      console.log(options.position)
       this.setPosition(options.position)
 
       setInterval(() => {
@@ -66,6 +68,8 @@
       }
     }
 
-    public override updateOptions(_options: GroupUpdateOptions): void {}
+    public override updateOptions(options: GroupUpdateOptions): void {
+      this.setPosition(options.position)
+    }
   }
 </script>

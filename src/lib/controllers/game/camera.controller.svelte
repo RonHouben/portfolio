@@ -4,6 +4,7 @@
   import anime from 'animejs'
   import { get } from 'svelte/store'
   import type { PerspectiveCamera } from 'three'
+  import { Vector3 as ThreeVector3 } from 'three'
 
   type State = 'idle' | 'moving'
   type Event = 'move'
@@ -27,18 +28,20 @@
     }
 
     private async move({ x, y, z }: Vector3): Promise<void> {
-      this.state = 'moving'
+      const target = new ThreeVector3(x, y, z)
 
       return new Promise((resolve) => {
         anime({
           targets: this.camera.position,
-          x: x ? x + this.originalPosition.x : undefined,
-          y: y ? y + this.originalPosition.y : undefined,
-          z: z ? z + this.originalPosition.z : undefined,
+          x: target.x + this.originalPosition.x,
+          y: target.y + this.originalPosition.y,
+          z: target.z + this.originalPosition.z,
           easing: 'linear',
+          begin: () => {
+            this.state = 'moving'
+          },
           complete: () => {
             this.camera.updateProjectionMatrix()
-
             this.state = 'idle'
             resolve()
           }

@@ -17,7 +17,7 @@
     constructor() {
       this.state = 'idle'
 
-      this.playerController = new PlayerController('player')
+      this.playerController = new PlayerController('player-group')
       this.cursorController = new CursorController('cursor')
       this.cameraController = new CameraController()
     }
@@ -31,7 +31,7 @@
 
         this.cursorController.send('show')
         this.cursorController.send('move', data)
-        await this.playerController.send('rotate', data)
+        await this.playerController.send('rotate-to-target', data)
         this.cameraController.send('move', data)
         await this.playerController.send('move', data)
         this.cursorController.send('hide')
@@ -40,7 +40,7 @@
       }
 
       if (event === 'cancel-move-player' && canPlayerCancelMove) {
-        this.playerController.send('cancel-rotate')
+        this.playerController.send('cancel-rotate-to-target')
         this.playerController.send('cancel-move')
         this.state = 'idle'
       }

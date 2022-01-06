@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
   import { raycasterStore } from '$lib/stores/threejs/raycaster.store.svelte'
   import type { Camera, Intersection, Object3D, Renderer, Scene } from 'three'
-import { ArrowHelper } from 'three';
   import { Raycaster, Vector2 } from 'three'
 
   export interface RaycasterControllerOptions {

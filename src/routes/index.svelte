@@ -3,6 +3,7 @@
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
   import Cursor from '$lib/components/game/Cursor.svelte'
   import Player from '$lib/components/game/Player.svelte'
+import Grid from '$lib/components/Grid.svelte';
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
   import OrbitControls from '$lib/components/threejs/controls/OrbitControls.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
@@ -64,7 +65,7 @@
                 new CANNON.Material('cube')
               ],
               helpers: {
-                enabled: false
+                enabled: true
               }
             }}
             createContactMaterials={(materials) => {
@@ -92,30 +93,30 @@
 
               return [cubeOnBouncyContactMaterial, cubeOnSlipperyContactMaterial]
             }}
-            createConstraints={() => {
-              // const mouseBody = bodies.find(({ name }) => name === 'mouse')
-              // const rectangleBody = bodies.find(({ name }) => name === 'rectangle')
+            createConstraints={(bodies) => {
+              const cursorBody = bodies.find(({ name }) => name === 'cursor')
+              const playerBody = bodies.find(({ name }) => name === 'player')
 
-              // if (mouseBody && rectangleBody) {
-              //   // Vector that goes from the body to the clicked point
-              //   const vector = new CANNON.Vec3()
-              //     .copy(mouseBody.position)
-              //     .vsub(rectangleBody.position)
+              if (cursorBody && playerBody) {
+                // Vector that goes from the body to the clicked point
+                const vector = new CANNON.Vec3()
+                  .copy(cursorBody.position)
+                  .vsub(playerBody.position)
 
-              //   // Apply anti-quaternion to vector to tranform it into the local body coordinate system
-              //   const antiRotation = rectangleBody.quaternion.inverse()
-              //   const pivot = antiRotation.vmult(vector) // pivot is not in local body coordinates
+                // Apply anti-quaternion to vector to tranform it into the local body coordinate system
+                const antiRotation = playerBody.quaternion.inverse()
+                const pivot = antiRotation.vmult(vector) // pivot is not in local body coordinates
 
-              //   const constraint = new CANNON.PointToPointConstraint(
-              //     rectangleBody,
-              //     pivot,
-              //     mouseBody,
-              //     new CANNON.Vec3(0, 3, 0),
-              //     0.5
-              //   )
+                const constraint = new CANNON.PointToPointConstraint(
+                  playerBody,
+                  pivot,
+                  cursorBody,
+                  new CANNON.Vec3(0, 0, 0),
+                  5
+                )
 
-              //   return [constraint]
-              // }
+                return []
+              }
               return []
             }}
           />
@@ -146,11 +147,11 @@
         <!-- Raycaster -->
         <Raycaster slot="raycaster" options={{ cameraName: 'perspective' }} />
 
-        <svelte:fragment slot="controls">
+        <svelte:fragment slot="controls-disabled">
           <OrbitControls
             options={{
               cameraName: 'perspective',
-              targetName: 'player',
+              targetName: 'player-group',
               enableRotate: false,
               enablePan: false,
               enableZoom: false,
@@ -236,13 +237,19 @@
           <Cursor />
           <Player />
 
+          <Grid name='grid' cellDistance={1} cellSize={1} columns={5} rows={5} depth={5} position={{
+            x: 0,
+            y: 0,
+            z: 0
+          }}></Grid>
+
           <PhysicsBody
             options={{
               name: 'floor',
               type: CANNON.Body.STATIC,
               // shape: new CANNON.Box(new CANNON.Vec3(50, 50, 0.25)),
               shape: new CANNON.Plane(),
-              materialName: 'slippery',
+              materialName: 'bouncy',
               position: new CANNON.Vec3(0, 0, 0),
               rotation: {
                 x: -(Math.PI / 2)

@@ -2,6 +2,7 @@
   import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
   import Group from '$lib/components/threejs/objects/Group.svelte'
   import Mesh from '$lib/components/threejs/objects/Mesh.svelte'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte';
   import * as CANNON from 'cannon-es'
   import { BoxGeometry, MeshNormalMaterial } from 'three'
 
@@ -11,13 +12,7 @@
   export let depth: number
   export let cellSize: number
   export let cellDistance: number
-  export let position:
-    | {
-        x?: number
-        y?: number
-        z?: number
-      }
-    | undefined = undefined
+  export let position: Vector3
 
   const rowsArray = new Array(rows)
     .fill(0)
@@ -43,7 +38,8 @@
             position: new CANNON.Vec3(column, row, depth),
             mass: 0.25,
             shape: new CANNON.Box(new CANNON.Vec3(cellSize / 2, cellSize / 2, cellSize / 2)),
-            materialName: 'cube'
+            materialName: 'cube',
+            appendMeshPosition: true
           }}
         >
           <Mesh
