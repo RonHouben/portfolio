@@ -40,7 +40,7 @@ import Grid from '$lib/components/Grid.svelte';
           name: 'scene',
           helpers: {
             axes: {
-              enabled: true,
+              enabled: false,
               size: 15
             },
             grid: {
@@ -65,7 +65,7 @@ import Grid from '$lib/components/Grid.svelte';
                 new CANNON.Material('cube')
               ],
               helpers: {
-                enabled: true
+                enabled: false 
               }
             }}
             createContactMaterials={(materials) => {
