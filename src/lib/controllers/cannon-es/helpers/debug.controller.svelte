@@ -2,6 +2,7 @@
   import {
     Box,
     ConvexPolyhedron,
+    Cylinder,
     Heightfield,
     Plane,
     Quaternion,
@@ -18,6 +19,7 @@
   import type { Scene } from 'three'
   import type { ColorRepresentation } from 'three'
   import { Mesh } from 'three'
+  import { CylinderGeometry } from 'three';
 
   interface PhysicsDebugControllerOptions {
     color: ColorRepresentation
@@ -32,6 +34,7 @@
     private sphereGeometry: SphereGeometry
     private boxGeometry: BoxGeometry
     private planeGeometry: PlaneGeometry
+    private cylinderGeometry: CylinderGeometry
 
     // for updating positions
     private tmpVec0 = new Vec3()
@@ -45,6 +48,7 @@
       this.sphereGeometry = new SphereGeometry(1)
       this.boxGeometry = new BoxGeometry(1, 1, 1)
       this.planeGeometry = new PlaneGeometry(10, 10, 10, 10)
+      this.cylinderGeometry = new CylinderGeometry(1, 1, 1)
     }
 
     public renderLoop(): void {
@@ -149,6 +153,9 @@
         case Shape.types.PLANE:
           mesh = new Mesh(this.planeGeometry, material)
           break
+        case Shape.types.CYLINDER:
+          mesh = new Mesh(this.cylinderGeometry, material)
+          break
         default:
           throw new Error(
             `CannoneDebugRenderer.createMesh not implemented for shape with type: "${shape.type}"`
@@ -166,6 +173,7 @@
       const sphere = shape as Sphere
       const box = shape as Box
       const trimesh = shape as Trimesh
+      const cylinder = shape as Cylinder
 
       switch (shape.type) {
         case Shape.types.SPHERE:
@@ -188,6 +196,9 @@
         case Shape.types.HEIGHTFIELD:
           mesh.scale.set(1, 1, 1)
           break
+        
+        case Shape.types.CYLINDER:
+          mesh.scale.set(cylinder.radiusTop, cylinder.height, cylinder.radiusTop)
       }
     }
   }

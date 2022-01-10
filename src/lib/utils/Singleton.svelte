@@ -1,11 +1,11 @@
 <script lang="ts" context="module">
   const SINGLETON_KEY = Symbol()
 
-  type Singleton<T extends new (...args: unknown[]) => unknown> = T & {
-    [SINGLETON_KEY]: T extends new (...args: unknown[]) => infer I ? I : never
+  type Singleton<T extends new (...args: any[]) => unknown> = T & {
+    [SINGLETON_KEY]: T extends new (...args: any[]) => infer I ? I : never
   }
 
-  export const singleton = <T extends new (...args: unknown[]) => unknown>(type: T) =>
+  export const singleton = <T extends new (...args: any[]) => unknown>(type: T) =>
     new Proxy(type, {
       // this will hijack the constructor
       construct(target: Singleton<T>, argsList, newTarget) {

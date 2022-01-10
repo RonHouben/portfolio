@@ -1,9 +1,8 @@
 <script lang="ts">
   import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
-  import Cursor from '$lib/components/game/Cursor.svelte'
   import Player from '$lib/components/game/Player.svelte'
-import Grid from '$lib/components/Grid.svelte';
+  import Grid from '$lib/components/Grid.svelte';
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
   import OrbitControls from '$lib/components/threejs/controls/OrbitControls.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
@@ -17,8 +16,6 @@ import Grid from '$lib/components/Grid.svelte';
   import * as CANNON from 'cannon-es'
   import { Vec3 } from 'cannon-es'
   import { MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, sRGBEncoding } from 'three'
-
-  let gameController: GameController | undefined = undefined
 </script>
 
 <div class="canvas-container">
@@ -65,7 +62,7 @@ import Grid from '$lib/components/Grid.svelte';
                 new CANNON.Material('cube')
               ],
               helpers: {
-                enabled: false 
+                enabled: false
               }
             }}
             createContactMaterials={(materials) => {
@@ -151,7 +148,7 @@ import Grid from '$lib/components/Grid.svelte';
           <OrbitControls
             options={{
               cameraName: 'perspective',
-              targetName: 'player-group',
+              targetName: 'player',
               enableRotate: false,
               enablePan: false,
               enableZoom: false,
@@ -234,21 +231,19 @@ import Grid from '$lib/components/Grid.svelte';
         </svelte:fragment>
         <!-- Meshes -->
         <svelte:fragment slot="meshes">
-          <Cursor />
           <Player />
 
-          <Grid name='grid' cellDistance={1} cellSize={1} columns={5} rows={5} depth={5} position={{
+          <!-- <Grid name='grid' cellDistance={1} cellSize={1} columns={5} rows={5} depth={5} position={{
             x: 0,
             y: 0,
             z: 0
-          }}></Grid>
+          }}></Grid> -->
 
           <PhysicsBody
             options={{
               name: 'floor',
               type: CANNON.Body.STATIC,
-              // shape: new CANNON.Box(new CANNON.Vec3(50, 50, 0.25)),
-              shape: new CANNON.Plane(),
+              shape: new CANNON.Box(new CANNON.Vec3(25, 25, 0.025)),
               materialName: 'bouncy',
               position: new CANNON.Vec3(0, 0, 0),
               rotation: {
@@ -274,14 +269,11 @@ import Grid from '$lib/components/Grid.svelte';
                 },
                 interactions: {
                   onClick: async ({ intersection }) => {
-                    if (!gameController) {
-                      gameController = new GameController()
-                    }
-
                     if (intersection) {
-                      // first cancel previous action
-                      gameController.send('cancel-move-player')
-                      gameController.send('move-player', intersection.point) 
+                      const gameController = new GameController()
+
+                      await gameController.send('stop-moving-player')
+                      await gameController.send('move-player', intersection.point) 
                     }
                   }
                 }

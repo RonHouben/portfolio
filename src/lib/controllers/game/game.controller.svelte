@@ -1,24 +1,26 @@
 <script lang="ts" context="module">
   import { isVector3 } from '$lib/utils/math/vector3.svelte'
+  import { singleton } from '$lib/utils/Singleton.svelte';
   import { CameraController } from './camera.controller.svelte'
-  import { CursorController } from './cursor.controller.svelte'
+  import { TargetLocationController } from './targetLocation.controller.svelte'
   import { PlayerController } from './player.controller.svelte'
 
   type State = 'idle' | 'moving-player'
-  type Event = 'move-player' | 'cancel-move-player'
+  type Event = 'move-player' | 'stop-moving-player'
 
+  @singleton
   export class GameController {
     static instance: GameController
     private state: State
     private readonly playerController: PlayerController
-    private readonly cursorController: CursorController
+    private readonly playerTargetLocationController: TargetLocationController 
     private readonly cameraController: CameraController
 
     constructor() {
       this.state = 'idle'
 
-      this.playerController = new PlayerController('player-group')
-      this.cursorController = new CursorController('cursor')
+      this.playerController = new PlayerController('player')
+      this.playerTargetLocationController = new TargetLocationController('player-target-location')
       this.cameraController = new CameraController()
     }
 
@@ -29,19 +31,21 @@
       if (event === 'move-player' && canPlayerMove) {
         this.state = 'moving-player'
 
-        this.cursorController.send('show')
-        this.cursorController.send('move', data)
-        await this.playerController.send('rotate-to-target', data)
-        this.cameraController.send('move', data)
-        await this.playerController.send('move', data)
-        this.cursorController.send('hide')
+        this.playerTargetLocationController.send('teleport', data)
 
-        this.state = 'idle'
+        // setTimeout is a workaround to fix the appareance flicker on the old position of the cursorController
+        // setTimeout(() => {
+        // }, 10)
+        this.playerTargetLocationController.send('fade-in')
+        await this.playerController.send('move', data)
+        // TODO: Fix camera issue
+        await this.cameraController.send('move', data)
       }
 
-      if (event === 'cancel-move-player' && canPlayerCancelMove) {
-        this.playerController.send('cancel-rotate-to-target')
-        this.playerController.send('cancel-move')
+      if (event === 'stop-moving-player' && canPlayerCancelMove) {
+        this.playerTargetLocationController.send('fade-out')
+        await this.playerController.send('stop-moving')
+
         this.state = 'idle'
       }
     }
