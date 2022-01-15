@@ -19,7 +19,6 @@
     position: new CANNON.Vec3(0, 0, 50),
     isTrigger: true,
     onTrigger: async (event) => {
-       console.log(event)
       if (event.body && event.body.name === targetName) {
         const gameController = new GameController()
 
@@ -28,16 +27,6 @@
         }
       }   
     },
-    // onTriggerEnd: async (event) => {
-    //   console.log(event)
-    //   if (event.bodyB && event.bodyB.name === targetName) {
-    //     const gameController = new GameController()
-
-    //     if (gameController.state === 'moving-player') {
-    //       await gameController.send('stop-moving-player')
-    //     }
-    //   }
-    // }
   }}
 >
   <Mesh
