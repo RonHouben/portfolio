@@ -268,14 +268,16 @@ import Grid from '$lib/components/Grid.svelte';
                   castShadow: true
                 },
                 interactions: {
-                  onClick: async ({ intersection }) => {
-                    if (intersection) {
+                  onClick: async ({ intersections }) => {
+                    const isNotClickingPlayer = !intersections.some((i) => i.object.name === 'player')
+
+                    if (isNotClickingPlayer) {
                       const gameController = new GameController()
 
                       if (gameController.state === 'moving-player') {
                         await gameController.send('stop-moving-player')
                       } 
-                      gameController.send('move-player', intersection.point)
+                      gameController.send('move-player', intersections[0].point)
                     }
                   }
                 }

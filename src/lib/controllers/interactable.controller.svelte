@@ -13,7 +13,7 @@
 
   export type InteractionFunction<T extends ThreeJSObject> = (options: {
     target: T
-    intersection?: Intersection<T>
+    intersections: Intersection<T>[]
     physicsBody?: PhysicsBody
     scene?: Scene
     physicsWorld?: PhysicsWorld
@@ -74,7 +74,7 @@
 
             onMouseEnter({
               target: this.interactable,
-              intersection,
+              intersections: [intersection],
               physicsBody: this.getPhysicsBody(),
               physicsWorld: this.getPhysicsWorld(),
               scene: this.getScene()
@@ -90,14 +90,15 @@
     private addOnClickEventListener(onClick: InteractionOptions<T>['onClick']): void {
       if (onClick) {
         const handleEvent = (): void => {
-          const intersection = this.getIntersectionById(this.interactable.uuid)
+          // const intersection = this.getIntersectionById(this.interactable.uuid)
+          const intersections = this.getIntersections()
 
-          if (intersection) {
+          if (intersections) {
             this.setInteractionState('interacting')
 
             onClick({
               target: this.interactable,
-              intersection,
+              intersections,
               physicsBody: this.getPhysicsBody(),
               physicsWorld: this.getPhysicsWorld(),
               scene: this.getScene()
@@ -113,11 +114,11 @@
     private addOnMouseMoveEventListener(onMouseMove: InteractionOptions<T>['onMouseMove']): void {
       if (onMouseMove) {
         const handleEvent = (): void => {
-          const intersection = this.getIntersection()
+          const intersections = this.getIntersections()
 
           onMouseMove({
             target: this.interactable,
-            intersection,
+            intersections,
             scene: this.getScene(),
             physicsBody: this.getPhysicsBody(),
             physicsWorld: this.getPhysicsWorld()
@@ -139,7 +140,7 @@
 
             onMouseOver({
               target: this.interactable,
-              intersection,
+              intersections: [intersection],
               physicsBody: this.getPhysicsBody(),
               physicsWorld: this.getPhysicsWorld(),
               scene: this.getScene()
@@ -164,7 +165,7 @@
 
             onMouseLeave({
               target: this.interactable,
-              intersection,
+              intersections: intersection ? [intersection] : [],
               physicsBody: this.getPhysicsBody(),
               physicsWorld: this.getPhysicsWorld(),
               scene: this.getScene()
@@ -194,9 +195,9 @@
       this.interactionState = newState
     }
 
-    private getIntersection(): Intersection<T> | undefined {
+    private getIntersections(): Intersection<T>[] {
       const raycaster = get(raycasterStore)
-      return raycaster && (raycaster.intersects[0] as unknown as Intersection<T>)
+      return raycaster && (raycaster.intersects as unknown as Intersection<T>[]) || []
     }
 
     private getIntersectionById(id: string): Intersection<T> | undefined {

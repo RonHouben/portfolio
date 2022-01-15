@@ -4,6 +4,7 @@
   import { TargetLocationController } from './targetLocation.controller.svelte'
   import { PlayerController } from './player.controller.svelte'
   import { StateMachine } from '$lib/utils/StateMachine.svelte'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
 
   type StateEventMapping = {
     idle: 'move-player'
@@ -12,9 +13,13 @@
 
   type Events = 'move-player' | 'stop-moving-player'
 
+  type EventData = {
+    'move-player': Vector3
+  }
+
   @singleton
   export class GameController {
-    private readonly stateMachine: StateMachine<StateEventMapping, Events>
+    private readonly stateMachine: StateMachine<StateEventMapping, Events, EventData>
     private readonly playerController: PlayerController
     private readonly playerTargetLocationController: TargetLocationController
     private readonly cameraController: CameraController
@@ -47,7 +52,7 @@
       this.cameraController = new CameraController()
     }
 
-    private async movePlayer(data: unknown): Promise<void> {
+    private async movePlayer(data: EventData['move-player']): Promise<void> {
       this.playerTargetLocationController.send('teleport', data)
       await this.playerTargetLocationController.send('fade-in')
 
@@ -67,7 +72,7 @@
       await this.stateMachine.send(event, data)
     }
 
-    get state(): StateMachine<StateEventMapping, Events>['current'] {
+    get state(): StateMachine<StateEventMapping, Events, EventData>['current'] {
       return this.stateMachine.current
     }
   }
