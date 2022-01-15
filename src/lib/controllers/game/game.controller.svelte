@@ -1,53 +1,74 @@
 <script lang="ts" context="module">
-  import { isVector3 } from '$lib/utils/math/vector3.svelte'
-  import { singleton } from '$lib/utils/Singleton.svelte';
+  import { singleton } from '$lib/utils/Singleton.svelte'
   import { CameraController } from './camera.controller.svelte'
   import { TargetLocationController } from './targetLocation.controller.svelte'
   import { PlayerController } from './player.controller.svelte'
+  import { StateMachine } from '$lib/utils/StateMachine.svelte'
 
-  type State = 'idle' | 'moving-player'
-  type Event = 'move-player' | 'stop-moving-player'
+  type StateEventMapping = {
+    idle: 'move-player'
+    'moving-player': 'stop-moving-player' | 'move-player'
+  }
+
+  type Events = 'move-player' | 'stop-moving-player'
 
   @singleton
   export class GameController {
-    static instance: GameController
-    private state: State
+    private readonly stateMachine: StateMachine<StateEventMapping, Events>
     private readonly playerController: PlayerController
-    private readonly playerTargetLocationController: TargetLocationController 
+    private readonly playerTargetLocationController: TargetLocationController
     private readonly cameraController: CameraController
 
     constructor() {
-      this.state = 'idle'
+      this.stateMachine = new StateMachine({
+        id: 'gameMachine',
+        initial: 'idle',
+        states: {
+          idle: {
+            'move-player': {
+              target: 'moving-player'
+            },
+          },
+          'moving-player': {
+            entry: (data) => this.movePlayer(data),
+            'stop-moving-player': {
+              target: 'idle',
+              action: () => this.stopMovingPlayer()
+            },
+            'move-player': {
+              target: 'moving-player'
+            }
+          }
+        }
+      })
 
-      this.playerController = new PlayerController('player')
+      this.playerController = new PlayerController()
       this.playerTargetLocationController = new TargetLocationController('player-target-location')
       this.cameraController = new CameraController()
     }
 
-    public async send<T>(event: Event, data?: T): Promise<void> {
-      const canPlayerMove = this.state === 'idle' && isVector3(data)
-      const canPlayerCancelMove = this.state === 'moving-player'
+    private async movePlayer(data: unknown): Promise<void> {
+      this.playerTargetLocationController.send('teleport', data)
+      await this.playerTargetLocationController.send('fade-in')
 
-      if (event === 'move-player' && canPlayerMove) {
-        this.state = 'moving-player'
+      await this.playerController.send('move', data)
+      // TODO: Fix camera issue
+      this.cameraController.send('move', data)
+    }
 
-        this.playerTargetLocationController.send('teleport', data)
+    private async stopMovingPlayer(): Promise<void> {
+      this.playerController.send('stop-moving')
+      this.cameraController.send('stop-moving')
+      this.playerTargetLocationController.send('fade-out')
+    }
 
-        // setTimeout is a workaround to fix the appareance flicker on the old position of the cursorController
-        // setTimeout(() => {
-        // }, 10)
-        this.playerTargetLocationController.send('fade-in')
-        await this.playerController.send('move', data)
-        // TODO: Fix camera issue
-        await this.cameraController.send('move', data)
-      }
+    // TODO: Find a way to get the Events from the StateEventMapping
+    public async send<T>(event: Events, data?: T): Promise<void> {
+      await this.stateMachine.send(event, data)
+    }
 
-      if (event === 'stop-moving-player' && canPlayerCancelMove) {
-        this.playerTargetLocationController.send('fade-out')
-        await this.playerController.send('stop-moving')
-
-        this.state = 'idle'
-      }
+    get state(): StateMachine<StateEventMapping, Events>['current'] {
+      return this.stateMachine.current
     }
   }
 </script>

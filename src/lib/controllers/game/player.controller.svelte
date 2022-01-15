@@ -1,18 +1,20 @@
 <script lang="ts" context="module">
   import { physicsWorldStore } from '$lib/stores/cannon-es/world.store.svelte'
-  import { sceneStore } from '$lib/stores/threejs/scene.store.svelte'
-  import { isVector3, Vector3 } from '$lib/utils/math/vector3.svelte'
+  import type { Vector3 } from '$lib/utils/math/vector3.svelte'
+  import { singleton } from '$lib/utils/Singleton.svelte'
+  import { StateMachine } from '$lib/utils/StateMachine.svelte'
   import anime from 'animejs'
+  import * as CANNON from 'cannon-es'
   import { get } from 'svelte/store'
   import type { PhysicsBody } from '../cannon-es/body.controller.svelte'
   import type { PhysicsWorld } from '../cannon-es/world.controller.svelte'
-  import type { ThreeJSObject } from '../threejs/base.controller.svelte'
-  import type { ThreeJSScene } from '../threejs/objects/scene.controller.svelte'
-  import * as CANNON from 'cannon-es'
-  import { singleton } from '$lib/utils/Singleton.svelte'
 
-  type State = 'idle' | 'moving'
-  type Event = 'move' | 'stop-moving'
+  type Events = 'move' | 'stop-moving'
+
+  interface StateEventMapping {
+    idle: 'move'
+    moving: 'stop-moving'
+  }
 
   interface Animations {
     move?: anime.AnimeInstance
@@ -21,37 +23,36 @@
 
   @singleton
   export class PlayerController {
-    public state: State
-    private scene: ThreeJSScene
+    public readonly stateMachine: StateMachine<StateEventMapping, Events>
     private physicsWorld: PhysicsWorld
-    private playerGroupMesh: ThreeJSObject
     private physicsBody: PhysicsBody
     private animation: Animations = {}
 
-    constructor(name: string) {
-      this.state = 'idle'
-      this.scene = this.getScene()
+    constructor() {
+      this.stateMachine = new StateMachine({
+        id: 'playerMachine',
+        initial: 'idle',
+        states: {
+          idle: {
+            move: {
+              target: 'moving',
+              action: (data) => this.move(data)
+            }
+          },
+          moving: {
+            'stop-moving': {
+              target: 'idle',
+              action: (data) => this.stopMoving()
+            }
+          }
+        }
+      })
       this.physicsWorld = this.getPhysicsWorld()
-      this.playerGroupMesh = this.getPlayerGroupMesh(name)
       this.physicsBody = this.getPhysicsBody('player-physics')
-    }
-
-    private getScene(): ThreeJSScene {
-      return get(sceneStore)
     }
 
     private getPhysicsWorld(): PhysicsWorld {
       return get(physicsWorldStore)
-    }
-
-    private getPlayerGroupMesh(name: string): ThreeJSObject {
-      const group = this.scene.getObjectByName(name)
-
-      if (!group) {
-        throw new Error(`Unable to find player group mesh with name: "${name}"`)
-      }
-
-      return group
     }
 
     private getPhysicsBody(name: string): PhysicsBody {
@@ -68,8 +69,6 @@
 
     private async move({ x, y, z }: Vector3): Promise<void> {
       return new Promise((resolve) => {
-        this.state = 'moving'
-
         const speedScalar = 5
         // Compute direction to target
         const direction = new CANNON.Vec3()
@@ -112,25 +111,12 @@
         this.animation.move = undefined
         this.physicsBody.velocity.setZero()
 
-        this.state = 'idle'
-
         resolve()
       })
     }
 
-    public async send<T>(event: Event, data?: T): Promise<void> {
-      const canMove = (this.state === 'idle' || this.state === 'moving') && isVector3(data)
-      const canCancelMove = this.state === 'moving' // || 'idle'
-
-      if (event === 'move' && canMove) {
-        await this.move(data)
-        return
-      }
-
-      if (event === 'stop-moving' && canCancelMove) {
-        await this.stopMoving()
-        return
-      }
+    public async send<T>(event: Events, data?: T): Promise<void> {
+      this.stateMachine.send(event, data)
     }
   }
 </script>

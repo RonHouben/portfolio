@@ -2,7 +2,6 @@
   import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
   import Player from '$lib/components/game/Player.svelte'
-  import Grid from '$lib/components/Grid.svelte';
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
   import OrbitControls from '$lib/components/threejs/controls/OrbitControls.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
@@ -272,8 +271,10 @@
                     if (intersection) {
                       const gameController = new GameController()
 
-                      await gameController.send('stop-moving-player')
-                      await gameController.send('move-player', intersection.point) 
+                      if (gameController.state === 'moving-player') {
+                        gameController.send('stop-moving-player')
+                      } 
+                      gameController.send('move-player', intersection.point)
                     }
                   }
                 }
