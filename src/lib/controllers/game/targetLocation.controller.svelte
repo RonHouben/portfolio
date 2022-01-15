@@ -32,7 +32,6 @@
       this.stateMachine = new StateMachine({
         id: 'playerTargetLocationMachine',
         initial: 'hidden',
-        debug: true,
         states: {
           hidden: {
             teleport: {
