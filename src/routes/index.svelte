@@ -2,6 +2,7 @@
   import PhysicsBody from '$lib/components/cannon-es/PhysicsBody.svelte'
   import PhysicsWorld from '$lib/components/cannon-es/PhysicsWorld.svelte'
   import Player from '$lib/components/game/Player.svelte'
+import Grid from '$lib/components/Grid.svelte';
   import PerspectiveCamera from '$lib/components/threejs/cameras/PerspectiveCamera.svelte'
   import OrbitControls from '$lib/components/threejs/controls/OrbitControls.svelte'
   import AmbientLight from '$lib/components/threejs/lights/AmbientLight.svelte'
@@ -232,11 +233,11 @@
         <svelte:fragment slot="meshes">
           <Player />
 
-          <!-- <Grid name='grid' cellDistance={1} cellSize={1} columns={5} rows={5} depth={5} position={{
+          <Grid name='grid' cellDistance={1} cellSize={1} columns={5} rows={5} depth={5} position={{
             x: 0,
             y: 0,
             z: 0
-          }}></Grid> -->
+          }}></Grid>
 
           <PhysicsBody
             options={{
@@ -272,7 +273,7 @@
                       const gameController = new GameController()
 
                       if (gameController.state === 'moving-player') {
-                        gameController.send('stop-moving-player')
+                        await gameController.send('stop-moving-player')
                       } 
                       gameController.send('move-player', intersection.point)
                     }
